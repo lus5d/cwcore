@@ -1211,6 +1211,9 @@ void Unit::CalculateSpellDamageTaken(SpellNonMeleeDamage *damageInfo, int32 dama
     if( damageSchoolMask & SPELL_SCHOOL_MASK_NORMAL )
         damage = CalcArmorReducedDamage(pVictim, damage, spellInfo, attackType);
 
+    if (GetTypeId() == TYPEID_PLAYER && pVictim->GetTypeId() == TYPEID_PLAYER)
+        damage -= ((Player*)pVictim)->GetSpellDamageReduction(damage);
+
     // Calculate absorb resist
     if(damage > 0)
     {
@@ -1314,7 +1317,7 @@ void Unit::CalculateMeleeDamage(Unit *pVictim, uint32 damage, CalcDamageInfo *da
        damageInfo->cleanDamage    = 0;
        return;
     }
-    damage += CalculateDamage (damageInfo->attackType, false);
+    damage += CalculateDamage (damageInfo->attackType, false, true);
     // Add melee damage bonus
     MeleeDamageBonus(damageInfo->target, &damage, damageInfo->attackType);
     // Calculate armor reduction
@@ -1449,6 +1452,14 @@ void Unit::CalculateMeleeDamage(Unit *pVictim, uint32 damage, CalcDamageInfo *da
             break;
     }
 
+    if (GetTypeId() == TYPEID_PLAYER && pVictim->GetTypeId() == TYPEID_PLAYER)
+    {
+        if (attackType != RANGED_ATTACK)
+            damage-=((Player*)pVictim)->GetMeleeDamageReduction(damage);
+        else
+            damage-=((Player*)pVictim)->GetRangedDamageReduction(damage);
+    }
+
     // Calculate absorb resist
     if(int32(damageInfo->damage) > 0)
     {
@@ -1465,7 +1476,7 @@ void Unit::CalculateMeleeDamage(Unit *pVictim, uint32 damage, CalcDamageInfo *da
             damageInfo->HitInfo|=HITINFO_RESIST;
 
     }
-    else // Umpossible get negative result but....
+    else // Impossible get negative result but....
         damageInfo->damage = 0;
 }
 
@@ -2426,12 +2437,12 @@ MeleeHitOutcome Unit::RollMeleeOutcomeAgainst (const Unit *pVictim, WeaponAttack
     return MELEE_HIT_NORMAL;
 }
 
-uint32 Unit::CalculateDamage (WeaponAttackType attType, bool normalized)
+uint32 Unit::CalculateDamage (WeaponAttackType attType, bool normalized, bool addTotalPct)
 {
     float min_damage, max_damage;
 
-    if (normalized && GetTypeId()==TYPEID_PLAYER)
-        ((Player*)this)->CalculateMinMaxDamage(attType,normalized,min_damage, max_damage);
+    if (GetTypeId()==TYPEID_PLAYER && (normalized || !addTotalPct))
+        ((Player*)this)->CalculateMinMaxDamage(attType,normalized,addTotalPct,min_damage, max_damage);
     else
     {
         switch (attType)
@@ -7133,24 +7144,6 @@ bool Unit::HandleAuraProc(Unit *pVictim, uint32 damage, Aura* triggeredByAura, S
             }
             break;
         }
-        
-        case SPELLFAMILY_PALADIN:
-        {
-            // Seal of Command should only proc from melee hits.
-            if(dummySpell->Id == 20375)
-            {
-                if (procFlag && ( procFlag & PROC_FLAG_SUCCESSFUL_MELEE_HIT ))
-                {
-                    *handled = false;
-                    return true;
-                }
-                else
-                {
-                    *handled = true;
-                    return false;
-                }
-            }
-        }
     }
     return false;
 }
@@ -8710,6 +8703,18 @@ void Unit::SetMinion(Minion *minion, bool apply)
         }
         //else if(minion->m_Properties && minion->m_Properties->Type == SUMMON_TYPE_MINIPET)      
         //    RemoveUInt64Value(UNIT_FIELD_CRITTER, minion->GetGUID());
+    }
+}
+
+void Unit::GetAllMinionsByEntry(std::list<Creature*>& Minions, uint32 entry)
+{
+    for(Unit::ControlList::iterator itr = m_Controlled.begin(); itr != m_Controlled.end();)
+    {
+        Unit *unit = *itr;
+        ++itr;
+        if(unit->GetEntry() == entry && unit->GetTypeId() == TYPEID_UNIT
+            && ((Creature*)unit)->isSummon()) // minion, actually
+            Minions.push_back((Creature*)unit);
     }
 }
 
@@ -11125,6 +11130,8 @@ void Unit::setDeathState(DeathState s)
             InterruptNonMeleeSpells(false);
 
         UnsummonAllTotems();
+		// avoid that corpses run in fear
+        StopMoving();
         RemoveAllControlled();
         RemoveAllAurasOnDeath();
         ExitVehicle();

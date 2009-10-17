@@ -173,8 +173,7 @@ struct CW_DLL_DECL boss_svalaAI : public ScriptedAI
                         m_creature->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
                         m_creature->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
                         m_creature->SetDisplayId(DATA_SVALA_DISPLAY_ID);
-                        pArthas->Kill(pArthas, false);
-                        pArthas->RemoveCorpse();
+                        pArthas->DisappearAndDie();
                         Phase = FINISHED;
                     }
                     else Reset();
@@ -262,7 +261,7 @@ struct CW_DLL_DECL boss_svala_sorrowgraveAI : public ScriptedAI
 
             if (uiSinsterStrikeTimer < diff)
             {
-                DoCast(m_creature->getVictim(), HeroicMode ? H_SPELL_SINSTER_STRIKE : SPELL_SINSTER_STRIKE);
+                DoCast(m_creature->getVictim(), HEROIC(SPELL_SINSTER_STRIKE, H_SPELL_SINSTER_STRIKE));
                 uiSinsterStrikeTimer = 5000 + rand()%4000;
             } else uiSinsterStrikeTimer -= diff;
 
@@ -278,8 +277,8 @@ struct CW_DLL_DECL boss_svala_sorrowgraveAI : public ScriptedAI
 
             if (uiRitualOfSwordTimer < diff)
             {
-                pSacrificeTarget = SelectUnit(SELECT_TARGET_RANDOM, 0);
-                if (pSacrificeTarget && pSacrificeTarget->GetTypeId() != TYPEID_PLAYER)
+                pSacrificeTarget = SelectTarget(SELECT_TARGET_RANDOM, 0, 100, true);
+                if (pSacrificeTarget)
                 {
                     DoScriptText(RAND(SAY_SACRIFICE_PLAYER_1,SAY_SACRIFICE_PLAYER_2,SAY_SACRIFICE_PLAYER_3,SAY_SACRIFICE_PLAYER_4,SAY_SACRIFICE_PLAYER_5),m_creature);
                     DoCast(pSacrificeTarget,SPELL_RITUAL_OF_THE_SWORD);
@@ -294,7 +293,7 @@ struct CW_DLL_DECL boss_svala_sorrowgraveAI : public ScriptedAI
                             if (mob_ritual_channelerAI *pChannelerAI = CAST_AI(mob_ritual_channelerAI,pRitualChanneler[i]->AI()))
                                 pChannelerAI->AttackStartNoMove(pSacrificeTarget);
 
-                    uiRitualOfSwordTimer = 18000 + rand()%4000;
+                    uiRitualOfSwordTimer = urand(18000,22000);
                 }
             } else uiRitualOfSwordTimer -= diff;
 
@@ -314,16 +313,13 @@ struct CW_DLL_DECL boss_svala_sorrowgraveAI : public ScriptedAI
                     }
                 }
                 if (bSacrificed && pSacrificeTarget && pSacrificeTarget->isAlive())
-                    m_creature->Kill(pSacrificeTarget, false);
+                    m_creature->Kill(pSacrificeTarget, false); // durability damage?
 
                 //go down
                 Phase = NORMAL;
                 pSacrificeTarget = NULL;
                 m_creature->SetUnitMovementFlags(MOVEMENTFLAG_WALK_MODE);
-                Unit* pTarget = SelectUnit(SELECT_TARGET_RANDOM, 0);
-                while (pTarget && pTarget->GetTypeId() != TYPEID_PLAYER)
-                    pTarget = SelectUnit(SELECT_TARGET_RANDOM, 0);
-                if (pTarget)
+                if (Unit* pTarget = SelectTarget(SELECT_TARGET_RANDOM, 0, 100, true))
                     m_creature->GetMotionMaster()->MoveChase(pTarget);
 
                 uiSacrificeTimer = 8000;
@@ -343,7 +339,7 @@ struct CW_DLL_DECL boss_svala_sorrowgraveAI : public ScriptedAI
         {
             Creature* pSvala = Unit::GetCreature((*m_creature), pInstance->GetData64(DATA_SVALA));
             if (pSvala && pSvala->isAlive())
-                pKiller->Kill(pSvala, false);
+                pKiller->Kill(pSvala);
 
             pInstance->SetData(DATA_SVALA_SORROWGRAVE_EVENT, IN_PROGRESS);
         }
@@ -371,17 +367,17 @@ void AddSC_boss_svala()
     Script *newscript;
 
     newscript = new Script;
-    newscript->Name="boss_svala";
+    newscript->Name = "boss_svala";
     newscript->GetAI = &GetAI_boss_svala;
     newscript->RegisterSelf();
 
     newscript = new Script;
-    newscript->Name="mob_ritual_channeler";
+    newscript->Name = "mob_ritual_channeler";
     newscript->GetAI = &GetAI_mob_ritual_channeler;
     newscript->RegisterSelf();
 
     newscript = new Script;
-    newscript->Name="boss_svala_sorrowgrave";
+    newscript->Name = "boss_svala_sorrowgrave";
     newscript->GetAI = &GetAI_boss_svala_sorrowgrave;
     newscript->RegisterSelf();
 }

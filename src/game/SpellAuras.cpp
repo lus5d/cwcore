@@ -983,7 +983,30 @@ void Aura::HandleAuraSpecificMods(bool apply)
 
         if (m_spellProto->SpellFamilyName == SPELLFAMILY_MAGE)
         {
-            if (m_spellProto->SpellFamilyFlags[0] & 0x00000001 && m_spellProto->SpellFamilyFlags[2] & 0x00000008)
+            if (m_spellProto->SpellFamilyFlags[1] & 0x00000002 && m_spellProto->SpellFamilyFlags[2] & 0x00000008)
+            {
+                // Arcane Potency
+                if (Unit * caster = GetCaster())
+                {
+                    if (AuraEffect* aureff = caster->GetAuraEffect(SPELL_AURA_DUMMY, SPELLFAMILY_MAGE, 2120, 0))
+                    {
+                        if (roll_chance_i(aureff->GetAmount()))
+                        {
+                            uint32 spell_id = 0;
+
+                            switch (aureff->GetId())
+                            {
+                                case 31571: spell_id = 57529; break;
+                                case 31572: spell_id = 57531; break;
+                                default: return;
+                            }
+                            if(spell_id)
+                                caster->CastSpell(caster,spell_id,true);
+                        }
+                    }
+                }
+            }
+            else if (m_spellProto->SpellFamilyFlags[0] & 0x00000001 && m_spellProto->SpellFamilyFlags[2] & 0x00000008)
             {
                 // Glyph of Fireball
                 if (Unit * caster = GetCaster())
@@ -1326,7 +1349,7 @@ void Aura::HandleAuraSpecificMods(bool apply)
             m_target->CastSpell(m_target, GetPartAura(0)->GetAmount(), true, NULL, GetPartAura(0));
         }
         // Curse of Doom
-        else if(m_spellProto->SpellFamilyName==SPELLFAMILY_WARLOCK && m_spellProto->SpellFamilyFlags[1] & 0x02)
+        else if (m_spellProto->SpellFamilyName==SPELLFAMILY_WARLOCK && m_spellProto->SpellFamilyFlags[1] & 0x02)
         {
             if (GetRemoveMode()==AURA_REMOVE_BY_DEATH)
             {
@@ -1334,6 +1357,28 @@ void Aura::HandleAuraSpecificMods(bool apply)
                 {
                     if (caster->GetTypeId()==TYPEID_PLAYER && ((Player*)caster)->isHonorOrXPTarget(m_target))
                         caster->CastSpell(m_target, 18662, true, NULL, GetPartAura(0));
+                }
+            }
+        }
+        // Improved Fear
+        else if (m_spellProto->SpellFamilyName==SPELLFAMILY_WARLOCK && m_spellProto->SpellFamilyFlags[1] & 0x00000400)
+        {
+            if (Unit * caster = GetCaster())
+            {
+                if (caster->GetTypeId() != TYPEID_PLAYER)
+                {
+                    if (AuraEffect* aureff = caster->GetAuraEffect(SPELL_AURA_DUMMY, SPELLFAMILY_WARLOCK, 98, 0))
+                    {
+                        uint32 spell_id = 0;
+                        switch (aureff->GetId())
+                        {
+                            case 53759: spell_id = 60947; break;
+                            case 53754: spell_id = 60946; break;
+                            default: return;
+                        }
+                        if (spell_id)
+                            caster->CastSpell(caster,spell_id,true);
+                    }
                 }
             }
         }
@@ -1415,13 +1460,34 @@ void AuraEffect::HandleAuraEffectSpecificMods(bool apply, bool Real, bool change
                     }
                     break;
                 case SPELLFAMILY_PRIEST:
+                {
                     // Power Word: Shield
                     if(m_spellProto->SpellFamilyFlags[0] & 0x1 && m_spellProto->SpellFamilyFlags[2] & 0x400 && GetAuraName() == SPELL_AURA_SCHOOL_ABSORB)
                     {
-                        // +80.68% from sp bonus
+                        //+80.68% from sp bonus
                         DoneActualBenefit = caster->SpellBaseHealingBonus(GetSpellSchoolMask(m_spellProto)) * 0.8068f;
                     }
+                    // Borrowed Time
+                    else if(m_spellProto->SpellFamilyFlags[0] & 0x1 && GetAuraName() == SPELL_AURA_SCHOOL_ABSORB)
+                    {
+                        switch(m_spellProto->Id)
+                        {
+                            case 52795:
+                                DoneActualBenefit = caster->SpellBaseHealingBonus(GetSpellSchoolMask(m_spellProto)) * 0.08f; break;
+                            case 52797:
+                                DoneActualBenefit = caster->SpellBaseHealingBonus(GetSpellSchoolMask(m_spellProto)) * 0.16f; break;
+                            case 52798:
+                                DoneActualBenefit = caster->SpellBaseHealingBonus(GetSpellSchoolMask(m_spellProto)) * 0.24f; break;
+                            case 52799:
+                                DoneActualBenefit = caster->SpellBaseHealingBonus(GetSpellSchoolMask(m_spellProto)) * 0.32f; break;
+                            case 52800:
+                                DoneActualBenefit = caster->SpellBaseHealingBonus(GetSpellSchoolMask(m_spellProto)) * 0.40f; break;
+                            default:
+                                sLog.outDetail("Unhandled spell '%u' (possibly a new rank of Borrowed Time?) found.",m_spellProto->Id); break;
+                        }
+                    }
                     break;
+                }
                 case SPELLFAMILY_DRUID:
                 {
                     // Rip
@@ -2393,7 +2459,7 @@ void AuraEffect::TriggerSpell()
                     case 31347:
                     {
                         m_target->CastSpell(m_target,31350,true, NULL, this);
-                        m_target->DealDamage(m_target, m_target->GetHealth(), NULL, DIRECT_DAMAGE, SPELL_SCHOOL_MASK_NORMAL, NULL, false);
+                        m_target->Kill(m_target);
                         return;
                     }
                     // Spellcloth
@@ -6281,6 +6347,26 @@ void AuraEffect::PeriodicTick()
         }
         case SPELL_AURA_PERIODIC_TRIGGER_SPELL:
         {
+            Unit *pCaster = GetCaster();
+            if (!pCaster)
+                return;
+
+            if (pCaster->GetTypeId() == TYPEID_UNIT && ((Creature*)pCaster)->isTotem() && ((Totem*)pCaster)->GetTotemType() != TOTEM_STATUE)
+            {
+                uint32 procAttacker = PROC_FLAG_SUCCESSFUL_NEGATIVE_SPELL_HIT;
+                uint32 procVictim   = PROC_FLAG_TAKEN_NEGATIVE_SPELL_HIT;
+                SpellEntry const *spellProto = GetSpellProto();
+
+                if (spellProto->SpellFamilyName == SPELLFAMILY_GENERIC) // SPELLFAMILY_GENERIC proc by triggered spell
+                {
+                    uint32 trigger_spell_id = spellProto->EffectTriggerSpell[m_effIndex];
+                    SpellEntry const *triggeredSpellInfo = sSpellStore.LookupEntry(trigger_spell_id);
+                    ((Totem*)pCaster)->GetOwner()->ProcDamageAndSpell(pCaster, procAttacker, procVictim, PROC_EX_NORMAL_HIT, 0, BASE_ATTACK, triggeredSpellInfo);
+                }
+                else
+                    ((Totem*)pCaster)->GetOwner()->ProcDamageAndSpell(pCaster, procAttacker, procVictim, PROC_EX_NORMAL_HIT, 0, BASE_ATTACK, spellProto);
+            }
+
             TriggerSpell();
             break;
         }

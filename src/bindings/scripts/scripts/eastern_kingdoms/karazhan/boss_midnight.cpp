@@ -161,9 +161,9 @@ struct CW_DLL_DECL boss_attumenAI : public ScriptedAI
     {
         Phase = 1;
 
-        CleaveTimer = 10000 + (rand()%6)*1000;
+        CleaveTimer = urand(10000,15000);
         CurseTimer = 30000;
-        RandomYellTimer = 30000 + (rand()%31)*1000;         //Occasionally yell
+        RandomYellTimer = urand(30000,60000);              //Occasionally yell
         ChargeTimer = 20000;
         ResetTimer = 0;
     }
@@ -192,7 +192,7 @@ struct CW_DLL_DECL boss_attumenAI : public ScriptedAI
     {
         DoScriptText(SAY_DEATH, m_creature);
         if (Unit *pMidnight = Unit::GetUnit(*m_creature, Midnight))
-            pMidnight->DealDamage(pMidnight, pMidnight->GetHealth(), NULL, DIRECT_DAMAGE, SPELL_SCHOOL_MASK_NORMAL, NULL, false);
+            pMidnight->Kill(pMidnight);
     }
 
     void UpdateAI(const uint32 diff)
@@ -210,7 +210,7 @@ struct CW_DLL_DECL boss_attumenAI : public ScriptedAI
                 }
                 Midnight = 0;
                 m_creature->SetVisibility(VISIBILITY_OFF);
-                m_creature->DealDamage(m_creature, m_creature->GetHealth(), NULL, DIRECT_DAMAGE, SPELL_SCHOOL_MASK_NORMAL, NULL, false);
+                m_creature->Kill(m_creature);
             }
         } else ResetTimer -= diff;
 
@@ -224,7 +224,7 @@ struct CW_DLL_DECL boss_attumenAI : public ScriptedAI
         if (CleaveTimer < diff)
         {
             DoCast(m_creature->getVictim(), SPELL_SHADOWCLEAVE);
-            CleaveTimer = 10000 + (rand()%6)*1000;
+            CleaveTimer = urand(10000,15000);
         } else CleaveTimer -= diff;
 
         if (CurseTimer < diff)
@@ -236,7 +236,7 @@ struct CW_DLL_DECL boss_attumenAI : public ScriptedAI
         if (RandomYellTimer < diff)
         {
             DoScriptText(RAND(SAY_RANDOM1,SAY_RANDOM2), m_creature);
-            RandomYellTimer = 30000 + (rand()%31)*1000;
+            RandomYellTimer = urand(30000,60000);
         } else RandomYellTimer -= diff;
 
         if (m_creature->GetUInt32Value(UNIT_FIELD_DISPLAYID) == MOUNTED_DISPLAYID)
@@ -298,12 +298,12 @@ void AddSC_boss_attumen()
 {
     Script *newscript;
     newscript = new Script;
-    newscript->Name="boss_attumen";
+    newscript->Name = "boss_attumen";
     newscript->GetAI = &GetAI_boss_attumen;
     newscript->RegisterSelf();
 
     newscript = new Script;
-    newscript->Name="boss_midnight";
+    newscript->Name = "boss_midnight";
     newscript->GetAI = &GetAI_boss_midnight;
     newscript->RegisterSelf();
 }

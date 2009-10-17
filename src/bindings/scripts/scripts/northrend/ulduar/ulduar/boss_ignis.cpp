@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2008 - 2009 CW <http://www.CWcore.org/>
+ * Copyright (C) 2009 CWCore <http://www.wow-extrem.de/>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,9 +27,9 @@
 #define SAY_AGGRO                   -10000002
 #define SAY_SLAY                    -1000003
 
-struct CW_DLL_DECL boss_ignis_AI : public ScriptedAI
+struct CW_DLL_DECL boss_ignis_AI : public BossAI
 {
-    boss_ignis_AI(Creature *c) : ScriptedAI(c) {}
+    boss_ignis_AI(Creature *pCreature) : BossAI(pCreature, TYPE_IGNIS) {}
 
     uint32 FLAME_JETS_Timer;
     uint32 SCORCH_Timer;
@@ -65,8 +65,10 @@ struct CW_DLL_DECL boss_ignis_AI : public ScriptedAI
 
         if(m_creature->GetPositionY() < 150 || m_creature->GetPositionX() < 450) // Not Blizzlike, anti-exploit to prevent players from pulling bosses to vehicles.
         {
-            m_creature->SetHealth(m_creature->GetMaxHealth());
-            DoCast(m_creature,SPELL_FLAME_JETS);
+            m_creature->RemoveAllAuras();
+            m_creature->DeleteThreatList();
+            m_creature->CombatStop(false);
+            m_creature->GetMotionMaster()->MoveTargetedHome();
         }
 
         if (FLAME_JETS_Timer < diff)

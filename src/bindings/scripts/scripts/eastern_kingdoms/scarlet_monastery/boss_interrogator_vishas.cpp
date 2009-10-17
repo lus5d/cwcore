@@ -24,7 +24,7 @@ EndScriptData */
 #include "precompiled.h"
 #include "def_scarlet_monastery.h"
 
-enum
+enum eEnums
 {
     SAY_AGGRO               = -1189011,
     SAY_HEALTH1             = -1189012,
@@ -111,7 +111,7 @@ void AddSC_boss_interrogator_vishas()
 {
     Script *newscript;
     newscript = new Script;
-    newscript->Name="boss_interrogator_vishas";
+    newscript->Name = "boss_interrogator_vishas";
     newscript->GetAI = &GetAI_boss_interrogator_vishas;
     newscript->RegisterSelf();
 }

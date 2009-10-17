@@ -26,7 +26,7 @@ EndScriptData */
 
 bool DeadChaoticRift; // needed for achievement: Chaos Theory(2037)
 
-enum
+enum eEnums
 {
     ACHIEVEMENT_CHAOS_THEORY   = 2037,
 
@@ -198,7 +198,7 @@ struct CW_DLL_DECL boss_anomalusAI : public ScriptedAI
         if (SPELL_SPARK_Timer < diff)
         {
             if (Unit* target = SelectUnit(SELECT_TARGET_RANDOM, 0))
-                DoCast(target, HeroicMode ? SPELL_SPARK_H : SPELL_SPARK_N);
+                DoCast(target, HEROIC(SPELL_SPARK_N, SPELL_SPARK_H));
             SPELL_SPARK_Timer = 5000;
         }else SPELL_SPARK_Timer -=diff;
 
@@ -291,12 +291,12 @@ void AddSC_boss_anomalus()
     Script *newscript;
 
     newscript = new Script;
-    newscript->Name="boss_anomalus";
+    newscript->Name = "boss_anomalus";
     newscript->GetAI = &GetAI_boss_anomalus;
     newscript->RegisterSelf();
 
     newscript = new Script;
-    newscript->Name="mob_chaotic_rift";
+    newscript->Name = "mob_chaotic_rift";
     newscript->GetAI = &GetAI_mob_chaotic_rift;
     newscript->RegisterSelf();
 }

@@ -38,7 +38,7 @@ EndContentData */
 #define GOSSIP_ITEM_GO_ON   "Go on."
 #define GOSSIP_ITEM_TELL_ME "Tell me what's going on out here, Fizzcrank."
 
-enum
+enum eFizzcrank
 {
     GOSSIP_TEXTID_FIZZCRANK1    = 12456,
     GOSSIP_TEXTID_FIZZCRANK2    = 12457,
@@ -116,7 +116,7 @@ bool GossipSelect_npc_fizzcrank_fullthrottle(Player* pPlayer, Creature* pCreatur
 #define GOSSIP_ITEM_FREE_FLIGHT "I'd like passage to the Transitus Shield."
 #define GOSSIP_ITEM_FLIGHT      "May I use a drake to fly elsewhere?"
 
-enum
+enum eSurristrasz
 {
     SPELL_ABMER_TO_COLDARRA     = 46064
 };
@@ -158,7 +158,7 @@ bool GossipSelect_npc_surristrasz(Player* pPlayer, Creature* pCreature, uint32 u
 
 #define GOSSIP_ITEM_TELEPORT    "Teleport me to Amber Ledge, please."
 
-enum
+enum eTiare
 {
     SPELL_TELEPORT_COLDARRA     = 50135
 };
@@ -184,7 +184,7 @@ bool GossipSelect_npc_tiare(Player* pPlayer, Creature* pCreature, uint32 uiSende
 ## npc_sinkhole_kill_credit
 ######*/
 
-enum
+enum eSinkhole
 {
     SPELL_SET_CART                = 46797,
     SPELL_EXPLODE_CART            = 46799,
@@ -330,7 +330,7 @@ CreatureAI* GetAI_npc_khunok_the_behemoth(Creature* pCreature)
 ## npc_keristrasza
 ######*/
 
-enum
+enum eKeristrasza
 {
     SPELL_TELEPORT_TO_SARAGOSA = 46772
 };
@@ -367,7 +367,7 @@ bool GossipSelect_npc_keristrasza(Player* pPlayer, Creature* pCreature, uint32 u
 
 #define GOSSIP_ITEM_C_1 "I... I think so..."
 
-enum
+enum eCorastrasza
 {
     SPELL_SUMMON_WYRMREST_SKYTALON               = 61240,
     SPELL_WYRMREST_SKYTALON_RIDE_PERIODIC        = 61244,
@@ -380,7 +380,7 @@ bool GossipHello_npc_corastrasza(Player* pPlayer, Creature* pCreature)
 {
     if (pCreature->isQuestGiver())
         pPlayer->PrepareQuestMenu(pCreature->GetGUID());
-    
+
     if (pPlayer->GetQuestStatus(QUEST_ACES_HIGH) == QUEST_STATUS_INCOMPLETE || pPlayer->GetQuestStatus(QUEST_ACES_HIGH_DAILY) == QUEST_STATUS_INCOMPLETE) //It's the same dragon for both quests.
     {
         pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_ITEM_C_1, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF+1);
@@ -398,7 +398,7 @@ bool GossipSelect_npc_corastrasza(Player* pPlayer, Creature* pCreature, uint32 u
 
         pPlayer->CastSpell(pPlayer, SPELL_SUMMON_WYRMREST_SKYTALON, true);
         pPlayer->CastSpell(pPlayer, SPELL_WYRMREST_SKYTALON_RIDE_PERIODIC, true);
-        
+
     }
 
     return true;
@@ -410,23 +410,19 @@ bool GossipSelect_npc_corastrasza(Player* pPlayer, Creature* pCreature, uint32 u
 
 #define GOSSIP_ITEM_I  "<Search corpse for Issliruk's Totem.>"
 
-enum
+enum eIruk
 {
-
     QUEST_SPIRITS_WATCH_OVER_US             = 11961,
-
     SPELL_CREATURE_TOTEM_OF_ISSLIRUK        = 46816,
-
     GOSSIP_TEXT_I                           = 12585
-
 };
 
 bool GossipHello_npc_iruk(Player* pPlayer, Creature* pCreature)
 {
-     
+
     if (pPlayer->GetQuestStatus(QUEST_SPIRITS_WATCH_OVER_US) == QUEST_STATUS_INCOMPLETE)
         pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_ITEM_I, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF+1);
-    
+
     pPlayer->PlayerTalkClass->SendGossipMenu(GOSSIP_TEXT_I, pCreature->GetGUID());
     return true;
 }
@@ -439,7 +435,7 @@ bool GossipSelect_npc_iruk(Player* pPlayer, Creature* pCreature, uint32 uiSender
             pPlayer->CastSpell(pPlayer, SPELL_CREATURE_TOTEM_OF_ISSLIRUK, true);
             pPlayer->CLOSE_GOSSIP_MENU();
             break;
-        
+
     }
     return true;
 }
@@ -474,7 +470,7 @@ struct CW_DLL_DECL mob_nerubar_victimAI : public ScriptedAI
                     CAST_PLR(Killer)->KilledMonsterCredit(WARSONG_PEON, 0);
                 }
                 else if(uiRand < 75)
-                    Killer->CastSpell(m_creature,nerubarVictims[rand()%3],true);            
+                    Killer->CastSpell(m_creature,nerubarVictims[rand()%3],true);
             }
         }
     }
@@ -506,12 +502,12 @@ void AddSC_borean_tundra()
     newscript->RegisterSelf();
 
     newscript = new Script;
-    newscript->Name="npc_sinkhole_kill_credit";
+    newscript->Name = "npc_sinkhole_kill_credit";
     newscript->GetAI = &GetAI_npc_sinkhole_kill_credit;
     newscript->RegisterSelf();
 
     newscript = new Script;
-    newscript->Name="npc_khunok_the_behemoth";
+    newscript->Name = "npc_khunok_the_behemoth";
     newscript->GetAI = &GetAI_npc_khunok_the_behemoth;
     newscript->RegisterSelf();
 
@@ -534,7 +530,7 @@ void AddSC_borean_tundra()
     newscript->RegisterSelf();
 
     newscript = new Script;
-    newscript->Name="mob_nerubar_victim";
+    newscript->Name = "mob_nerubar_victim";
     newscript->GetAI = &GetAI_mob_nerubar_victim;
     newscript->RegisterSelf();
 }

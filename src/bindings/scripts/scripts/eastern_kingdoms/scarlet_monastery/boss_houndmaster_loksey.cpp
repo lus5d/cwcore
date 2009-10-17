@@ -23,7 +23,7 @@ EndScriptData */
 
 #include "precompiled.h"
 
-enum
+enum eEnums
 {
     SAY_AGGRO                       = -1189021,
     SPELL_SUMMONSCARLETHOUND        = 17164,
@@ -70,7 +70,7 @@ void AddSC_boss_houndmaster_loksey()
 {
     Script *newscript;
     newscript = new Script;
-    newscript->Name="boss_houndmaster_loksey";
+    newscript->Name = "boss_houndmaster_loksey";
     newscript->GetAI = &GetAI_boss_houndmaster_loksey;
     newscript->RegisterSelf();
 }

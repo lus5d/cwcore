@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2009 CW <http://www.CWcore.org/>
+ * Copyright (C) 2009 CWCore <http://www.wow-extrem.de/>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,7 +26,7 @@ EndScriptData */
 #include "precompiled.h"
 #include "def_utgarde_keep.h"
 
-enum
+enum eEnums
 {
     //signed for 24200, but used by 24200,27390
     YELL_SKARVALD_AGGRO                         = -1574011,
@@ -345,7 +345,7 @@ struct CW_DLL_DECL boss_dalronn_the_controllerAI : public ScriptedAI
         {
             if (!m_creature->IsNonMeleeSpellCasted(false))
             {
-                DoCast(SelectUnit(SELECT_TARGET_RANDOM, 0),HeroicMode ? H_SPELL_SHADOW_BOLT : SPELL_SHADOW_BOLT);
+                DoCast(SelectUnit(SELECT_TARGET_RANDOM, 0),HEROIC(SPELL_SHADOW_BOLT, H_SPELL_SHADOW_BOLT));
                 ShadowBolt_Timer = 1000;
             }
         }else ShadowBolt_Timer -= diff;
@@ -380,12 +380,12 @@ void AddSC_boss_skarvald_dalronn()
     Script *newscript;
 
     newscript = new Script;
-    newscript->Name="boss_skarvald_the_constructor";
+    newscript->Name = "boss_skarvald_the_constructor";
     newscript->GetAI = &GetAI_boss_skarvald_the_constructor;
     newscript->RegisterSelf();
 
     newscript = new Script;
-    newscript->Name="boss_dalronn_the_controller";
+    newscript->Name = "boss_dalronn_the_controller";
     newscript->GetAI = &GetAI_boss_dalronn_the_controller;
     newscript->RegisterSelf();
 }

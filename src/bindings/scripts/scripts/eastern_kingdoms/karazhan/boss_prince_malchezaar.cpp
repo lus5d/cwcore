@@ -260,7 +260,7 @@ struct CW_DLL_DECL boss_malchezaarAI : public ScriptedAI
         {
             Unit *axe = Unit::GetUnit(*m_creature, axes[i]);
             if (axe && axe->isAlive())
-                axe->DealDamage(axe, axe->GetHealth(), NULL, DIRECT_DAMAGE, SPELL_SCHOOL_MASK_NORMAL, NULL, false);
+                axe->Kill(axe);
             axes[i] = 0;
         }
     }
@@ -603,12 +603,12 @@ void AddSC_boss_malchezaar()
 {
     Script *newscript;
     newscript = new Script;
-    newscript->Name="boss_malchezaar";
+    newscript->Name = "boss_malchezaar";
     newscript->GetAI = &GetAI_boss_malchezaar;
     newscript->RegisterSelf();
 
     newscript = new Script;
-    newscript->Name="netherspite_infernal";
+    newscript->Name = "netherspite_infernal";
     newscript->GetAI = &GetAI_netherspite_infernal;
     newscript->RegisterSelf();
 }

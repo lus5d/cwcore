@@ -25,7 +25,7 @@ EndScriptData */
 #include "def_zulaman.h"
 #include "GridNotifiers.h"
 
-enum
+enum eEnums
 {
     SAY_AGGRO                   = -1568000,
     SAY_FIRE_BOMBS              = -1568001,
@@ -165,11 +165,7 @@ struct CW_DLL_DECL boss_janalaiAI : public ScriptedAI
 
     void KilledUnit(Unit* victim)
     {
-        switch(rand()%2)
-        {
-        case 0: DoScriptText(SAY_SLAY_1, m_creature); break;
-        case 1: DoScriptText(SAY_SLAY_2, m_creature); break;
-        }
+        DoScriptText(RAND(SAY_SLAY_1,SAY_SLAY_2), m_creature);
     }
 
     void EnterCombat(Unit *who)
@@ -677,27 +673,27 @@ void AddSC_boss_janalai()
 {
     Script *newscript;
     newscript = new Script;
-    newscript->Name="boss_janalai";
+    newscript->Name = "boss_janalai";
     newscript->GetAI = &GetAI_boss_janalaiAI;
     newscript->RegisterSelf();
 
     newscript = new Script;
-    newscript->Name="mob_janalai_firebomb";
+    newscript->Name = "mob_janalai_firebomb";
     newscript->GetAI = &GetAI_mob_janalai_firebombAI;
     newscript->RegisterSelf();
 
     newscript = new Script;
-    newscript->Name="mob_janalai_hatcher";
+    newscript->Name = "mob_janalai_hatcher";
     newscript->GetAI = &GetAI_mob_amanishi_hatcherAI;
     newscript->RegisterSelf();
 
     newscript = new Script;
-    newscript->Name="mob_janalai_hatchling";
+    newscript->Name = "mob_janalai_hatchling";
     newscript->GetAI = &GetAI_mob_hatchlingAI;
     newscript->RegisterSelf();
 
     newscript = new Script;
-    newscript->Name="mob_janalai_egg";
+    newscript->Name = "mob_janalai_egg";
     newscript->GetAI = &GetAI_mob_eggAI;
     newscript->RegisterSelf();
 }

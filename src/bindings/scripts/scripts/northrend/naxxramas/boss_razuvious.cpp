@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2008 - 2009 CW <http://www.CWcore.org/>
+ * Copyright (C) 2009 CWCore <http://www.wow-extrem.de/>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -61,7 +61,7 @@ struct CW_DLL_DECL boss_razuviousAI : public BossAI
         if (!(rand()%3))
             DoPlaySoundToSet(me, SOUND_SLAY);
     }
-    
+
     void DamageTaken(Unit* pDone_by, uint32& uiDamage)
     {
         // Damage done by the controlled Death Knight understudies should also count toward damage done by players
@@ -70,7 +70,7 @@ struct CW_DLL_DECL boss_razuviousAI : public BossAI
             me->LowerPlayerDamageReq(uiDamage);
         }
     }
-    
+
     void JustDied(Unit* killer)
     {
         _JustDied();
@@ -131,7 +131,7 @@ void AddSC_boss_razuvious()
 {
     Script *newscript;
     newscript = new Script;
-    newscript->Name="boss_razuvious";
+    newscript->Name = "boss_razuvious";
     newscript->GetAI = &GetAI_boss_razuvious;
     newscript->RegisterSelf();
 }

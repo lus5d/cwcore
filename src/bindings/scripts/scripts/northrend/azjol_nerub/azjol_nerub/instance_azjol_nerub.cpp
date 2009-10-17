@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2009 CW <http://www.CWcore.org/>
+ * Copyright (C) 2009 CWCore <http://www.wow-extrem.de/>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -44,7 +44,7 @@ struct CW_DLL_DECL instance_azjol_nerub : public ScriptedInstance
     uint64 m_uiWatcherGashra;
     uint64 m_uiWatcherSilthik;
     uint64 m_uiWatcherNarjil;
-    
+
     uint64 m_uiKrikthirDoor;
 
     uint32 m_auiEncounter[MAX_ENCOUNTER];
@@ -83,7 +83,7 @@ struct CW_DLL_DECL instance_azjol_nerub : public ScriptedInstance
             case 28729:    m_uiWatcherNarjil = pCreature->GetGUID();   break;
         }
     }
-    
+
     void OnGameObjectCreate(GameObject* pGo, bool add)
     {
         switch (pGo->GetEntry())

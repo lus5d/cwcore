@@ -33,7 +33,7 @@ EndContentData */
 ## npc_calvin_montague
 ######*/
 
-enum
+enum eCalvin
 {
     SAY_COMPLETE        = -1000431,
     SPELL_DRINK         = 2639,                             // possibly not correct spell (but iconId is correct)
@@ -148,7 +148,7 @@ bool QuestAccept_npc_calvin_montague(Player* pPlayer, Creature* pCreature, Quest
 ## go_mausoleum_trigger
 ######*/
 
-enum
+enum eMausoleum
 {
     QUEST_ULAG      = 1819,
     NPC_ULAG        = 6390,
@@ -191,7 +191,7 @@ void AddSC_tirisfal_glades()
     Script *newscript;
 
     newscript = new Script;
-    newscript->Name="npc_calvin_montague";
+    newscript->Name = "npc_calvin_montague";
     newscript->GetAI = &GetAI_npc_calvin_montague;
     newscript->pQuestAccept = &QuestAccept_npc_calvin_montague;
     newscript->RegisterSelf();

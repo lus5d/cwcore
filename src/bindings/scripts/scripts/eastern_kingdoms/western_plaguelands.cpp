@@ -95,7 +95,7 @@ bool GossipSelect_npcs_dithers_and_arbington(Player* pPlayer, Creature* pCreatur
 ## npc_myranda_the_hag
 ######*/
 
-enum
+enum eMyranda
 {
     QUEST_SUBTERFUGE        = 5862,
     QUEST_IN_DREAMS         = 5944,
@@ -213,7 +213,7 @@ void AddSC_western_plaguelands()
     Script *newscript;
 
     newscript = new Script;
-    newscript->Name="npcs_dithers_and_arbington";
+    newscript->Name = "npcs_dithers_and_arbington";
     newscript->pGossipHello = &GossipHello_npcs_dithers_and_arbington;
     newscript->pGossipSelect = &GossipSelect_npcs_dithers_and_arbington;
     newscript->RegisterSelf();
@@ -225,7 +225,7 @@ void AddSC_western_plaguelands()
     newscript->RegisterSelf();
 
     newscript = new Script;
-    newscript->Name="npc_the_scourge_cauldron";
+    newscript->Name = "npc_the_scourge_cauldron";
     newscript->GetAI = &GetAI_npc_the_scourge_cauldron;
     newscript->RegisterSelf();
 }

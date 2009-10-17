@@ -1,4 +1,4 @@
--- Up to TC2 5408
+-- Up to CWCore 230
 
 -- This file contains all waypoints used by escortAI scripts
 /*
@@ -14,6 +14,12 @@ CREATE TABLE `script_waypoint` (
   PRIMARY KEY (entry, pointid)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 ROW_FORMAT=FIXED COMMENT='Script Creature waypoints';
 */
+
+-- 
+-- Not sure why we don't just run
+-- DELETE FROM `script_waypoint`;
+-- I mean seriously, who has custom waypoint creatures?
+-- 
 
 DELETE FROM `script_waypoint` WHERE `entry`=24156;
 INSERT INTO `script_waypoint` VALUES
@@ -1643,3 +1649,44 @@ INSERT INTO script_waypoint VALUES
    (28070, 19, 928.070068, 363.296326, 204.091, 0, 'stealth'),
    (28070, 20, 934.817627, 370.136261, 207.421, 0, ''),
    (28070, 21, 941.501465, 377.254456, 207.421, 0, '');
+
+DELETE FROM `script_waypoint` WHERE `entry`=23784;
+INSERT INTO `script_waypoint` VALUES
+   (23784, 1, 1383.52, -6411.72, 1.2181, 5, 'Apothecary Hanes'),
+   (23784, 2, 1392.57, -6403.5, 1.9699, 2000, 'Apothecary Hanes'),
+   (23784, 3, 1397.42, -6378.76, 4.996, 5, 'Apothecary Hanes'),
+   (23784, 4, 1427.36, -6359.47, 6.385, 5, 'Apothecary Hanes'),
+   (23784, 5, 1406.46, -6334.45, 6.149, 2000, 'Apothecary Hanes'),
+   (23784, 6, 1400.77, -6339.71, 6.367, 5000, 'Apothecary Hanes'),
+   (23784, 7, 1424.09, -6326.67, 5.716, 5, 'Apothecary Hanes'),
+   (23784, 8, 1470, -6347.45, 7.596, 5000, 'Apothecary Hanes'),
+   (23784, 9, 1465.18, -6343.53, 7.58766, 2000, 'Apothecary Hanes'),
+   (23784, 10, 1463.9, -6339.28, 7.56152, 5, 'Apothecary Hanes'),
+   (23784, 11, 1474.6, -6327.65, 7.02011, 5, 'Apothecary Hanes'),
+   (23784, 12, 1486.59, -6319.08, 8.13591, 5, 'Apothecary Hanes'),
+   (23784, 13, 1499.87, -6312.24, 7.11185, 5, 'Apothecary Hanes'),
+   (23784, 14, 1507.95, -6315.27, 7.05227, 5000, 'Apothecary Hanes'),
+   (23784, 15, 1511.92, -6300.64, 6.43812, 5, 'Apothecary Hanes'),
+   (23784, 16, 1520.02, -6279.71, 5.31363, 5, 'Apothecary Hanes'),
+   (23784, 17, 1534.01, -6245, 6.31535, 5, 'Apothecary Hanes'),
+   (23784, 18, 1537.98, -6224.37, 6.36504, 5, 'Apothecary Hanes'),
+   (23784, 19, 1551.58, -6206.27, 6.9545, 2000, 'Apothecary Hanes'),
+   (23784, 20, 1572.99, -6197.74, 6.70809, 5, 'Apothecary Hanes'),
+   (23784, 21, 1608.51, -6175.83, 8.80075, 5, 'Apothecary Hanes'),
+   (23784, 22, 1619.15, -6167.6, 9.39125, 5, 'Apothecary Hanes'),
+   (23784, 23, 1634.05, -6153.81, 8.08527, 5, 'Apothecary Hanes');
+
+-- New waypoint format as of 5696:
+ALTER IGNORE TABLE `creature_addon`
+    ADD `path_id` int(11) unsigned NOT NULL default '0' AFTER `guid`;
+ALTER IGNORE TABLE `creature_template_addon`
+    ADD `path_id` int(11) unsigned NOT NULL default '0' AFTER `entry`;
+
+ALTER TABLE `waypoint_data` ADD COLUMN `id_old` int(10) unsigned NOT NULL default '0' COMMENT 'Creature GUID' AFTER `wpguid`;
+UPDATE `waypoint_data` SET `id_old`=`id`*0.1;
+
+REPLACE INTO `creature_addon` ( `guid` ) SELECT `id_old` FROM `waypoint_data`;
+
+UPDATE `creature_addon`,`waypoint_data` SET `creature_addon`.`path_id` = `waypoint_data`.`id` WHERE `creature_addon`.`guid`=`waypoint_data`.`id_old`;
+
+ALTER TABLE `waypoint_data` DROP COLUMN `id_old`;   

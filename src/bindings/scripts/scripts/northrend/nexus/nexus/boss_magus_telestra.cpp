@@ -24,7 +24,7 @@ EndScriptData */
 #include "precompiled.h"
 #include "def_nexus.h"
 
-enum
+enum eEnums
 {
 //Spells
     SPELL_ICE_NOVA_N          = 47772,
@@ -91,7 +91,7 @@ struct CW_DLL_DECL boss_magus_telestraAI : public ScriptedAI
 
     bool AchievementTimerRunning;
     uint8 AchievementProgress;
-    uint32 AchievementTimer; 
+    uint32 AchievementTimer;
 
     void Reset()
     {
@@ -109,7 +109,7 @@ struct CW_DLL_DECL boss_magus_telestraAI : public ScriptedAI
         AchievementProgress = 0;
         AchievementTimer = 0;
         AchievementTimerRunning = false;
-        
+
         AppearDelay = false;
 
         m_creature->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
@@ -218,7 +218,7 @@ struct CW_DLL_DECL boss_magus_telestraAI : public ScriptedAI
             if (ArcaneMagusGUID)
                 ArcaneMagus = Unit::GetUnit((*m_creature), ArcaneMagusGUID);
             if (FireMagus && FireMagus->isDead())
-            {    
+            {
                 FireMagusDead = true;
                 if (!AchievementTimerRunning)
                     AchievementTimerRunning = true;
@@ -274,11 +274,7 @@ struct CW_DLL_DECL boss_magus_telestraAI : public ScriptedAI
             FireMagusDead = false;
             FrostMagusDead = false;
             ArcaneMagusDead = false;
-            switch(rand()%2)
-            {
-                case 0: DoScriptText(SAY_SPLIT_1, m_creature); break;
-                case 1: DoScriptText(SAY_SPLIT_2, m_creature); break;
-            }
+            DoScriptText(RAND(SAY_SPLIT_1,SAY_SPLIT_2), m_creature);
             return;
         }
 
@@ -295,11 +291,7 @@ struct CW_DLL_DECL boss_magus_telestraAI : public ScriptedAI
             FireMagusDead = false;
             FrostMagusDead = false;
             ArcaneMagusDead = false;
-            switch(rand()%2)
-            {
-                case 0: DoScriptText(SAY_SPLIT_1, m_creature); break;
-                case 1: DoScriptText(SAY_SPLIT_2, m_creature); break;
-            }
+            DoScriptText(RAND(SAY_SPLIT_1,SAY_SPLIT_2), m_creature);
             return;
         }
 
@@ -318,7 +310,7 @@ struct CW_DLL_DECL boss_magus_telestraAI : public ScriptedAI
         {
             if (Unit* target = SelectUnit(SELECT_TARGET_RANDOM, 0))
             {
-                DoCast(target, HeroicMode ? SPELL_ICE_NOVA_H : SPELL_ICE_NOVA_N);
+                DoCast(target, HEROIC(SPELL_ICE_NOVA_N, SPELL_ICE_NOVA_H));
                 Cooldown = 1500;
             }
             SPELL_ICE_NOVA_Timer = 15000;
@@ -338,7 +330,7 @@ struct CW_DLL_DECL boss_magus_telestraAI : public ScriptedAI
         {
             if (Unit* target = SelectUnit(SELECT_TARGET_RANDOM, 0))
             {
-                DoCast(target, HeroicMode ? SPELL_FIREBOMB_H : SPELL_FIREBOMB_N);
+                DoCast(target, HEROIC(SPELL_FIREBOMB_N, SPELL_FIREBOMB_H));
                 Cooldown = 2000;
             }
             SPELL_FIREBOMB_Timer = 2000;
@@ -358,7 +350,7 @@ void AddSC_boss_magus_telestra()
     Script *newscript;
 
     newscript = new Script;
-    newscript->Name="boss_magus_telestra";
+    newscript->Name = "boss_magus_telestra";
     newscript->GetAI = &GetAI_boss_magus_telestra;
     newscript->RegisterSelf();
 }

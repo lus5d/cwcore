@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2009 CW <http://www.CWcore.org/>
+ * Copyright (C) 2009 CWCore <http://www.wow-extrem.de/>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -48,12 +48,12 @@ enum Spells
     H_CREATURE_FLAME_SPHERE_2           = 31687
 };
 enum Misc
-{ 
+{
     DATA_EMBRACE_DMG                    = 20000,
     H_DATA_EMBRACE_DMG                  = 40000,
-    DATA_SPHERE_DISTANCE                =    20,
-    DATA_SPHERE_ANGLE_OFFSET            =     1
+    DATA_SPHERE_DISTANCE                =    15
 };
+#define DATA_SPHERE_ANGLE_OFFSET            0.7
 #define DATA_GROUND_POSITION_Z             11.4
 enum Achievements
 {
@@ -70,7 +70,7 @@ enum Yells
     SAY_VANISH_1                             = -1619027,
     SAY_VANISH_2                             = -1619028
 };
-enum CombatPhase 
+enum CombatPhase
 {
     NORMAL,
     CASTING_FLAME_SPHERES,
@@ -87,7 +87,7 @@ struct CW_DLL_DECL boss_taldaramAI : public ScriptedAI
         m_creature->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_OOC_NOT_ATTACKABLE);
         m_creature->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
     }
-    
+
     uint32 uiBloodthirstTimer;
     uint32 uiVanishTimer;
     uint32 uiWaitTimer;
@@ -100,13 +100,13 @@ struct CW_DLL_DECL boss_taldaramAI : public ScriptedAI
 
     Unit *pEmbraceTarget;
     Unit *pSphereTarget;
-    
+
     Creature* pSpheres[3];
-    
+
     CombatPhase Phase;
-    
+
     ScriptedInstance* pInstance;
-    
+
     void Reset()
     {
         uiBloodthirstTimer = 10000;
@@ -120,14 +120,14 @@ struct CW_DLL_DECL boss_taldaramAI : public ScriptedAI
         if (pInstance)
             pInstance->SetData(DATA_PRINCE_TALDARAM_EVENT, NOT_STARTED);
     }
-    
+
     void EnterCombat(Unit* who)
     {
         if (pInstance)
             pInstance->SetData(DATA_PRINCE_TALDARAM_EVENT, IN_PROGRESS);
             DoScriptText(SAY_AGGRO, m_creature);
     }
-      
+
     void UpdateAI(const uint32 diff)
     {
         if (!UpdateVictim())
@@ -139,9 +139,7 @@ struct CW_DLL_DECL boss_taldaramAI : public ScriptedAI
                 case CASTING_FLAME_SPHERES:
                     //DoCast(m_creature, SPELL_FLAME_SPHERE_SUMMON_1);
                     pSpheres[0] = DoSpawnCreature(CREATURE_FLAME_SPHERE, 0, 0, 5, 0, TEMPSUMMON_TIMED_OR_CORPSE_DESPAWN, 10000);
-                    pSphereTarget = SelectUnit(SELECT_TARGET_RANDOM, 0);
-                    while (pSphereTarget && pSphereTarget->GetTypeId() != TYPEID_PLAYER)
-                        pSphereTarget = SelectUnit(SELECT_TARGET_RANDOM,0);
+                    pSphereTarget = SelectTarget(SELECT_TARGET_RANDOM, 0, 100, true);
                     if (pSphereTarget && pSpheres[0])
                     {
                         float angle,x,y;
@@ -169,7 +167,7 @@ struct CW_DLL_DECL boss_taldaramAI : public ScriptedAI
                             pSpheres[2]->GetMotionMaster()->MovePoint(0, x, y, pSpheres[2]->GetPositionZ());
                         }
                     }
-                    
+
                     Phase = NORMAL;
                     uiPhaseTimer = 0;
                 break;
@@ -184,7 +182,7 @@ struct CW_DLL_DECL boss_taldaramAI : public ScriptedAI
                 break;
                 case VANISHED:
                     if(pEmbraceTarget)
-                        DoCast(pEmbraceTarget,HeroicMode ? H_SPELL_EMBRACE_OF_THE_VAMPYR : SPELL_EMBRACE_OF_THE_VAMPYR );
+                        DoCast(pEmbraceTarget,HEROIC(SPELL_EMBRACE_OF_THE_VAMPYR, H_SPELL_EMBRACE_OF_THE_VAMPYR));
                     Phase = FEEDING;
                     uiPhaseTimer = 20000;
                 break;
@@ -199,7 +197,7 @@ struct CW_DLL_DECL boss_taldaramAI : public ScriptedAI
                         DoCast(m_creature->getVictim(),SPELL_BLOODTHIRST);
                         uiBloodthirstTimer = 10000;
                     } else uiBloodthirstTimer -= diff;
-                    
+
                     if (uiFlamesphereTimer < diff)
                     {
                         DoCast(m_creature, SPELL_CONJURE_FLAME_SPHERE);
@@ -207,7 +205,7 @@ struct CW_DLL_DECL boss_taldaramAI : public ScriptedAI
                         uiPhaseTimer = 3000 + diff;
                         uiFlamesphereTimer = 15000;
                     } else uiFlamesphereTimer -= diff;
-                                       
+
                     if (uiVanishTimer < diff )
                     {
                         //Count alive players
@@ -229,19 +227,17 @@ struct CW_DLL_DECL boss_taldaramAI : public ScriptedAI
                             DoCast(m_creature,SPELL_VANISH);
                             Phase = JUST_VANISHED;
                             uiPhaseTimer = 1000;
-                            pEmbraceTarget = SelectUnit(SELECT_TARGET_RANDOM, 0);
-                            while (pEmbraceTarget && pEmbraceTarget->GetTypeId() != TYPEID_PLAYER)
-                                pEmbraceTarget = SelectUnit(SELECT_TARGET_RANDOM, 0);
+                            pEmbraceTarget = SelectTarget(SELECT_TARGET_RANDOM, 0, 100, true);
                         }
-                        uiVanishTimer = (25 + rand()%10)*1000;
+                        uiVanishTimer = urand(25000,35000);
                     } else uiVanishTimer -= diff;
-                    
+
                     DoMeleeAttackIfReady();
                 break;
             }
         } else uiPhaseTimer -= diff;
     }
-    
+
     void DamageTaken(Unit* done_by, uint32 &damage)
     {
         if (Phase == FEEDING && pEmbraceTarget && pEmbraceTarget->isAlive())
@@ -256,15 +252,15 @@ struct CW_DLL_DECL boss_taldaramAI : public ScriptedAI
           }
         }
     }
-    
+
     void JustDied(Unit* killer)
     {
         DoScriptText(SAY_DEATH, m_creature);
-        
+
         if (pInstance)
         {
             pInstance->SetData(DATA_PRINCE_TALDARAM_EVENT, DONE);
-            
+
             //The Party's Over achievement:
             AchievementEntry const *AchievThePartyIsOver = GetAchievementStore()->LookupEntry(ACHIEVEMENT_THE_PARTY_IS_OVER);
             Map* pMap = m_creature->GetMap();
@@ -293,14 +289,14 @@ struct CW_DLL_DECL boss_taldaramAI : public ScriptedAI
         }
         DoScriptText(RAND(SAY_SLAY_1,SAY_SLAY_2), m_creature);
     }
-        
+
     bool CheckSpheres()
     {
         if(!pInstance)
 	        return false;
         uiSphereGuids[0] = pInstance->GetData64(DATA_SPHERE1);
         uiSphereGuids[1] = pInstance->GetData64(DATA_SPHERE2);
-        
+
         GameObject *pSpheres[2];
         for (uint8 i=0; i < 2; ++i)
         {
@@ -313,7 +309,7 @@ struct CW_DLL_DECL boss_taldaramAI : public ScriptedAI
         RemovePrison();
         return true;
     }
-    
+
     void RemovePrison()
     {
         m_creature->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_OOC_NOT_ATTACKABLE);
@@ -328,14 +324,14 @@ struct CW_DLL_DECL boss_taldaramAI : public ScriptedAI
 
 struct CW_DLL_DECL mob_taldaram_flamesphereAI : public ScriptedAI
 {
-    mob_taldaram_flamesphereAI(Creature *c) : ScriptedAI(c) 
+    mob_taldaram_flamesphereAI(Creature *c) : ScriptedAI(c)
     {
         pInstance = c->GetInstanceData();
     }
-    
+
     uint32 uiDespawnTimer;
     ScriptedInstance* pInstance;
-    
+
     void Reset()
     {
         m_creature->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
@@ -344,26 +340,24 @@ struct CW_DLL_DECL mob_taldaram_flamesphereAI : public ScriptedAI
         m_creature->SetFloatValue(OBJECT_FIELD_SCALE_X, 1.0f);
         DoCast(m_creature, SPELL_FLAME_SPHERE_VISUAL);
         DoCast(m_creature, SPELL_FLAME_SPHERE_SPAWN_EFFECT);
-        DoCast(m_creature, HeroicMode ? H_SPELL_FLAME_SPHERE_PERIODIC : SPELL_FLAME_SPHERE_PERIODIC);
+        DoCast(m_creature, HEROIC(SPELL_FLAME_SPHERE_PERIODIC, H_SPELL_FLAME_SPHERE_PERIODIC));
         uiDespawnTimer = 10000;
     }
-    
+
     void EnterCombat(Unit *who) {}
     void MoveInLineOfSight(Unit *who) {}
-    
+
     void JustDied(Unit* slayer)
     {
         DoCast(m_creature, SPELL_FLAME_SPHERE_DEATH_EFFECT);
     }
-     
+
     void UpdateAI(const uint32 diff)
     {
         if (uiDespawnTimer < diff)
-        {
-            m_creature->DealDamage(m_creature, m_creature->GetMaxHealth(), NULL, DIRECT_DAMAGE, SPELL_SCHOOL_MASK_NORMAL, NULL, false);
-            m_creature->RemoveCorpse();
-        }
-        else uiDespawnTimer -= diff;
+            m_creature->DisappearAndDie();
+        else
+            uiDespawnTimer -= diff;
     }
 };
 
@@ -387,13 +381,13 @@ bool GOHello_prince_taldaram_sphere(Player *pPlayer, GameObject *pGO)
         // maybe these are hacks :(
         pGO->SetFlag(GAMEOBJECT_FLAGS, GO_FLAG_UNK1);
         pGO->SetGoState(GO_STATE_ACTIVE);
-        
+
         switch(pGO->GetEntry())
         {
             case 193093: pInstance->SetData(DATA_SPHERE1_EVENT,IN_PROGRESS); break;
             case 193094: pInstance->SetData(DATA_SPHERE2_EVENT,IN_PROGRESS); break;
         }
-        
+
         CAST_AI(boss_taldaramAI, pPrinceTaldaram->AI())->CheckSpheres();
     }
     return true;
@@ -404,15 +398,15 @@ void AddSC_boss_taldaram()
     Script *newscript;
 
     newscript = new Script;
-    newscript->Name="boss_taldaram";
+    newscript->Name = "boss_taldaram";
     newscript->GetAI = &GetAI_boss_taldaram;
     newscript->RegisterSelf();
-    
+
     newscript = new Script;
-    newscript->Name="mob_taldaram_flamesphere";
+    newscript->Name = "mob_taldaram_flamesphere";
     newscript->GetAI = &GetAI_mob_taldaram_flamesphere;
     newscript->RegisterSelf();
-    
+
     newscript = new Script;
     newscript->Name = "prince_taldaram_sphere";
     newscript->pGOHello = &GOHello_prince_taldaram_sphere;

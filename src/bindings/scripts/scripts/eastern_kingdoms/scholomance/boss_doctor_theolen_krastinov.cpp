@@ -24,7 +24,7 @@ EndScriptData */
 #include "precompiled.h"
 #include "def_scholomance.h"
 
-enum
+enum eEnums
 {
     EMOTE_GENERIC_FRENZY_KILL   = -1000001,
 
@@ -110,7 +110,7 @@ void AddSC_boss_theolenkrastinov()
 {
     Script *newscript;
     newscript = new Script;
-    newscript->Name="boss_doctor_theolen_krastinov";
+    newscript->Name = "boss_doctor_theolen_krastinov";
     newscript->GetAI = &GetAI_boss_theolenkrastinov;
     newscript->RegisterSelf();
 }

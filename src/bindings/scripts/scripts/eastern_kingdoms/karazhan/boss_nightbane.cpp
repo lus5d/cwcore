@@ -116,10 +116,7 @@ struct CW_DLL_DECL boss_nightbaneAI : public ScriptedAI
         if (pInstance)
         {
             if (pInstance->GetData(TYPE_NIGHTBANE) == DONE || pInstance->GetData(TYPE_NIGHTBANE) == IN_PROGRESS)
-            {
-                m_creature->DealDamage(m_creature, m_creature->GetMaxHealth(), NULL, DIRECT_DAMAGE, SPELL_SCHOOL_MASK_NORMAL, NULL, false);
-                m_creature->RemoveCorpse();
-            }
+                m_creature->DisappearAndDie();
             else
                 pInstance->SetData(TYPE_NIGHTBANE, NOT_STARTED);
         }
@@ -417,7 +414,7 @@ void AddSC_boss_nightbane()
 {
     Script *newscript;
     newscript = new Script;
-    newscript->Name="boss_nightbane";
+    newscript->Name = "boss_nightbane";
     newscript->GetAI = &GetAI_boss_nightbane;
     newscript->RegisterSelf();
 }

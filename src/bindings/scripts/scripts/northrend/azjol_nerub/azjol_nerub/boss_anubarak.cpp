@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2009 CW <http://www.CWcore.org/>
+ * Copyright (C) 2009 CWCore <http://www.wow-extrem.de/>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -88,12 +88,7 @@ struct CW_DLL_DECL boss_anub_arakAI : public ScriptedAI
         if (victim == m_creature)
             return;
 
-        switch(rand()%3)
-        {
-            case 0: DoScriptText(SAY_SLAY_1, m_creature);break;
-            case 1: DoScriptText(SAY_SLAY_2, m_creature);break;
-            case 2: DoScriptText(SAY_SLAY_3, m_creature);break;
-        }
+        DoScriptText(RAND(SAY_SLAY_1,SAY_SLAY_2,SAY_SLAY_3), m_creature);
     }
 };
 
@@ -107,7 +102,7 @@ void AddSC_boss_anub_arak()
     Script *newscript;
 
     newscript = new Script;
-    newscript->Name="boss_anub_arak";
+    newscript->Name = "boss_anub_arak";
     newscript->GetAI = &GetAI_boss_anub_arak;
     newscript->RegisterSelf();
 }

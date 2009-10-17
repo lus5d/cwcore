@@ -24,7 +24,7 @@ EndScriptData */
 #include "precompiled.h"
 #include "def_molten_core.h"
 
-enum
+enum eEnums
 {
     SPELL_MAGMASPLASH       = 13879,
     SPELL_PYROBLAST         = 20228,
@@ -186,12 +186,12 @@ void AddSC_boss_golemagg()
     Script* newscript;
 
     newscript = new Script;
-    newscript->Name="boss_golemagg";
+    newscript->Name = "boss_golemagg";
     newscript->GetAI = &GetAI_boss_golemagg;
     newscript->RegisterSelf();
 
     newscript = new Script;
-    newscript->Name="mob_core_rager";
+    newscript->Name = "mob_core_rager";
     newscript->GetAI = &GetAI_mob_core_rager;
     newscript->RegisterSelf();
 }

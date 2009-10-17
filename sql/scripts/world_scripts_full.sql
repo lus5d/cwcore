@@ -1,4 +1,7 @@
--- Up to TC2 5408
+-- Up to CWCore 230
+
+-- Cleanup first
+UPDATE `creature_template` SET `ScriptName`='';
 
 /* WORLD BOSS */
 UPDATE `creature_template` SET `ScriptName`='boss_ysondre' WHERE `entry`=14887;
@@ -515,6 +518,12 @@ UPDATE `gameobject_template` SET `ScriptName`='go_gilded_brazier' WHERE `entry`=
 /* GRIZZLY HILLS */
 UPDATE `creature_template` SET `ScriptName`='npc_orsonn_and_kodian' WHERE `entry` IN (27274,27275);
 
+/* DRAK'THARON KEEP */
+UPDATE `instance_template` SET `script`='instance_drak_tharon' WHERE `map`=600;
+UPDATE `creature_template` SET `ScriptName`='boss_novos' WHERE `entry`=26631;
+UPDATE `creature_template` SET `ScriptName`='mob_crystal_handler' WHERE `entry`=26627;
+UPDATE `creature_template` SET `ScriptName`='mob_novos_minion' WHERE `entry` IN (27600,27597,27598);
+
 /* GRUUL'S LAIR */
 UPDATE `instance_template` SET `script`='instance_gruuls_lair' WHERE `map`=565;
 UPDATE `creature_template` SET `ScriptName`='boss_gruul' WHERE `entry`=19044;
@@ -569,6 +578,8 @@ UPDATE `creature_template` SET `ScriptName`='boss_krystallus' WHERE `entry`=2797
 UPDATE `creature_template` SET `ScriptName`='boss_sjonnir' WHERE `entry`=27978;
 UPDATE `creature_template` SET `ScriptName`='mob_tribuna_controller' WHERE `entry`=28234;
 UPDATE `creature_template` SET `ScriptName`='npc_brann_hos' WHERE `entry`=28070;
+UPDATE `creature_template` SET `ScriptName`='mob_malformed_ooze' WHERE `entry`=27981;
+UPDATE `creature_template` SET `ScriptName`='mob_iron_sludge' WHERE `entry`=28165;
 /* Maiden of Grief */
 UPDATE `creature_template` SET `ScriptName`='boss_maiden_of_grief' WHERE `entry`=27975;
 
@@ -626,10 +637,10 @@ UPDATE `creature_template` SET `ScriptName`='npc_ancestral_wolf' WHERE `entry`=1
 UPDATE `creature_template` SET `ScriptName`='npc_00x09hl' WHERE `entry`=7806;
 UPDATE `creature_template` SET `ScriptName`='npc_rinji' WHERE `entry`=7780;
 
-/* Howling Fjord */
+/* HOWLING FJORD */
 UPDATE `creature_template` SET `ScriptName`='npc_plaguehound_tracker' WHERE `entry`=24156;
 UPDATE `creature_template` SET `ScriptName`='npc_razael_and_lyana',`npcflag`=`npcflag`|1 WHERE `entry` IN (23778,23998);
-
+UPDATE `creature_template` SET `ScriptName`='npc_apothecary_hanes' WHERE `entry`=23784;
 
 /* ICECROWN */
 UPDATE `creature_template` SET `ScriptName`='npc_arete' WHERE `entry`=29344;
@@ -1143,6 +1154,7 @@ UPDATE `creature_template` SET `ScriptName`='boss_stormcaller_brundir' WHERE `en
 UPDATE `creature_template` SET `ScriptName`='mob_lightning_elemental' WHERE `entry`=32958;
 UPDATE `creature_template` SET `ScriptName`='mob_rune_of_summoning' WHERE `entry`=33051;
 UPDATE `creature_template` SET `ScriptName`='boss_kologarn' WHERE `entry`=32930;
+UPDATE `gameobject_template` SET `ScriptName`='ulduar_teleporter' WHERE `entry`=194569;
 
 /* UN'GORO CRATER */
 UPDATE `creature_template` SET `ScriptName`='npc_ame' WHERE `entry`=9623;
@@ -1185,6 +1197,19 @@ UPDATE `creature_template` SET `ScriptName`='mob_archavon_warder' WHERE `entry`=
 UPDATE `creature_template` SET `ScriptName`='boss_emalon' WHERE `entry`=33993;
 UPDATE `creature_template` SET `ScriptName`='mob_tempest_minion' WHERE `entry`=33998;
 UPDATE `instance_template` SET `script`='instance_archavon' WHERE `map`=624;
+
+/* VIOLET HOLD */
+UPDATE `creature_template` SET `ScriptName`='npc_sinclari_vh' WHERE `entry`=30658;
+UPDATE `creature_template` SET `ScriptName`='npc_teleportation_portal_vh' WHERE `entry`=31011;
+UPDATE `creature_template` SET `ScriptName`='boss_lavanthor' WHERE `entry`=29312;
+UPDATE `creature_template` SET `ScriptName`='boss_ichoron' WHERE `entry`=29313;
+UPDATE `creature_template` SET `ScriptName`='boss_zuramat' WHERE `entry`=29314;
+UPDATE `creature_template` SET `ScriptName`='boss_erekem' WHERE `entry`=29315;
+UPDATE `creature_template` SET `ScriptName`='mob_erekem_guard' WHERE `entry`=32226;
+UPDATE `creature_template` SET `ScriptName`='boss_moragg' WHERE `entry`=29316;
+UPDATE `creature_template` SET `ScriptName`='boss_xevozz' WHERE `entry`=29266;
+UPDATE `creature_template` SET `ScriptName`='boss_cyanigosa' WHERE `entry`=31134;
+UPDATE `instance_template` SET `script`='instance_violet_hold' WHERE `map`=608;
 
 /* WAILING CAVERNS */
 UPDATE `creature_template` SET `ScriptName`='npc_disciple_of_naralex' WHERE entry=3678;

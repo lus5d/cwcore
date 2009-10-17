@@ -23,7 +23,7 @@ EndScriptData */
 
 #include "precompiled.h"
 
-enum
+enum eEnums
 {
     SAY_AGGRO               = -1189016,
     SAY_HEALTH              = -1189017,
@@ -117,7 +117,7 @@ void AddSC_boss_bloodmage_thalnos()
 {
     Script *newscript;
     newscript = new Script;
-    newscript->Name="boss_bloodmage_thalnos";
+    newscript->Name = "boss_bloodmage_thalnos";
     newscript->GetAI = &GetAI_boss_bloodmage_thalnos;
     newscript->RegisterSelf();
 }

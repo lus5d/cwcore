@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2008 - 2009 CW <http://www.CWcore.org/>
+ * Copyright (C) 2009 CWCore <http://www.wow-extrem.de/>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -72,10 +72,13 @@ enum Seats
 
 struct CW_DLL_DECL boss_flame_leviathanAI : public BossAI
 {
-    boss_flame_leviathanAI(Creature *c) : BossAI(c, BOSS_LEVIATHAN), vehicle(me->GetVehicleKit())
+    boss_flame_leviathanAI(Creature *pCreature) : BossAI(pCreature, TYPE_LEVIATHAN), vehicle(me->GetVehicleKit())
     {
+        m_pInstance = pCreature->GetInstanceData();
         assert(vehicle);
     }
+
+    ScriptedInstance* m_pInstance;
 
     Vehicle *vehicle;
 
@@ -105,6 +108,12 @@ struct CW_DLL_DECL boss_flame_leviathanAI : public BossAI
     {
         if (spell->Id == SPELL_PURSUED)
             AttackStart(target);
+    }
+
+    void JustDied(Unit *victim)
+    {
+        if (m_pInstance)
+            m_pInstance->SetData(TYPE_LEVIATHAN, DONE);
     }
 
     void SpellHit(Unit *caster, const SpellEntry *spell)
@@ -277,7 +286,7 @@ struct CW_DLL_DECL boss_flame_leviathan_overload_deviceAI : public PassiveAI
                     if(Unit *leviathan = me->GetVehicleBase()->GetVehicleBase())
                         player->GetMotionMaster()->MoveKnockbackFrom(leviathan->GetPositionX(), leviathan->GetPositionY(), 30, 30);
                 }
-            }                    
+            }
         }
     }
 };
@@ -356,32 +365,32 @@ void AddSC_boss_flame_leviathan()
 {
     Script *newscript;
     newscript = new Script;
-    newscript->Name="boss_flame_leviathan";
+    newscript->Name = "boss_flame_leviathan";
     newscript->GetAI = &GetAI_boss_flame_leviathan;
     newscript->RegisterSelf();
 
     newscript = new Script;
-    newscript->Name="boss_flame_leviathan_seat";
+    newscript->Name = "boss_flame_leviathan_seat";
     newscript->GetAI = &GetAI_boss_flame_leviathan_seat;
     newscript->RegisterSelf();
 
     newscript = new Script;
-    newscript->Name="boss_flame_leviathan_defense_turret";
+    newscript->Name = "boss_flame_leviathan_defense_turret";
     newscript->GetAI = &GetAI_boss_flame_leviathan_defense_turret;
     newscript->RegisterSelf();
 
     newscript = new Script;
-    newscript->Name="boss_flame_leviathan_overload_device";
+    newscript->Name = "boss_flame_leviathan_overload_device";
     newscript->GetAI = &GetAI_boss_flame_leviathan_overload_device;
     newscript->RegisterSelf();
 
     newscript = new Script;
-    newscript->Name="boss_flame_leviathan_safety_container";
+    newscript->Name = "boss_flame_leviathan_safety_container";
     newscript->GetAI = &GetAI_boss_flame_leviathan_safety_containerAI;
-    newscript->RegisterSelf();  
+    newscript->RegisterSelf();
 
     newscript = new Script;
-    newscript->Name="spell_pool_of_tar";
+    newscript->Name = "spell_pool_of_tar";
     newscript->GetAI = &GetAI_spell_pool_of_tar;
     newscript->RegisterSelf();
 }

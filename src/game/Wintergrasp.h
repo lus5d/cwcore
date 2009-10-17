@@ -41,7 +41,6 @@ enum WintergraspSpell
     SPELL_TENACITY_VEHICLE  = 59911,
 
     SPELL_TELEPORT_DALARAN  = 53360,
-    SPELL_SHUTDOWN_VEHICLE  = 21247,
 
     SPELL_TOWER_CONTROL     = 62064,
     SPELL_VICTORY_REWARD    = 56902,
@@ -64,8 +63,9 @@ enum WintergraspRewardEvent
     DESTROYED_TOWER,
     DAMAGED_BUILDING,
     INTACT_BUILDING,
-    WG_REWARD_EVENT_MAX
+    WG_REWARD_EVENT_MAX,
 };
+
 
 /* Not used / Not implemented
 
@@ -105,6 +105,7 @@ enum WintergraspCreType
     CREATURE_TURRET,
     CREATURE_ENGINEER,
     CREATURE_GUARD,
+    CREATURE_SPECIAL,
 };
 
 enum BuildingType
@@ -155,7 +156,7 @@ struct BuildingState
         if(graveTeam)
             *graveTeam = TeamId2Team[t];
     }
-    GameObject * GetBuilding() { return building; }
+
 private:
     TeamId team;
 };
@@ -194,6 +195,9 @@ class OPvPWintergrasp : public OutdoorPvP
         void SetData(uint32 id, uint32 value);
 
         void ModifyWorkshopCount(TeamId team, bool add);
+        uint32 GetTimer() const { return m_timer / 1000; };
+        TeamId GetTeam() const { return m_defender; };
+        bool isWarTime() const { return m_wartime; };
     protected:
         TeamId m_defender;
         int32 m_tenacityStack;
@@ -212,7 +216,8 @@ class OPvPWintergrasp : public OutdoorPvP
         uint32 m_timer;
         uint32 m_clock[5];
         uint32 m_workshopCount[2];
-        uint32 m_towerCount;
+        uint32 m_towerCount[2][2];
+
         uint32 m_customHonorReward[WG_REWARD_EVENT_MAX];
 
         SiegeWorkshop *GetWorkshop(uint32 lowguid) const;
@@ -241,6 +246,7 @@ class OPvPWintergrasp : public OutdoorPvP
 
         void SendInitWorldStatesTo(Player *player = NULL) const;
         void RemoveOfflinePlayerWGAuras();
+        void RewardMarkOfHonor(Player *player, uint32 count);
 };
 
 class SiegeWorkshop : public OPvPCapturePoint

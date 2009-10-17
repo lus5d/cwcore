@@ -55,18 +55,18 @@ struct CW_DLL_DECL boss_gal_darahAI : public ScriptedAI
     {
         pInstance = c->GetInstanceData();
     }
-    
+
     uint32 uiStampedeTimer;
     uint32 uiWhirlingSlashTimer;
     uint32 uiPunctureTimer;
     uint32 uiEnrageTimer;
     uint32 uiImpalingChargeTimer;
     uint32 uiStompTimer;
-    
+
     CombatPhase Phase;
-    
+
     uint8 uiPhaseCounter;
-    
+
     ScriptedInstance* pInstance;
 
     void Reset()
@@ -77,27 +77,27 @@ struct CW_DLL_DECL boss_gal_darahAI : public ScriptedAI
         uiEnrageTimer = 15000;
         uiImpalingChargeTimer = 20000;
         uiStompTimer = 25000;
-        
+
         Phase = TROLL;
-        
+
         if (pInstance)
             pInstance->SetData(DATA_GAL_DARAH_EVENT, NOT_STARTED);
     }
-    
+
     void EnterCombat(Unit* who)
     {
         DoScriptText(SAY_AGGRO, m_creature);
-        
+
         if (pInstance)
             pInstance->SetData(DATA_GAL_DARAH_EVENT, IN_PROGRESS);
     }
-    
+
     void UpdateAI(const uint32 diff)
     {
         //Return since we have no target
         if (!UpdateVictim())
             return;
-        
+
         switch (Phase)
         {
             case TROLL:
@@ -116,10 +116,10 @@ struct CW_DLL_DECL boss_gal_darahAI : public ScriptedAI
                         DoScriptText(RAND(SAY_SUMMON_RHINO_1,SAY_SUMMON_RHINO_2,SAY_SUMMON_RHINO_3),m_creature);
                         uiStampedeTimer = 15000;
                     } else uiStampedeTimer -= diff;
-                    
+
                     if (uiWhirlingSlashTimer < diff)
                     {
-                        DoCast(m_creature->getVictim(), HeroicMode ? H_SPELL_WHIRLING_SLASH : SPELL_WHIRLING_SLASH);
+                        DoCast(m_creature->getVictim(), HEROIC(SPELL_WHIRLING_SLASH, H_SPELL_WHIRLING_SLASH));
                         uiWhirlingSlashTimer = 20000;
                         ++uiPhaseCounter;
                     } else uiWhirlingSlashTimer -= diff;
@@ -137,29 +137,26 @@ struct CW_DLL_DECL boss_gal_darahAI : public ScriptedAI
                 {
                     if (uiPunctureTimer < diff)
                     {
-                        DoCast(m_creature->getVictim(), HeroicMode ? H_SPELL_PUNCTURE : SPELL_PUNCTURE);
+                        DoCast(m_creature->getVictim(), HEROIC(SPELL_PUNCTURE, H_SPELL_PUNCTURE));
                         uiPunctureTimer = 8000;
                     } else uiPunctureTimer -= diff;
-                    
+
                     if (uiEnrageTimer < diff)
                     {
-                        DoCast(m_creature->getVictim(), HeroicMode ? H_SPELL_ENRAGE : SPELL_ENRAGE);
+                        DoCast(m_creature->getVictim(), HEROIC(SPELL_ENRAGE, H_SPELL_ENRAGE));
                         uiEnrageTimer = 20000;
                     } else uiEnrageTimer -= diff;
-                    
+
                     if(uiStompTimer < diff)
                     {
-                        DoCast(m_creature->getVictim(), HeroicMode ? H_SPELL_STOMP : SPELL_STOMP);
+                        DoCast(m_creature->getVictim(), HEROIC(SPELL_STOMP, H_SPELL_STOMP));
                         uiStompTimer = 20000;
                     } else uiStompTimer -= diff;
-                    
+
                     if (uiImpalingChargeTimer < diff)
                     {
-                        Unit* pTarget = SelectUnit(SELECT_TARGET_RANDOM,0);
-                        while (pTarget && pTarget->GetTypeId() != TYPEID_PLAYER)
-                            pTarget = SelectUnit(SELECT_TARGET_RANDOM,0);
-                        if (pTarget)
-                            DoCast(pTarget,HeroicMode ? H_SPELL_IMPALING_CHARGE : SPELL_IMPALING_CHARGE);
+                        if (Unit* pTarget = SelectTarget(SELECT_TARGET_RANDOM, 0, 100, true))
+                            DoCast(pTarget,HEROIC(SPELL_IMPALING_CHARGE, H_SPELL_IMPALING_CHARGE));
                         uiImpalingChargeTimer = 30000;
                         ++uiPhaseCounter;
                     } else uiImpalingChargeTimer -= diff;
@@ -169,15 +166,15 @@ struct CW_DLL_DECL boss_gal_darahAI : public ScriptedAI
 
         DoMeleeAttackIfReady();
     }
-    
+
     void JustDied(Unit* killer)
     {
         DoScriptText(SAY_DEATH, m_creature);
-        
+
         if (pInstance)
             pInstance->SetData(DATA_GAL_DARAH_EVENT, DONE);
     }
-    
+
     void KilledUnit(Unit *victim)
     {
         if (victim == m_creature)
@@ -197,7 +194,7 @@ void AddSC_boss_gal_darah()
     Script *newscript;
 
     newscript = new Script;
-    newscript->Name="boss_gal_darah";
+    newscript->Name = "boss_gal_darah";
     newscript->GetAI = &GetAI_boss_gal_darah;
     newscript->RegisterSelf();
 }

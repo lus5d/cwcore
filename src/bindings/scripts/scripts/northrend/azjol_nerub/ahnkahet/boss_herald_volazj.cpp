@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2009 CW <http://www.CWcore.org/>
+ * Copyright (C) 2009 CWCore <http://www.wow-extrem.de/>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,25 +27,34 @@ EndScriptData */
 #include "precompiled.h"
 #include "def_ahnkahet.h"
 
-//Spells
-#define SPELL_INSANITY                         57496 //Dummy
-#define INSANITY_VISUAL                        57561
-#define SPELL_MIND_FLAY                        57941
-#define H_SPELL_MIND_FLAY                      59974
-#define SPELL_SHADOW_BOLT_VOLLEY               57942
-#define H_SPELL_SHADOW_BOLT_VOLLEY             59975
-#define SPELL_SHIVER                           57949
-#define H_SPELL_SHIVER                         59978
+enum Spells
+{
+    SPELL_INSANITY                         = 57496, //Dummy
+    INSANITY_VISUAL                        = 57561,
+    SPELL_MIND_FLAY                        = 57941,
+    H_SPELL_MIND_FLAY                      = 59974,
+    SPELL_SHADOW_BOLT_VOLLEY               = 57942,
+    H_SPELL_SHADOW_BOLT_VOLLEY             = 59975,
+    SPELL_SHIVER                           = 57949,
+    H_SPELL_SHIVER                         = 59978
+};
 
 //not in db
-//Yell
-#define SAY_AGGRO                               -1619030
-#define SAY_SLAY_1                              -1619031
-#define SAY_SLAY_2                              -1619032
-#define SAY_SLAY_3                              -1619033
-#define SAY_DEATH_1                             -1619034
-#define SAY_DEATH_2                             -1619035
-#define SAY_PHASE                               -1619036
+enum Yells
+{
+    SAY_AGGRO                               = -1619030,
+    SAY_SLAY_1                              = -1619031,
+    SAY_SLAY_2                              = -1619032,
+    SAY_SLAY_3                              = -1619033,
+    SAY_DEATH_1                             = -1619034,
+    SAY_DEATH_2                             = -1619035,
+    SAY_PHASE                               = -1619036
+};
+
+enum Achievements
+{
+    ACHIEVEMENT_QUICK_DEMISE                = 1862
+};
 
 struct CW_DLL_DECL boss_volazjAI : public ScriptedAI
 {
@@ -59,25 +68,27 @@ struct CW_DLL_DECL boss_volazjAI : public ScriptedAI
     uint32 uiMindFlayTimer;
     uint32 uiShadowBoltVolleyTimer;
     uint32 uiShiverTimer;
+    uint32 uiEncounterTimer;
 
     void Reset()
     {
+        uiEncounterTimer = 0;
         uiMindFlayTimer = 8000;
         uiShadowBoltVolleyTimer = 5000;
         uiShiverTimer = 15000;
-        
+
         if (pInstance)
             pInstance->SetData(DATA_HERALD_VOLAZJ, NOT_STARTED);
     }
-    
+
     void EnterCombat(Unit* who)
     {
         DoScriptText(SAY_AGGRO, m_creature);
-        
+
         if (pInstance)
             pInstance->SetData(DATA_HERALD_VOLAZJ, IN_PROGRESS);
     }
-    
+
     void UpdateAI(const uint32 diff)
     {
         //Return since we have no target
@@ -86,31 +97,43 @@ struct CW_DLL_DECL boss_volazjAI : public ScriptedAI
 
         if (uiMindFlayTimer < diff)
         {
-            DoCast(m_creature->getVictim(), HeroicMode ? H_SPELL_MIND_FLAY : SPELL_MIND_FLAY);
-            uiMindFlayTimer = 20000; 
+            DoCast(m_creature->getVictim(), HEROIC(SPELL_MIND_FLAY, H_SPELL_MIND_FLAY));
+            uiMindFlayTimer = 20000;
         } else uiMindFlayTimer -= diff;
-        
+
         if (uiShadowBoltVolleyTimer < diff)
         {
-            DoCast(m_creature->getVictim(), HeroicMode ? H_SPELL_SHADOW_BOLT_VOLLEY : SPELL_SHADOW_BOLT_VOLLEY);
+            DoCast(m_creature->getVictim(), HEROIC(SPELL_SHADOW_BOLT_VOLLEY, H_SPELL_SHADOW_BOLT_VOLLEY));
             uiShadowBoltVolleyTimer = 5000;
         } else uiShadowBoltVolleyTimer -= diff;
-        
+
         if (uiShiverTimer < diff)
         {
             if (Unit * target = SelectUnit(SELECT_TARGET_RANDOM, 0))
-                DoCast(target, HeroicMode ? H_SPELL_SHIVER : SPELL_SHIVER);
+                DoCast(target, HEROIC(SPELL_SHIVER, H_SPELL_SHIVER));
             uiShiverTimer = 15000;
         } else uiShiverTimer -= diff;
+
+        uiEncounterTimer += diff;
 
         DoMeleeAttackIfReady();
     }
     void JustDied(Unit* killer)
     {
         DoScriptText(SAY_DEATH_1, m_creature);
-        
+
         if (pInstance)
             pInstance->SetData(DATA_HERALD_VOLAZJ, DONE);
+
+        AchievementEntry const *AchievQuickDemise = GetAchievementStore()->LookupEntry(ACHIEVEMENT_QUICK_DEMISE);
+        Map* pMap = m_creature->GetMap();
+
+        if (HeroicMode && uiEncounterTimer < 120000 && pMap && pMap->IsDungeon() && AchievQuickDemise)
+        {
+            Map::PlayerList const &players = pMap->GetPlayers();
+                    for(Map::PlayerList::const_iterator itr = players.begin(); itr != players.end(); ++itr)
+                        itr->getSource()->CompletedAchievement(AchievQuickDemise);
+        }
     }
 
     void KilledUnit(Unit *victim)
@@ -132,7 +155,7 @@ void AddSC_boss_volazj()
     Script *newscript;
 
     newscript = new Script;
-    newscript->Name="boss_volazj";
+    newscript->Name = "boss_volazj";
     newscript->GetAI = &GetAI_boss_volazj;
     newscript->RegisterSelf();
 }

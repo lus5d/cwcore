@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2009 CW <http://www.CWcore.org/>
+ * Copyright (C) 2009 CWCore <http://www.wow-extrem.de/>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,7 +26,7 @@ EndScriptData */
 #include "precompiled.h"
 #include "def_utgarde_keep.h"
 
-enum
+enum eEnums
 {
     //Yells Ingvar
     YELL_AGGRO_1                        = -1574005,
@@ -204,7 +204,7 @@ struct CW_DLL_DECL boss_ingvar_the_plundererAI : public ScriptedAI
             if (!wait_Timer)
             {
                 if (undead)
-                    DoCast(m_creature->getVictim(),HeroicMode ? H_SPELL_WOE_STRIKE : SPELL_WOE_STRIKE);
+                    DoCast(m_creature->getVictim(),HEROIC(SPELL_WOE_STRIKE, H_SPELL_WOE_STRIKE));
                 else
                     DoCast(m_creature->getVictim(),SPELL_CLEAVE);
                 Cleave_Timer = rand()%5000 + 2000;
@@ -220,7 +220,7 @@ struct CW_DLL_DECL boss_ingvar_the_plundererAI : public ScriptedAI
                 if (undead)
                     DoCast(m_creature->getVictim(), SPELL_DARK_SMASH);
                 else
-                    DoCast(m_creature->getVictim(),HeroicMode ? H_SPELL_SMASH : SPELL_SMASH);
+                    DoCast(m_creature->getVictim(),HEROIC(SPELL_SMASH, H_SPELL_SMASH));
                 Smash_Timer = 10000;
 
                 wait_Timer = 5000;
@@ -231,7 +231,7 @@ struct CW_DLL_DECL boss_ingvar_the_plundererAI : public ScriptedAI
         {
             if (Enrage_Timer < diff)
             {
-                DoCast(m_creature,HeroicMode ? H_SPELL_ENRAGE : SPELL_ENRAGE);
+                DoCast(m_creature,HEROIC(SPELL_ENRAGE, H_SPELL_ENRAGE));
                 Enrage_Timer = 10000;
             }else Enrage_Timer -= diff;
         }else // In Undead form used to summon weapon
@@ -259,9 +259,9 @@ struct CW_DLL_DECL boss_ingvar_the_plundererAI : public ScriptedAI
             if (!wait_Timer)
             {
                 if (undead)
-                    DoCast(m_creature,HeroicMode ? H_SPELL_DREADFUL_ROAR : SPELL_DREADFUL_ROAR);
+                    DoCast(m_creature,HEROIC(SPELL_DREADFUL_ROAR, H_SPELL_DREADFUL_ROAR));
                 else
-                    DoCast(m_creature,HeroicMode ? H_SPELL_STAGGERING_ROAR : SPELL_STAGGERING_ROAR);
+                    DoCast(m_creature,HEROIC(SPELL_STAGGERING_ROAR, H_SPELL_STAGGERING_ROAR));
                 Roar_Timer = 10000;
 
                 wait_Timer = 5000;
@@ -277,7 +277,7 @@ CreatureAI* GetAI_boss_ingvar_the_plunderer(Creature* pCreature)
     return new boss_ingvar_the_plundererAI (pCreature);
 }
 
-enum
+enum eSpells
 {
 //we don't have that text in db so comment it until we get this text
 //    YELL_RESSURECT                      = -1574025,
@@ -389,7 +389,7 @@ CreatureAI* GetAI_mob_annhylde_the_caller(Creature* pCreature)
     return new mob_annhylde_the_callerAI (pCreature);
 }
 
-enum
+enum eShadowAxe
 {
     SPELL_SHADOW_AXE_DAMAGE                     = 42750,
     H_SPELL_SHADOW_AXE_DAMAGE                   = 59719
@@ -410,7 +410,7 @@ struct CW_DLL_DECL mob_ingvar_throw_dummyAI : public ScriptedAI
         Unit* target = m_creature->FindNearestCreature(ENTRY_THROW_TARGET,50);
         if (target)
         {
-            DoCast(m_creature, HeroicMode ? H_SPELL_SHADOW_AXE_DAMAGE : SPELL_SHADOW_AXE_DAMAGE);
+            DoCast(m_creature, HEROIC(SPELL_SHADOW_AXE_DAMAGE, H_SPELL_SHADOW_AXE_DAMAGE));
             float x,y,z;
             target->GetPosition(x,y,z);
             m_creature->GetMotionMaster()->MovePoint(0,x,y,z);
@@ -441,17 +441,17 @@ void AddSC_boss_ingvar_the_plunderer()
     Script *newscript;
 
     newscript = new Script;
-    newscript->Name="boss_ingvar_the_plunderer";
+    newscript->Name = "boss_ingvar_the_plunderer";
     newscript->GetAI = &GetAI_boss_ingvar_the_plunderer;
     newscript->RegisterSelf();
 
     newscript = new Script;
-    newscript->Name="mob_annhylde_the_caller";
+    newscript->Name = "mob_annhylde_the_caller";
     newscript->GetAI = &GetAI_mob_annhylde_the_caller;
     newscript->RegisterSelf();
 
     newscript = new Script;
-    newscript->Name="mob_ingvar_throw_dummy";
+    newscript->Name = "mob_ingvar_throw_dummy";
     newscript->GetAI = &GetAI_mob_ingvar_throw_dummy;
     newscript->RegisterSelf();
 }

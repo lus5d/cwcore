@@ -24,7 +24,7 @@ EndScriptData */
 #include "precompiled.h"
 #include "def_nexus.h"
 
-enum
+enum eEnums
 {
 //Spells
     SPELL_CRYSTAL_SPIKES_N                     = 47958, //Don't work, using walkaround
@@ -145,7 +145,7 @@ struct CW_DLL_DECL boss_ormorokAI : public ScriptedAI
 
         if (SPELL_TRAMPLE_Timer < diff)
         {
-            DoCast(m_creature, HeroicMode ? SPELL_TRAMPLE_H : SPELL_TRAMPLE_N);
+            DoCast(m_creature, HEROIC(SPELL_TRAMPLE_N, SPELL_TRAMPLE_H));
             SPELL_TRAMPLE_Timer = 10000;
         }else SPELL_TRAMPLE_Timer -= diff;
 
@@ -245,7 +245,7 @@ struct CW_DLL_DECL mob_crystal_spikeAI : public Scripted_NoMovementAI
 
         if (SPELL_CRYSTALL_SPIKE_DAMAGE_Timer < diff)
         {
-            DoCast(m_creature, HeroicMode ? SPELL_CRYSTALL_SPIKE_DAMAGE_H : SPELL_CRYSTALL_SPIKE_DAMAGE_N);
+            DoCast(m_creature, HEROIC(SPELL_CRYSTALL_SPIKE_DAMAGE_N, SPELL_CRYSTALL_SPIKE_DAMAGE_H));
             SPELL_CRYSTALL_SPIKE_DAMAGE_Timer = 10000;
         }else SPELL_CRYSTALL_SPIKE_DAMAGE_Timer -=diff;
     }
@@ -295,17 +295,17 @@ void AddSC_boss_ormorok()
     Script *newscript;
 
     newscript = new Script;
-    newscript->Name="boss_ormorok";
+    newscript->Name = "boss_ormorok";
     newscript->GetAI = &GetAI_boss_ormorok;
     newscript->RegisterSelf();
 
     newscript = new Script;
-    newscript->Name="mob_crystal_spike";
+    newscript->Name = "mob_crystal_spike";
     newscript->GetAI = &GetAI_mob_crystal_spike;
     newscript->RegisterSelf();
 
     newscript = new Script;
-    newscript->Name="mob_crystalline_tangler";
+    newscript->Name = "mob_crystalline_tangler";
     newscript->GetAI = &GetAI_mob_crystalline_tangler;
     newscript->RegisterSelf();
 }

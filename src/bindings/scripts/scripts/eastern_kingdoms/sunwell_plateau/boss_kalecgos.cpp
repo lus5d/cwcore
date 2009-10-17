@@ -236,7 +236,7 @@ struct CW_DLL_DECL boss_kalecgosAI : public ScriptedAI
                     JustReseted = false;
                 }else ResetTimer -= diff;
                 return;
-            }    
+            }
             if (!UpdateVictim())
                 return;
 
@@ -316,8 +316,8 @@ struct CW_DLL_DECL boss_kalecgosAI : public ScriptedAI
                 if((*i))
                 {
                     (*i)->CastSpell((*i), SPELL_SPECTRAL_BLAST,true);
-                    SpectralBlastTimer = 20000+rand()%5000;    
-                }else SpectralBlastTimer = 1000;                
+                    SpectralBlastTimer = 20000+rand()%5000;
+                }else SpectralBlastTimer = 1000;
             }else SpectralBlastTimer -= diff;
 
             DoMeleeAttackIfReady();
@@ -356,11 +356,7 @@ struct CW_DLL_DECL boss_kalecgosAI : public ScriptedAI
 
     void KilledUnit(Unit *victim)
     {
-        switch(rand()%2)
-        {
-        case 0: DoScriptText(SAY_EVIL_SLAY1, me); break;
-        case 1: DoScriptText(SAY_EVIL_SLAY2, me); break;
-        }
+        DoScriptText(RAND(SAY_EVIL_SLAY1,SAY_EVIL_SLAY2), me);
     }
 
     void MovementInform(uint32 type,uint32 id)
@@ -501,11 +497,7 @@ struct CW_DLL_DECL boss_sathrovarrAI : public ScriptedAI
             EnterEvadeMode();
             return;
         }
-        switch(rand()%2)
-        {
-            case 0: DoScriptText(SAY_SATH_SLAY1, me); break;
-            case 1: DoScriptText(SAY_SATH_SLAY2, me); break;
-        }
+        DoScriptText(RAND(SAY_SATH_SLAY1,SAY_SATH_SLAY2), me);
     }
 
     void JustDied(Unit *killer)
@@ -568,7 +560,7 @@ struct CW_DLL_DECL boss_sathrovarrAI : public ScriptedAI
                 if (Creature *Kalecgos = Unit::GetCreature(*me, KalecgosGUID))
                     Kalecgos->AI()->EnterEvadeMode();
                     return;
-            }            
+            }
             if (HealthBelowPct(10) && !isEnraged)
             {
                 if(Creature* Kalecgos = Unit::GetCreature(*me, KalecgosGUID))
@@ -617,7 +609,7 @@ struct CW_DLL_DECL boss_sathrovarrAI : public ScriptedAI
                         me->getThreatManager().modifyThreatPercent(pUnit,-100);
                     }
                 }
-            }            
+            }
             ResetThreat = 1000;
         }else ResetThreat -= diff;
 
@@ -740,7 +732,7 @@ struct CW_DLL_DECL boss_kalecAI : public ScriptedAI
 bool GOkalecgos_teleporter(Player* pPlayer, GameObject* pGo)
 {
     uint32 SpectralPlayers = 0;
-    Map* pMap = pGo->GetMap();    
+    Map* pMap = pGo->GetMap();
     if (!pMap->IsDungeon()) return true;
     Map::PlayerList const &PlayerList = pMap->GetPlayers();
     for(Map::PlayerList::const_iterator i = PlayerList.begin(); i != PlayerList.end(); ++i)
@@ -774,22 +766,22 @@ void AddSC_boss_kalecgos()
 {
     Script *newscript;
     newscript = new Script;
-    newscript->Name="boss_kalecgos";
+    newscript->Name = "boss_kalecgos";
     newscript->GetAI = &GetAI_boss_kalecgos;
     newscript->RegisterSelf();
 
     newscript = new Script;
-    newscript->Name="boss_sathrovarr";
+    newscript->Name = "boss_sathrovarr";
     newscript->GetAI = &GetAI_boss_Sathrovarr;
     newscript->RegisterSelf();
 
     newscript = new Script;
-    newscript->Name="boss_kalec";
+    newscript->Name = "boss_kalec";
     newscript->GetAI = &GetAI_boss_kalec;
     newscript->RegisterSelf();
 
     newscript = new Script;
-    newscript->Name="kalecgos_teleporter";
+    newscript->Name = "kalecgos_teleporter";
     newscript->pGOHello = &GOkalecgos_teleporter;
     newscript->RegisterSelf();
 }

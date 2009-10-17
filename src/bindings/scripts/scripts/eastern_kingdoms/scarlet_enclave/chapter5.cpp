@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2009 CW <http://www.CWcore.org/>
+ * Copyright (C) 2009 CWCore <http://www.wow-extrem.de/>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1191,7 +1191,7 @@ struct CW_DLL_DECL npc_highlord_darion_mograineAI : public npc_escortAI
                         if (Creature* pTemp = Unit::GetCreature(*me, uiLichKingGUID)) // Lich king disappears here
                         {
                             DoScriptText(EMOTE_LIGHT_OF_DAWN17, pTemp);
-                            pTemp->DealDamage(pTemp, pTemp->GetHealth(), NULL, DIRECT_DAMAGE, SPELL_SCHOOL_MASK_NORMAL, NULL, false);
+                            pTemp->Kill(pTemp);
                         }
                         JumpToNextStep(10000);
                         break;
@@ -1590,7 +1590,7 @@ struct CW_DLL_DECL npc_highlord_darion_mograineAI : public npc_escortAI
             if (pTemp->isAlive())
             {
                 pTemp->SetVisibility(VISIBILITY_OFF);
-                pTemp->DealDamage(pTemp, pTemp->GetHealth(), NULL, DIRECT_DAMAGE, SPELL_SCHOOL_MASK_NORMAL, NULL, false);
+                pTemp->Kill(pTemp);
             }
     }
 };
@@ -1648,14 +1648,14 @@ void AddSC_the_scarlet_enclave_c5()
     Script *newscript;
 
     newscript = new Script;
-    newscript->Name="npc_highlord_darion_mograine";
+    newscript->Name = "npc_highlord_darion_mograine";
     newscript->GetAI = &GetAI_npc_highlord_darion_mograine;
     newscript->pGossipHello =  &GossipHello_npc_highlord_darion_mograine;
     newscript->pGossipSelect = &GossipSelect_npc_highlord_darion_mograine;
     newscript->RegisterSelf();
 
     newscript = new Script;
-    newscript->Name="npc_the_lich_king_tirion_dawn";
+    newscript->Name = "npc_the_lich_king_tirion_dawn";
     newscript->GetAI = &GetAI_npc_the_lich_king_tirion_dawn;
     newscript->RegisterSelf();
 }

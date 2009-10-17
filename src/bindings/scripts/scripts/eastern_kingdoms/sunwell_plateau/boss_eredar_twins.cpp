@@ -1,4 +1,4 @@
-/* Copyright (C) 2009 CW <http://www.CWcore.org/>
+/* Copyright (C) 2009 CWCore <http://www.wow-extrem.de/>
 * This program is free software; you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
 * the Free Software Foundation; either version 2 of the License, or
@@ -164,13 +164,7 @@ struct CW_DLL_DECL boss_sacrolashAI : public ScriptedAI
     void KilledUnit(Unit *victim)
     {
         if (rand()%4 == 0)
-        {
-            switch (rand()%2)
-            {
-            case 0: DoScriptText(YELL_SAC_KILL_1, m_creature); break;
-            case 1: DoScriptText(YELL_SAC_KILL_2, m_creature); break;
-            }
-        }
+            DoScriptText(RAND(YELL_SAC_KILL_1,YELL_SAC_KILL_2), m_creature);
     }
 
     void JustDied(Unit* Killer)
@@ -459,11 +453,7 @@ struct CW_DLL_DECL boss_alythessAI : public Scripted_NoMovementAI
     {
         if (rand()%4 == 0)
         {
-            switch (rand()%2)
-            {
-            case 0: DoScriptText(YELL_ALY_KILL_1, m_creature); break;
-            case 1: DoScriptText(YELL_ALY_KILL_2, m_creature); break;
-            }
+            DoScriptText(RAND(YELL_ALY_KILL_1,YELL_ALY_KILL_2), m_creature);
         }
     }
 
@@ -697,7 +687,7 @@ struct CW_DLL_DECL mob_shadow_imageAI : public ScriptedAI
                 {
                     target->RemoveAurasDueToSpell(SPELL_FLAME_TOUCHED);
                     target->CastSpell(target, SPELL_DARK_FLAME, true);
-                }else target->CastSpell(target,SPELL_DARK_TOUCHED,true);
+                } else target->CastSpell(target,SPELL_DARK_TOUCHED,true);
             }
             break;
         }
@@ -710,9 +700,9 @@ struct CW_DLL_DECL mob_shadow_imageAI : public ScriptedAI
 
         if (KillTimer < diff)
         {
-            m_creature->DealDamage(m_creature, m_creature->GetHealth(), NULL, DIRECT_DAMAGE, SPELL_SCHOOL_MASK_NORMAL, NULL, false);
+            m_creature->Kill(m_creature);
             KillTimer = 9999999;
-        }else KillTimer -=diff;
+        } else KillTimer -= diff;
 
         if (!UpdateVictim())
             return;
@@ -721,7 +711,7 @@ struct CW_DLL_DECL mob_shadow_imageAI : public ScriptedAI
         {
             DoCast(m_creature, SPELL_SHADOW_FURY);
             ShadowfuryTimer = 10000;
-        }else ShadowfuryTimer -=diff;
+        } else ShadowfuryTimer -=diff;
 
         if (DarkstrikeTimer < diff)
         {
@@ -732,8 +722,7 @@ struct CW_DLL_DECL mob_shadow_imageAI : public ScriptedAI
                     DoCast(m_creature->getVictim(), SPELL_DARK_STRIKE);
             }
             DarkstrikeTimer = 3000;
-        }
-        else DarkstrikeTimer -= diff;
+        } else DarkstrikeTimer -= diff;
     }
 };
 
@@ -747,17 +736,17 @@ void AddSC_boss_eredar_twins()
     Script *newscript;
 
     newscript = new Script;
-    newscript->Name="boss_sacrolash";
+    newscript->Name = "boss_sacrolash";
     newscript->GetAI = &GetAI_boss_sacrolash;
     newscript->RegisterSelf();
 
     newscript = new Script;
-    newscript->Name="boss_alythess";
+    newscript->Name = "boss_alythess";
     newscript->GetAI = &GetAI_boss_alythess;
     newscript->RegisterSelf();
 
     newscript = new Script;
-    newscript->Name="mob_shadow_image";
+    newscript->Name = "mob_shadow_image";
     newscript->GetAI = &GetAI_mob_shadow_image;
     newscript->RegisterSelf();
 }

@@ -21,7 +21,7 @@ SDComment:
 EndScriptData */
 
 #include "precompiled.h"
-#include "def_zulaman.h"
+#include "zulaman.h"
 
 //Speech
 #define YELL_TRANSFORM_TO_LYNX "Let me introduce to you my new bruddahs: fang and claw!"
@@ -97,7 +97,6 @@ EndScriptData */
 #define SPELL_SHAPE_OF_THE_DRAGONHAWK   42608
 
 #define SPELL_BERSERK 45078
-
 
 #define PHASE_BEAR 0
 #define PHASE_EAGLE 1
@@ -287,7 +286,7 @@ struct CW_DLL_DECL boss_zuljinAI : public ScriptedAI
     void SpawnAdds()
     {
         Creature *pCreature = NULL;
-        for(uint8 i = 0; i < 4; ++i)
+        for (uint8 i = 0; i < 4; ++i)
         {
             pCreature = m_creature->SummonCreature(SpiritInfo[i].entry, SpiritInfo[i].x, SpiritInfo[i].y, SpiritInfo[i].z, SpiritInfo[i].orient, TEMPSUMMON_DEAD_DESPAWN, 0);
             if (pCreature)
@@ -302,7 +301,7 @@ struct CW_DLL_DECL boss_zuljinAI : public ScriptedAI
 
     void DespawnAdds()
     {
-        for(uint8 i = 0; i < 4; ++i)
+        for (uint8 i = 0; i < 4; ++i)
         {
             Unit* Temp = NULL;
             if (SpiritGUID[i])
@@ -355,7 +354,7 @@ struct CW_DLL_DECL boss_zuljinAI : public ScriptedAI
             {
                 m_creature->GetMotionMaster()->Clear();
                 m_creature->CastSpell(m_creature, SPELL_ENERGY_STORM, true); // enemy aura
-                for(uint8 i = 0; i < 4; ++i)
+                for (uint8 i = 0; i < 4; ++i)
                 {
                     Creature* Vortex = DoSpawnCreature(CREATURE_FEATHER_VORTEX, 0, 0, 0, 0, TEMPSUMMON_CORPSE_DESPAWN, 0);
                     if (Vortex)

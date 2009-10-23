@@ -10,7 +10,7 @@ Script Data End */
 update creature_template set scriptname = 'boss_novos' where entry = '';
 *** SQL END ***/
 #include "precompiled.h"
-#include "def_drak_tharon_keep.h"
+#include "drak_tharon_keep.h"
 
 enum Spells
 {
@@ -170,7 +170,7 @@ struct CW_DLL_DECL boss_novosAI : public Scripted_NoMovementAI
                 if (pMap && pMap->IsDungeon())
                 {
                     Map::PlayerList const &players = pMap->GetPlayers();
-                    for(Map::PlayerList::const_iterator itr = players.begin(); itr != players.end(); ++itr)
+                    for (Map::PlayerList::const_iterator itr = players.begin(); itr != players.end(); ++itr)
                         itr->getSource()->CompletedAchievement(AchievOhNovos);
                 }
             }

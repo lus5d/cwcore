@@ -22,7 +22,7 @@ SDCategory: The Nexus, The Nexus
 EndScriptData */
 
 #include "precompiled.h"
-#include "def_nexus.h"
+#include "nexus.h"
 
 enum eEnums
 {
@@ -140,7 +140,7 @@ struct CW_DLL_DECL boss_magus_telestraAI : public ScriptedAI
                 if (pMap && pMap->IsDungeon())
                 {
                     Map::PlayerList const &players = pMap->GetPlayers();
-                    for(Map::PlayerList::const_iterator itr = players.begin(); itr != players.end(); ++itr)
+                    for (Map::PlayerList::const_iterator itr = players.begin(); itr != players.end(); ++itr)
                         itr->getSource()->CompletedAchievement(AchievSplitPersonality);
                 }
             }
@@ -204,7 +204,6 @@ struct CW_DLL_DECL boss_magus_telestraAI : public ScriptedAI
             }else AppearDelay_Timer -= diff;
             return;
         }
-
 
         if ((Phase == 1)||(Phase == 3))
         {

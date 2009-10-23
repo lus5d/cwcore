@@ -10,7 +10,7 @@ Script Data End */
 update creature_template set scriptname = '' where entry = '';
 *** SQL END ***/
 #include "precompiled.h"
-#include "def_violet_hold.h"
+#include "violet_hold.h"
 
 enum Spells
 {
@@ -65,6 +65,8 @@ struct CW_DLL_DECL boss_erekemAI : public ScriptedAI
         uiEarthShieldTimer = 20000;
         if (pInstance)
         {
+            pGuard1 = pInstance->instance->GetCreature(pInstance->GetData(DATA_EREKEM_GUARD_1));
+            pGuard2 = pInstance->instance->GetCreature(pInstance->GetData(DATA_EREKEM_GUARD_2));
             if (pInstance->GetData(DATA_WAVE_COUNT) == 6)
                 pInstance->SetData(DATA_1ST_BOSS_EVENT, NOT_STARTED);
             else if (pInstance->GetData(DATA_WAVE_COUNT) == 12)
@@ -113,7 +115,7 @@ struct CW_DLL_DECL boss_erekemAI : public ScriptedAI
         {
             if (Creature *pTarget = GetChainHealTarget())
             {
-                DoCast(pTarget,HeroicMode ? H_SPELL_CHAIN_HEAL : SPELL_CHAIN_HEAL);
+                DoCast(pTarget, HEROIC(SPELL_CHAIN_HEAL,H_SPELL_CHAIN_HEAL));
                 //If one of the adds is dead spawn heals faster
                 uiChainHealTimer = ((pGuard1 && !pGuard1->isAlive()) || (pGuard2 && !pGuard2->isAlive()) ? 3000 : 8000) + rand()%3000;
             }
@@ -125,7 +127,6 @@ struct CW_DLL_DECL boss_erekemAI : public ScriptedAI
             uiBloodlustTimer = urand(35000,45000);
         } else uiBloodlustTimer -= diff;
 
-
         if (uiEarthShockTimer < diff)
         {
             DoCast(m_creature->getVictim(), SPELL_EARTH_SHOCK);
@@ -134,10 +135,7 @@ struct CW_DLL_DECL boss_erekemAI : public ScriptedAI
 
         if (uiLightningBoltTimer < diff)
         {
-            Unit* pTarget = SelectUnit(SELECT_TARGET_RANDOM,0);
-            while (pTarget && pTarget->GetTypeId() != TYPEID_PLAYER)
-                SelectUnit(SELECT_TARGET_RANDOM,0);
-            if (pTarget)
+            if (Unit* pTarget = SelectTarget(SELECT_TARGET_RANDOM,0,100,true))
                 DoCast(pTarget, SPELL_LIGHTNING_BOLT);
             uiLightningBoltTimer = urand(18000,24000);
         } else uiLightningBoltTimer -= diff;
@@ -173,8 +171,13 @@ struct CW_DLL_DECL boss_erekemAI : public ScriptedAI
 
     Creature* GetChainHealTarget()
     {
-        Creature* pTarget = NULL;
-        return pTarget;
+        if (m_creature->GetHealth()*100 / m_creature->GetMaxHealth() <= 85)
+            return m_creature;
+        if (pGuard1 && pGuard1->isAlive() && (pGuard1->GetHealth()*100 / pGuard1->GetMaxHealth() <= 75))
+            return pGuard1;
+        if (pGuard2 && pGuard2->isAlive() && (pGuard2->GetHealth()*100 / pGuard2->GetMaxHealth() <= 75))
+            return pGuard2;
+        return NULL;
     }
 };
 
@@ -183,6 +186,13 @@ CreatureAI* GetAI_boss_erekem(Creature* pCreature)
     return new boss_erekemAI (pCreature);
 }
 
+enum GuardSpells
+{
+    SPELL_GUSHING_WOUND                   = 39215,
+    SPELL_HOWLING_SCREECH                 = 54462,
+    SPELL_STRIKE                          = 14516
+};
+
 struct CW_DLL_DECL mob_erekem_guardAI : public ScriptedAI
 {
     mob_erekem_guardAI(Creature *c) : ScriptedAI(c)
@@ -190,46 +200,45 @@ struct CW_DLL_DECL mob_erekem_guardAI : public ScriptedAI
         pInstance = c->GetInstanceData();
     }
 
-    uint32 uiEarthShieldTimer;
-    uint32 uiLightningBoltTimer;
-    uint32 uiBloodlustTimer;
+    uint32 uiGushingWoundTimer;
+    uint32 uiHowlingScreechTimer;
+    uint32 uiStrikeTimer;
 
     ScriptedInstance* pInstance;
 
     void Reset()
     {
-        uiEarthShieldTimer = 20000;
-        uiLightningBoltTimer = urand(0,5000);
-        uiBloodlustTimer = urand(8000,18000);
-    }
-
-    void EnterCombat(Unit* who)
-    {
-        DoCast(m_creature, H_SPELL_EARTH_SHIELD);
+        uiStrikeTimer = urand(4000,8000);
+        uiHowlingScreechTimer = urand(8000,13000);
+        uiGushingWoundTimer = urand(1000,3000);
     }
 
     void MoveInLineOfSight(Unit* who) {}
 
     void UpdateAI(const uint32 diff)
     {
-        if (uiEarthShieldTimer < diff)
+        if (!UpdateVictim())
+            return;
+        
+        DoMeleeAttackIfReady();
+        
+        if (uiStrikeTimer < diff)
         {
-            DoCast(m_creature, H_SPELL_EARTH_SHIELD);
-            uiEarthShieldTimer = 20000;
-        } else uiEarthShieldTimer -= diff;
-
-        if (uiLightningBoltTimer < diff)
+            DoCast(m_creature->getVictim(), SPELL_STRIKE);
+            uiStrikeTimer = urand(4000,8000);
+        } else uiStrikeTimer -= diff;
+        
+        if (uiHowlingScreechTimer < diff)
         {
-            if (Unit* pTarget = SelectTarget(SELECT_TARGET_RANDOM, 0, 100, true))
-                DoCast(pTarget, SPELL_LIGHTNING_BOLT);
-            uiLightningBoltTimer = urand(18000,24000);
-        } else uiLightningBoltTimer -= diff;
-
-        if (uiBloodlustTimer < diff)
+            DoCast(m_creature->getVictim(), SPELL_HOWLING_SCREECH);
+            uiHowlingScreechTimer = urand(8000,13000);
+        } else uiHowlingScreechTimer -= diff;
+        
+        if (uiGushingWoundTimer < diff)
         {
-            DoCast(m_creature,SPELL_BLOODLUST);
-            uiBloodlustTimer = urand(35000,45000);
-        } else uiBloodlustTimer -= diff;
+            DoCast(m_creature->getVictim(), SPELL_GUSHING_WOUND);
+            uiGushingWoundTimer = urand(7000,12000);
+        } else uiGushingWoundTimer -= diff;
     }
 };
 
@@ -237,7 +246,6 @@ CreatureAI* GetAI_mob_erekem_guard(Creature* pCreature)
 {
     return new mob_erekem_guardAI (pCreature);
 }
-
 
 void AddSC_boss_erekem()
 {
@@ -248,6 +256,7 @@ void AddSC_boss_erekem()
     newscript->GetAI = &GetAI_boss_erekem;
     newscript->RegisterSelf();
 
+    newscript = new Script;
     newscript->Name = "mob_erekem_guard";
     newscript->GetAI = &GetAI_mob_erekem_guard;
     newscript->RegisterSelf();

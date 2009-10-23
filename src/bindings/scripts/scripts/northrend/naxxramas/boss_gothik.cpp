@@ -15,58 +15,92 @@
  */
 
 #include "precompiled.h"
-#include "def_naxxramas.h"
+#include "naxxramas.h"
 
-#define SAY_SPEECH                  -1533040
-#define SAY_KILL                    -1533041
-#define SAY_DEATH                   -1533042
-#define SAY_TELEPORT                -1533043
-
+enum Yells
+{
+    SAY_SPEECH                  = -1533040,
+    SAY_KILL                    = -1533041,
+    SAY_DEATH                   = -1533042,
+    SAY_TELEPORT                = -1533043
+};
 //Gothik
-#define SPELL_HARVEST_SOUL          28679
-#define SPELL_SHADOW_BOLT           HEROIC(29317,56405)
-
-#define SPELL_INFORM_LIVE_TRAINEE   27892
-#define SPELL_INFORM_LIVE_KNIGHT    27928
-#define SPELL_INFORM_LIVE_RIDER     27935
-#define SPELL_INFORM_DEAD_TRAINEE   27915
-#define SPELL_INFORM_DEAD_KNIGHT    27931
-#define SPELL_INFORM_DEAD_RIDER     27937
-
-#define MOB_LIVE_TRAINEE    16124
-#define MOB_LIVE_KNIGHT     16125
-#define MOB_LIVE_RIDER      16126
-#define MOB_DEAD_TRAINEE    16127
-#define MOB_DEAD_KNIGHT     16148
-#define MOB_DEAD_RIDER      16150
-#define MOB_DEAD_HORSE      16149
-
-const struct Waves { uint32 entry, number, time; }
-waves[] =
+enum Spells
+{
+    SPELL_HARVEST_SOUL          = 28679,
+    SPELL_SHADOW_BOLT           = 29317,
+    H_SPELL_SHADOW_BOLT         = 56405,
+    SPELL_INFORM_LIVE_TRAINEE   = 27892,
+    SPELL_INFORM_LIVE_KNIGHT    = 27928,
+    SPELL_INFORM_LIVE_RIDER     = 27935,
+    SPELL_INFORM_DEAD_TRAINEE   = 27915,
+    SPELL_INFORM_DEAD_KNIGHT    = 27931,
+    SPELL_INFORM_DEAD_RIDER     = 27937
+};
+enum Creatures
+{
+    MOB_LIVE_TRAINEE    = 16124,
+    MOB_LIVE_KNIGHT     = 16125,
+    MOB_LIVE_RIDER      = 16126,
+    MOB_DEAD_TRAINEE    = 16127,
+    MOB_DEAD_KNIGHT     = 16148,
+    MOB_DEAD_RIDER      = 16150,
+    MOB_DEAD_HORSE      = 16149
+};
+struct Waves { uint32 entry, number, time; };
+const Waves waves[] =
 {
     {MOB_LIVE_TRAINEE, 2, 20000},
     {MOB_LIVE_TRAINEE, 2, 20000},
     {MOB_LIVE_TRAINEE, 2, 10000},
     {MOB_LIVE_KNIGHT,  1, 10000},
     {MOB_LIVE_TRAINEE, 2, 15000},
-    {MOB_LIVE_KNIGHT,  1, 10000},
-    {MOB_LIVE_TRAINEE, 2, 15000},
-    {MOB_LIVE_TRAINEE, 2, 0},
+    {MOB_LIVE_KNIGHT,  1,  5000},
+    {MOB_LIVE_TRAINEE, 2, 20000},
+    {MOB_LIVE_TRAINEE, 2,     0},
     {MOB_LIVE_KNIGHT,  1, 10000},
     {MOB_LIVE_RIDER,   1, 10000},
-    {MOB_LIVE_TRAINEE, 2, 5000},
+    {MOB_LIVE_TRAINEE, 2,  5000},
     {MOB_LIVE_KNIGHT,  1, 15000},
-    {MOB_LIVE_TRAINEE, 2, 0},
+    {MOB_LIVE_TRAINEE, 2,     0},
     {MOB_LIVE_RIDER,   1, 10000},
     {MOB_LIVE_KNIGHT,  2, 10000},
     {MOB_LIVE_TRAINEE, 2, 10000},
-    {MOB_LIVE_RIDER,   1, 5000},
-    {MOB_LIVE_KNIGHT,  1, 5000},
+    {MOB_LIVE_RIDER,   1,  5000},
+    {MOB_LIVE_KNIGHT,  1,  5000},
     {MOB_LIVE_TRAINEE, 2, 20000},
-    {MOB_LIVE_TRAINEE, 2, 0},
-    {MOB_LIVE_KNIGHT,  1, 0},
+    {MOB_LIVE_TRAINEE, 2,     0},
+    {MOB_LIVE_KNIGHT,  1,     0},
     {MOB_LIVE_RIDER,   1, 15000},
     {MOB_LIVE_TRAINEE, 2, 29000},
+    {0, 0, 0},
+};
+const Waves wavesHeroic[] =
+{
+    {MOB_LIVE_TRAINEE, 3, 20000},
+    {MOB_LIVE_TRAINEE, 3, 20000},
+    {MOB_LIVE_TRAINEE, 3, 10000},
+    {MOB_LIVE_KNIGHT,  2, 10000},
+    {MOB_LIVE_TRAINEE, 3, 15000},
+    {MOB_LIVE_KNIGHT,  2,  5000},
+    {MOB_LIVE_TRAINEE, 3, 20000},
+    {MOB_LIVE_TRAINEE, 3,     0},
+    {MOB_LIVE_KNIGHT,  2, 10000},
+    {MOB_LIVE_TRAINEE, 3, 10000},
+    {MOB_LIVE_RIDER,   1,  5000},
+    {MOB_LIVE_TRAINEE, 3, 15000},
+    {MOB_LIVE_RIDER,   1, 10000},
+    {MOB_LIVE_KNIGHT,  2, 10000},
+    {MOB_LIVE_RIDER,   1, 10000},
+    {MOB_LIVE_RIDER,   1,     0},
+    {MOB_LIVE_TRAINEE, 3,  5000},
+    {MOB_LIVE_KNIGHT,  1,     0},
+    {MOB_LIVE_TRAINEE, 3,  5000},
+    {MOB_LIVE_RIDER,   1,     0},
+    {MOB_LIVE_TRAINEE, 3, 20000},
+    {MOB_LIVE_KNIGHT,  2,     0},
+    {MOB_LIVE_RIDER,   1,     0},
+    {MOB_LIVE_TRAINEE, 3, 29000},
     {0, 0, 0},
 };
 
@@ -78,9 +112,11 @@ enum Events
     EVENT_HARVEST,
     EVENT_BOLT,
 };
-
-#define POS_LIVE 3
-#define POS_DEAD 5
+enum Pos
+{
+   POS_LIVE = 3,
+   POS_DEAD = 5
+};
 
 const Position PosSummonLive[POS_LIVE] =
 {
@@ -115,15 +151,17 @@ struct CW_DLL_DECL boss_gothikAI : public BossAI
         deadTrigger.clear();
         me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_OOC_NOT_ATTACKABLE);
         me->SetReactState(REACT_PASSIVE);
+        if (instance)
+            instance->SetData(DATA_GOTHIK_GATE, GO_STATE_ACTIVE);
         _Reset();
     }
 
     void EnterCombat(Unit *who)
     {
-        for(uint32 i = 0; i < POS_LIVE; ++i)
+        for (uint32 i = 0; i < POS_LIVE; ++i)
             if (Creature *trigger = DoSummon(WORLD_TRIGGER, PosSummonLive[i]))
                 liveTrigger.push_back(trigger);
-        for(uint32 i = 0; i < POS_DEAD; ++i)
+        for (uint32 i = 0; i < POS_DEAD; ++i)
             if (Creature *trigger = DoSummon(WORLD_TRIGGER, PosSummonDead[i]))
                 deadTrigger.push_back(trigger);
 
@@ -141,7 +179,7 @@ struct CW_DLL_DECL boss_gothikAI : public BossAI
         DoTeleportTo(PosPlatform);
         DoScriptText(SAY_SPEECH, me);
         if (instance)
-            instance->SetData(DATA_GOTHIK_GATE, 1);
+            instance->SetData(DATA_GOTHIK_GATE, GO_STATE_READY);
     }
 
     void JustSummoned(Creature *summon)
@@ -160,7 +198,7 @@ struct CW_DLL_DECL boss_gothikAI : public BossAI
     {
         if (summon->GetEntry() == WORLD_TRIGGER)
         {
-            //for(TriggerVct::iterator itr = liveTrigger.begin(); itr != liveTrigger.end(); ++itr)
+            //for (TriggerVct::iterator itr = liveTrigger.begin(); itr != liveTrigger.end(); ++itr)
             //    if(*itr == summon)
             error_log("boss_gothikAI: trigger is despawned!");
             EnterEvadeMode();
@@ -231,7 +269,7 @@ struct CW_DLL_DECL boss_gothikAI : public BossAI
                 case EVENT_SUMMON:
                     if (waves[waveCount].entry)
                     {
-                        for(uint32 i = 0; i < waves[waveCount].number; ++i)
+                        for (uint32 i = 0; i < waves[waveCount].number; ++i)
                             DoSummon(waves[waveCount].entry, liveTrigger[rand()%POS_LIVE], 1.0f);
                         events.ScheduleEvent(EVENT_SUMMON, waves[waveCount].time);
                         ++waveCount;
@@ -243,7 +281,7 @@ struct CW_DLL_DECL boss_gothikAI : public BossAI
                         me->SetReactState(REACT_AGGRESSIVE);
                         me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_OOC_NOT_ATTACKABLE);
                         if (instance)
-                            instance->SetData(DATA_GOTHIK_GATE, 0);
+                            instance->SetData(DATA_GOTHIK_GATE, GO_STATE_ACTIVE);
                         summons.DoAction(0, 0);
                         summons.DoZoneInCombat();
                         events.ScheduleEvent(EVENT_BOLT, 1000);
@@ -251,7 +289,7 @@ struct CW_DLL_DECL boss_gothikAI : public BossAI
                     }
                     break;
                 case EVENT_BOLT:
-                    DoCast(me->getVictim(), SPELL_SHADOW_BOLT);
+                    DoCast(me->getVictim(), HEROIC(SPELL_SHADOW_BOLT,H_SPELL_SHADOW_BOLT));
                     events.ScheduleEvent(EVENT_BOLT, 1000);
                     return;
                 case EVENT_HARVEST:
@@ -312,7 +350,7 @@ struct CW_DLL_DECL mob_gothik_minionAI : public CombatAI
         if (pMap->IsDungeon())
         {
             Map::PlayerList const &PlayerList = pMap->GetPlayers();
-            for(Map::PlayerList::const_iterator i = PlayerList.begin(); i != PlayerList.end(); ++i)
+            for (Map::PlayerList::const_iterator i = PlayerList.begin(); i != PlayerList.end(); ++i)
             {
                 if (i->getSource()->isAlive() && SIDE_CHECK(i->getSource()))
                 {

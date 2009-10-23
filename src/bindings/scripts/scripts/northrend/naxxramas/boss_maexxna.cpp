@@ -17,7 +17,7 @@
  */
 
 #include "precompiled.h"
-#include "def_naxxramas.h"
+#include "naxxramas.h"
 
 #define SPELL_WEB_WRAP          28622
 #define SPELL_WEB_SPRAY         HEROIC(29484,54125)
@@ -74,7 +74,7 @@ struct CW_DLL_DECL boss_maexxnaAI : public BossAI
             switch(eventId)
             {
                 case EVENT_WRAP:
-                    for(uint32 i = 0; i < HEROIC(1,2); ++i)
+                    for (uint32 i = 0; i < HEROIC(1,2); ++i)
                     {
                         if (Unit *target = SelectTarget(SELECT_TARGET_RANDOM, 1, 0, true, -SPELL_WEB_WRAP))
                         {
@@ -105,7 +105,7 @@ struct CW_DLL_DECL boss_maexxnaAI : public BossAI
                 case EVENT_SUMMON:
                 {
                     uint32 amount = 8+rand()%2;
-                    for(uint32 i = 0; i < amount; ++i)
+                    for (uint32 i = 0; i < amount; ++i)
                         DoSummon(MOB_SPIDERLING, me);
                     events.ScheduleEvent(EVENT_SUMMON, 40000);
                     break;

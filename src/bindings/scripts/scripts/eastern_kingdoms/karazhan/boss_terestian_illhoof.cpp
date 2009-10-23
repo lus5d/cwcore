@@ -22,7 +22,7 @@ SDCategory: Karazhan
 EndScriptData */
 
 #include "precompiled.h"
-#include "def_karazhan.h"
+#include "karazhan.h"
 
 #define SAY_SLAY1                   -1532065
 #define SAY_SLAY2                   -1532066
@@ -167,7 +167,7 @@ struct CW_DLL_DECL boss_terestianAI : public ScriptedAI
 {
     boss_terestianAI(Creature *c) : ScriptedAI(c)
     {
-        for(uint8 i = 0; i < 2; ++i)
+        for (uint8 i = 0; i < 2; ++i)
             PortalGUID[i] = 0;
         pInstance = c->GetInstanceData();
     }
@@ -187,7 +187,7 @@ struct CW_DLL_DECL boss_terestianAI : public ScriptedAI
 
     void Reset()
     {
-        for(uint8 i = 0; i < 2; ++i)
+        for (uint8 i = 0; i < 2; ++i)
         {
             if (PortalGUID[i])
             {
@@ -253,7 +253,7 @@ struct CW_DLL_DECL boss_terestianAI : public ScriptedAI
 
     void JustDied(Unit *killer)
     {
-        for(uint8 i = 0; i < 2; ++i)
+        for (uint8 i = 0; i < 2; ++i)
         {
             if (PortalGUID[i])
             {

@@ -22,7 +22,7 @@ SDCategory: Halls of Lightning
 EndScriptData */
 
 #include "precompiled.h"
-#include "def_halls_of_lightning.h"
+#include "halls_of_lightning.h"
 
 enum eEnums
 {
@@ -135,7 +135,7 @@ struct CW_DLL_DECL boss_bjarngrimAI : public ScriptedAI
         m_uiMortalStrike_Timer = 8000;
         m_uiSlam_Timer = 10000;
 
-        for(uint8 i = 0; i < 2; ++i)
+        for (uint8 i = 0; i < 2; ++i)
         {
             if (Creature* pStormforgedLieutenant = (Unit::GetCreature((*m_creature), m_auiStormforgedLieutenantGUID[i])))
             {

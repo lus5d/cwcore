@@ -28,7 +28,7 @@ npc_saat
 EndContentData */
 
 #include "precompiled.h"
-#include "def_dark_portal.h"
+#include "dark_portal.h"
 
 #define SAY_ENTER               -1269020                    //where does this belong?
 #define SAY_INTRO               -1269021
@@ -311,7 +311,7 @@ struct CW_DLL_DECL npc_time_riftAI : public ScriptedAI
 
         if (entry == C_WHELP)
         {
-            for(uint8 i = 0; i < 3; ++i)
+            for (uint8 i = 0; i < 3; ++i)
                 DoSummonAtRift(entry);
         }else DoSummonAtRift(entry);
     }

@@ -22,7 +22,7 @@ SDCategory: Zul'Aman
 EndScriptData */
 
 #include "precompiled.h"
-#include "def_zulaman.h"
+#include "zulaman.h"
 #include "GridNotifiers.h"
 
 //Trash Waves
@@ -87,7 +87,6 @@ float NalorakkWay[8][3] =
 
 #define YELL_SHIFTEDTOBEAR      "You call on da beast, you gonna get more dan you bargain for!"
 #define SOUND_YELL_TOBEAR       12072
-
 
 struct CW_DLL_DECL boss_nalorakkAI : public ScriptedAI
 {
@@ -169,7 +168,7 @@ struct CW_DLL_DECL boss_nalorakkAI : public ScriptedAI
         if (!templist.size())
             return;
 
-        for(std::list<Creature*>::iterator i = templist.begin(); i != templist.end(); ++i)
+        for (std::list<Creature*>::iterator i = templist.begin(); i != templist.end(); ++i)
         {
             if ((*i) && m_creature->IsWithinDistInMap((*i),25))
             {

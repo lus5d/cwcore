@@ -22,7 +22,7 @@ SDCategory: Temple of Ahn'Qiraj
 EndScriptData */
 
 #include "precompiled.h"
-#include "def_temple_of_ahnqiraj.h"
+#include "temple_of_ahnqiraj.h"
 #include "WorldPacket.h"
 
 #include "Item.h"
@@ -320,7 +320,7 @@ struct CW_DLL_DECL boss_twinemperorsAI : public ScriptedAI
 
         Creature *nearb = NULL;
 
-        for(std::list<Creature*>::iterator iter = lUnitList.begin(); iter != lUnitList.end(); ++iter)
+        for (std::list<Creature*>::iterator iter = lUnitList.begin(); iter != lUnitList.end(); ++iter)
         {
             Creature *c = *iter;
             if (c)
@@ -603,12 +603,12 @@ void AddSC_boss_twinemperors()
     Script *newscript;
 
     newscript = new Script;
-    newscript->Name="boss_veknilash";
+    newscript->Name = "boss_veknilash";
     newscript->GetAI = &GetAI_boss_veknilash;
     newscript->RegisterSelf();
 
     newscript = new Script;
-    newscript->Name="boss_veklor";
+    newscript->Name = "boss_veklor";
     newscript->GetAI = &GetAI_boss_veklor;
     newscript->RegisterSelf();
 }

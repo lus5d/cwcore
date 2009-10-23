@@ -22,7 +22,7 @@ SDCategory: Caverns of Time, Old Hillsbrad Foothills
 EndScriptData */
 
 #include "precompiled.h"
-#include "def_old_hillsbrad.h"
+#include "old_hillsbrad.h"
 
 #define SAY_ENTER                   -1560000
 #define SAY_TAUNT1                  -1560001
@@ -145,7 +145,7 @@ void AddSC_boss_captain_skarloc()
 {
     Script *newscript;
     newscript = new Script;
-    newscript->Name="boss_captain_skarloc";
+    newscript->Name = "boss_captain_skarloc";
     newscript->GetAI = &GetAI_boss_captain_skarloc;
     newscript->RegisterSelf();
 }

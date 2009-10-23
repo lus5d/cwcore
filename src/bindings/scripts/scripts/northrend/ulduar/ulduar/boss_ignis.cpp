@@ -17,7 +17,7 @@
  */
 
 #include "precompiled.h"
-#include "def_ulduar.h"
+#include "ulduar.h"
 
 #define SPELL_FLAME_JETS            62680
 #define SPELL_SCORCH                62546
@@ -90,7 +90,6 @@ struct CW_DLL_DECL boss_ignis_AI : public BossAI
             DoScriptText(SAY_SLAY, m_creature);
             SLAG_POT_Timer = 30000;
         } else SLAG_POT_Timer -= diff;
-
 
         DoMeleeAttackIfReady();
     }

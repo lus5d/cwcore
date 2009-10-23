@@ -22,7 +22,7 @@ SDCategory: Auchindoun, Sethekk Halls
 EndScriptData */
 
 #include "precompiled.h"
-#include "def_sethekk_halls.h"
+#include "sethekk_halls.h"
 
 #define SAY_INTRO                   -1556007
 
@@ -205,7 +205,7 @@ void AddSC_boss_talon_king_ikiss()
 {
     Script *newscript;
     newscript = new Script;
-    newscript->Name="boss_talon_king_ikiss";
+    newscript->Name = "boss_talon_king_ikiss";
     newscript->GetAI = &GetAI_boss_talon_king_ikiss;
     newscript->RegisterSelf();
 }

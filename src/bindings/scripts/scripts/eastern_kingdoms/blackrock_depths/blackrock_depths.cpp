@@ -38,7 +38,7 @@ EndContentData */
 
 #include "precompiled.h"
 #include "escort_ai.h"
-#include "def_blackrock_depths.h"
+#include "blackrock_depths.h"
 
 /*######
 +## go_shadowforge_brazier
@@ -148,7 +148,7 @@ struct CW_DLL_DECL npc_grimstoneAI : public npc_escortAI
         MobCount = 0;
         MobDeath_Timer = 0;
 
-        for(uint8 i = 0; i < MAX_MOB_AMOUNT; ++i)
+        for (uint8 i = 0; i < MAX_MOB_AMOUNT; ++i)
             RingMobGUID[i] = 0;
 
         RingBossGUID = 0;
@@ -241,7 +241,7 @@ struct CW_DLL_DECL npc_grimstoneAI : public npc_escortAI
                     return;
                 }
 
-                for(uint8 i = 0; i < MAX_MOB_AMOUNT; ++i)
+                for (uint8 i = 0; i < MAX_MOB_AMOUNT; ++i)
                 {
                     Creature *mob = Unit::GetCreature(*m_creature,RingMobGUID[i]);
                     if (mob && !mob->isAlive() && mob->isDead())
@@ -561,7 +561,7 @@ struct CW_DLL_DECL npc_dughal_stormwingAI : public npc_escortAI
         }
     }
 
-    void EnterCombat(Unit* who) { }
+    void EnterCombat(Unit* who) {}
     void Reset() {}
 
     void JustDied(Unit* killer)
@@ -1006,7 +1006,7 @@ struct CW_DLL_DECL npc_tobias_seecherAI : public npc_escortAI
 {
     npc_tobias_seecherAI(Creature *c) :npc_escortAI(c) {}
 
-    void EnterCombat(Unit* who) { }
+    void EnterCombat(Unit* who) {}
     void Reset() {}
 
     void JustDied(Unit* killer)

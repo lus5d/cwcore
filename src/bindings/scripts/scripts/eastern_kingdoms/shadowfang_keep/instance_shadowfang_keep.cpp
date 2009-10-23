@@ -22,7 +22,7 @@ SDCategory: Shadowfang Keep
 EndScriptData */
 
 #include "precompiled.h"
-#include "def_shadowfang_keep.h"
+#include "shadowfang_keep.h"
 
 #define MAX_ENCOUNTER              4
 
@@ -182,7 +182,7 @@ struct CW_DLL_DECL instance_shadowfang_keep : public ScriptedInstance
         std::istringstream loadStream(in);
         loadStream >> m_auiEncounter[0] >> m_auiEncounter[1] >> m_auiEncounter[2] >> m_auiEncounter[3];
 
-        for(uint8 i = 0; i < MAX_ENCOUNTER; ++i)
+        for (uint8 i = 0; i < MAX_ENCOUNTER; ++i)
         {
             if (m_auiEncounter[i] == IN_PROGRESS)
                 m_auiEncounter[i] = NOT_STARTED;

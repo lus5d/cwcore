@@ -1,6 +1,6 @@
 
 #include "precompiled.h"
-#include "def_hyjal.h"
+#include "hyjal.h"
 #include "hyjal_trash.h"
 
 #define SPELL_RAIN_OF_FIRE 31340
@@ -277,12 +277,12 @@ void AddSC_boss_azgalor()
 {
     Script *newscript;
     newscript = new Script;
-    newscript->Name="boss_azgalor";
+    newscript->Name = "boss_azgalor";
     newscript->GetAI = &GetAI_boss_azgalor;
     newscript->RegisterSelf();
 
     newscript = new Script;
-    newscript->Name="mob_lesser_doomguard";
+    newscript->Name = "mob_lesser_doomguard";
     newscript->GetAI = &GetAI_mob_lesser_doomguard;
     newscript->RegisterSelf();
 }

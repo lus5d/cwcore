@@ -1,6 +1,6 @@
 #include "precompiled.h"
 #include "escort_ai.h"
-#include "def_halls_of_stone.h"
+#include "halls_of_stone.h"
 
 enum Texts
 {
@@ -155,7 +155,7 @@ struct CW_DLL_DECL mob_tribuna_controllerAI : public ScriptedAI
         if (!lKaddrakGUIDList.empty())
         {
             uint32 uiPositionCounter = 0;
-            for(std::list<Creature*>::iterator itr = lKaddrakGUIDList.begin(); itr != lKaddrakGUIDList.end(); ++itr)
+            for (std::list<Creature*>::iterator itr = lKaddrakGUIDList.begin(); itr != lKaddrakGUIDList.end(); ++itr)
             {
                 if ((*itr)->isAlive())
                 {

@@ -1,4 +1,4 @@
-/* Copyright (C) 2008-2009 CWCore <http://www.wow-extrem.de/>
+/* Copyright (C) 2009 CWCore <http://www.wow-extrem.de/>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,7 +29,6 @@ enum eAgnetta
     QUEST_ITS_THAT_YOUR_GOBLIN      = 12969,
     FACTION_HOSTILE_AT1             = 45
 };
-
 
 struct CW_DLL_DECL npc_agnetta_tyrsdottarAI : public ScriptedAI
 {
@@ -80,7 +79,6 @@ enum eFrostbornScout
 {
     QUEST_MISSING_SCOUTS  =  12864
 };
-
 
 bool GossipHello_npc_frostborn_scout(Player* pPlayer, Creature* pCreature)
 {

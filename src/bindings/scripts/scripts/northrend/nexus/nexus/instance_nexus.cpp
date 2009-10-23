@@ -22,7 +22,7 @@ SDCategory: The Nexus, The Nexus
 EndScriptData */
 
 #include "precompiled.h"
-#include "def_nexus.h"
+#include "nexus.h"
 
 #define NUMBER_OF_ENCOUNTERS      4
 
@@ -233,7 +233,7 @@ struct CW_DLL_DECL instance_nexus : public ScriptedInstance
         std::istringstream loadStream(chrIn);
         loadStream >> m_auiEncounter[0] >> m_auiEncounter[1] >> m_auiEncounter[2] >> m_auiEncounter[3];
 
-        for(uint8 i = 0; i < NUMBER_OF_ENCOUNTERS; ++i)
+        for (uint8 i = 0; i < NUMBER_OF_ENCOUNTERS; ++i)
         {
             if (m_auiEncounter[i] == IN_PROGRESS)
                 m_auiEncounter[i] = NOT_STARTED;

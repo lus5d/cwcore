@@ -22,7 +22,7 @@ SDCategory: Temple of Ahn'Qiraj
 EndScriptData */
 
 #include "precompiled.h"
-#include "def_temple_of_ahnqiraj.h"
+#include "temple_of_ahnqiraj.h"
 
 //Text emote
 #define EMOTE_WEAKENED              -1531011
@@ -545,7 +545,7 @@ struct CW_DLL_DECL cthunAI : public ScriptedAI
 
         //Get random but only if we have more than one unit on threat list
         if (temp.size() > 1)
-            advance (i , rand() % (temp.size() - 1));
+            advance (j , rand() % (temp.size() - 1));
 
         return (*j);
     }
@@ -567,7 +567,7 @@ struct CW_DLL_DECL cthunAI : public ScriptedAI
 
                 if (!PlayerList.isEmpty())
                 {
-                    for(Map::PlayerList::const_iterator itr = PlayerList.begin(); itr != PlayerList.end(); ++itr)
+                    for (Map::PlayerList::const_iterator itr = PlayerList.begin(); itr != PlayerList.end(); ++itr)
                     {
                         if (Player* pPlr = itr->getSource())
                             pPlr->PlayDirectSound(RANDOM_SOUND_WHISPER,pPlr);
@@ -1291,37 +1291,37 @@ void AddSC_boss_cthun()
 
     //Eye
     newscript = new Script;
-    newscript->Name="boss_eye_of_cthun";
+    newscript->Name = "boss_eye_of_cthun";
     newscript->GetAI = &GetAI_eye_of_cthun;
     newscript->RegisterSelf();
 
     newscript = new Script;
-    newscript->Name="boss_cthun";
+    newscript->Name = "boss_cthun";
     newscript->GetAI = &GetAI_cthun;
     newscript->RegisterSelf();
 
     newscript = new Script;
-    newscript->Name="mob_eye_tentacle";
+    newscript->Name = "mob_eye_tentacle";
     newscript->GetAI = &GetAI_eye_tentacle;
     newscript->RegisterSelf();
 
     newscript = new Script;
-    newscript->Name="mob_claw_tentacle";
+    newscript->Name = "mob_claw_tentacle";
     newscript->GetAI = &GetAI_claw_tentacle;
     newscript->RegisterSelf();
 
     newscript = new Script;
-    newscript->Name="mob_giant_claw_tentacle";
+    newscript->Name = "mob_giant_claw_tentacle";
     newscript->GetAI = &GetAI_giant_claw_tentacle;
     newscript->RegisterSelf();
 
     newscript = new Script;
-    newscript->Name="mob_giant_eye_tentacle";
+    newscript->Name = "mob_giant_eye_tentacle";
     newscript->GetAI = &GetAI_giant_eye_tentacle;
     newscript->RegisterSelf();
 
     newscript = new Script;
-    newscript->Name="mob_giant_flesh_tentacle";
+    newscript->Name = "mob_giant_flesh_tentacle";
     newscript->GetAI = &GetAI_flesh_tentacle;
     newscript->RegisterSelf();
 }

@@ -22,7 +22,7 @@ SDCategory: Caverns of Time, Old Hillsbrad Foothills
 EndScriptData */
 
 #include "precompiled.h"
-#include "def_old_hillsbrad.h"
+#include "old_hillsbrad.h"
 #include "escort_ai.h"
 
 /*######
@@ -178,12 +178,12 @@ void AddSC_boss_lieutenant_drake()
     Script *newscript;
 
     newscript = new Script;
-    newscript->Name="go_barrel_old_hillsbrad";
+    newscript->Name = "go_barrel_old_hillsbrad";
     newscript->pGOHello = &GOHello_go_barrel_old_hillsbrad;
     newscript->RegisterSelf();
 
     newscript = new Script;
-    newscript->Name="boss_lieutenant_drake";
+    newscript->Name = "boss_lieutenant_drake";
     newscript->GetAI = &GetAI_boss_lieutenant_drake;
     newscript->RegisterSelf();
 }

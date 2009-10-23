@@ -22,7 +22,7 @@ SDCategory: Caverns of Time, The Dark Portal
 EndScriptData */
 
 #include "precompiled.h"
-#include "def_dark_portal.h"
+#include "dark_portal.h"
 
 enum eEnums
 {
@@ -147,7 +147,7 @@ void AddSC_boss_temporus()
 {
     Script *newscript;
     newscript = new Script;
-    newscript->Name="boss_temporus";
+    newscript->Name = "boss_temporus";
     newscript->GetAI = &GetAI_boss_temporus;
     newscript->RegisterSelf();
 }

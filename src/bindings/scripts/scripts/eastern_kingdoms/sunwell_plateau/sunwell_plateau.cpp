@@ -26,7 +26,7 @@ npc_captain_selana
 EndContentData */
 
 #include "precompiled.h"
-#include "def_sunwell_plateau.h"
+#include "sunwell_plateau.h"
 
 /*######
 ## npc_prophet_velen
@@ -50,7 +50,6 @@ enum LiadrinnSpeeches
     LIADRIN_SAY2 = -1580108,
     LIADRIN_SAY3 = -1580109
 };
-
 
 /*######
 ## npc_captain_selana

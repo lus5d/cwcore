@@ -24,7 +24,7 @@ SDCategory: Utgarde Keep
 EndScriptData */
 
 #include "precompiled.h"
-#include "def_utgarde_keep.h"
+#include "utgarde_keep.h"
 
 enum eEnums
 {
@@ -223,7 +223,6 @@ struct CW_DLL_DECL boss_dalronn_the_controllerAI : public ScriptedAI
     uint32 Check_Timer;
     uint32 AggroYell_Timer;
     bool Skarvald_isDead;
-
 
     void Reset()
     {

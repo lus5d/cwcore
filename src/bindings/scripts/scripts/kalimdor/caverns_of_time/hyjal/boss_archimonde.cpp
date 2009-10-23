@@ -22,7 +22,7 @@ SDCategory: Caverns of Time, Mount Hyjal
 EndScriptData */
 
 #include "precompiled.h"
-#include "def_hyjal.h"
+#include "hyjal.h"
 #include "SpellAuras.h"
 #include "hyjal_trash.h"
 
@@ -308,7 +308,7 @@ struct CW_DLL_DECL boss_archimondeAI : public hyjal_trashAI
 
         std::list<Unit*> targets;
         std::list<HostilReference*>::iterator itr = m_threatlist.begin();
-        for(; itr != m_threatlist.end(); ++itr)
+        for (; itr != m_threatlist.end(); ++itr)
         {
             Unit* pUnit = Unit::GetUnit((*m_creature), (*itr)->getUnitGuid());
             if (pUnit && pUnit->isAlive())

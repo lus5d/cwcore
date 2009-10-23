@@ -22,7 +22,7 @@ SDCategory: Auchindoun, Shadow Labyrinth
 EndScriptData */
 
 #include "precompiled.h"
-#include "def_shadow_labyrinth.h"
+#include "shadow_labyrinth.h"
 
 #define SAY_INTRO                       -1555028
 #define SAY_AGGRO1                      -1555029
@@ -265,7 +265,7 @@ struct CW_DLL_DECL boss_grandmaster_vorpilAI : public ScriptedAI
         {
             Map* pMap = m_creature->GetMap();
             Map::PlayerList const &PlayerList = pMap->GetPlayers();
-            for(Map::PlayerList::const_iterator i = PlayerList.begin(); i != PlayerList.end(); ++i)
+            for (Map::PlayerList::const_iterator i = PlayerList.begin(); i != PlayerList.end(); ++i)
                 if (Player* i_pl = i->getSource())
                     if (i_pl->isAlive() && !i_pl->HasAura(SPELL_BANISH))
                         i_pl->TeleportTo(m_creature->GetMapId(), VorpilPosition[0],VorpilPosition[1],VorpilPosition[2], 0, TELE_TO_NOT_LEAVE_COMBAT);

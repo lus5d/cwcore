@@ -22,7 +22,7 @@ SDCategory: Tempest Keep, The Arcatraz
 EndScriptData */
 
 #include "precompiled.h"
-#include "def_arcatraz.h"
+#include "arcatraz.h"
 
 #define MAX_ENCOUNTER 9
 
@@ -37,7 +37,6 @@ EndScriptData */
 #define SEAL_SPHERE 184802                                  //shield 'protecting' mellichar
 
 #define MELLICHAR   20904                                   //skyriss will kill this unit
-
 
 /* Arcatraz encounters:
 1 - Zereketh the Unbound event
@@ -83,7 +82,7 @@ struct CW_DLL_DECL instance_arcatraz : public ScriptedInstance
 
     bool IsEncounterInProgress() const
     {
-        for(uint8 i = 0; i < MAX_ENCOUNTER; ++i)
+        for (uint8 i = 0; i < MAX_ENCOUNTER; ++i)
             if (m_auiEncounter[i] == IN_PROGRESS) return true;
 
         return false;

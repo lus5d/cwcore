@@ -24,7 +24,7 @@ SDCategory: Udgarde Keep
 EndScriptData */
 
 #include "precompiled.h"
-#include "def_utgarde_keep.h"
+#include "utgarde_keep.h"
 
 enum eEnums
 {
@@ -252,7 +252,6 @@ struct CW_DLL_DECL boss_ingvar_the_plundererAI : public ScriptedAI
                 }
             }else Enrage_Timer -= diff;
         }
-
 
         if (Roar_Timer < diff)
         {

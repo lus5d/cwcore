@@ -22,7 +22,7 @@ SDCategory: Sunken Temple
 EndScriptData */
 
 #include "precompiled.h"
-#include "def_sunken_temple.h"
+#include "sunken_temple.h"
 
 #define GO_ATALAI_STATUE1 148830
 #define GO_ATALAI_STATUE2 148831
@@ -127,7 +127,6 @@ struct CW_DLL_DECL instance_sunken_temple : public ScriptedInstance
              break;
          }
      };
-
 
      virtual void Update(uint32 diff) // correct order goes form 1-6
      {

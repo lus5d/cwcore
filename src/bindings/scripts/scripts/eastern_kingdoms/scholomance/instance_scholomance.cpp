@@ -22,7 +22,7 @@ SDCategory: Scholomance
 EndScriptData */
 
 #include "precompiled.h"
-#include "def_scholomance.h"
+#include "scholomance.h"
 
 #define GO_GATE_KIRTONOS    175570
 #define GO_GATE_GANDLING    177374
@@ -65,7 +65,7 @@ struct CW_DLL_DECL instance_scholomance : public ScriptedInstance
         GateBarovGUID = 0;
         GateIlluciaGUID = 0;
 
-        for(uint8 i = 0; i < 6; ++i)
+        for (uint8 i = 0; i < 6; ++i)
             IsBossDied[i] = false;
     }
 

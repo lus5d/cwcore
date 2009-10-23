@@ -1,6 +1,6 @@
 
 #include "precompiled.h"
-#include "def_hyjal.h"
+#include "hyjal.h"
 #include "hyjal_trash.h"
 
 #define SPELL_FROST_ARMOR 31256
@@ -186,7 +186,7 @@ void AddSC_boss_rage_winterchill()
 {
     Script *newscript;
     newscript = new Script;
-    newscript->Name="boss_rage_winterchill";
+    newscript->Name = "boss_rage_winterchill";
     newscript->GetAI = &GetAI_boss_rage_winterchill;
     newscript->RegisterSelf();
 }

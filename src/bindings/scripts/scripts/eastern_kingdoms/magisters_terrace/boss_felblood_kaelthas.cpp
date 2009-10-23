@@ -22,7 +22,7 @@ SDCategory: Magisters' Terrace
 EndScriptData */
 
 #include "precompiled.h"
-#include "def_magisters_terrace.h"
+#include "magisters_terrace.h"
 #include "WorldPacket.h"
 
 #define SAY_AGGRO                   -1585023                //This yell should be done when the room is cleared. For now, set it as a movelineofsight yell.
@@ -181,7 +181,7 @@ struct CW_DLL_DECL boss_felblood_kaelthasAI : public ScriptedAI
 
         std::list<HostilReference*>& m_threatlist = m_creature->getThreatManager().getThreatList();
         std::list<HostilReference*>::iterator i = m_threatlist.begin();
-        for(i = m_threatlist.begin(); i != m_threatlist.end(); ++i)
+        for (i = m_threatlist.begin(); i != m_threatlist.end(); ++i)
         {
             Unit* pUnit = Unit::GetUnit((*m_creature), (*i)->getUnitGuid());
             if (pUnit && pUnit->isAlive())
@@ -383,8 +383,7 @@ struct CW_DLL_DECL boss_felblood_kaelthasAI : public ScriptedAI
                             GravityLapseTimer = 30000;
                             GravityLapsePhase = 4;
 
-
-                            for(uint8 i = 0; i < 3; ++i)
+                            for (uint8 i = 0; i < 3; ++i)
                             {
                                 Unit* target = NULL;
                                 target = SelectUnit(SELECT_TARGET_RANDOM,0);
@@ -541,7 +540,6 @@ struct CW_DLL_DECL mob_felkael_phoenixAI : public ScriptedAI
                     Rebirth = false;
                 }else Death_Timer -= diff;
             }
-
 
         }
 

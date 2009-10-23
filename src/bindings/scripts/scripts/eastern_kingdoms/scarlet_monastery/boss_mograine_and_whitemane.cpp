@@ -22,7 +22,7 @@ SDCategory: Scarlet Monastery
 EndScriptData */
 
 #include "precompiled.h"
-#include "def_scarlet_monastery.h"
+#include "scarlet_monastery.h"
 
 enum eEnums
 {
@@ -157,7 +157,6 @@ struct CW_DLL_DECL boss_scarlet_commander_mograineAI : public ScriptedAI
                 m_pInstance->SetData(TYPE_MOGRAINE_AND_WHITE_EVENT, SPECIAL);
         }
     }
-
 
     void UpdateAI(const uint32 uiDiff)
     {

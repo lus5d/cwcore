@@ -22,7 +22,7 @@ SDCategory: Magister's Terrace
 EndScriptData */
 
 #include "precompiled.h"
-#include "def_magisters_terrace.h"
+#include "magisters_terrace.h"
 
 #define MAX_ENCOUNTER      4
 
@@ -77,7 +77,7 @@ struct CW_DLL_DECL instance_magisters_terrace : public ScriptedInstance
 
     bool IsEncounterInProgress() const
     {
-        for(uint8 i = 0; i < MAX_ENCOUNTER; ++i)
+        for (uint8 i = 0; i < MAX_ENCOUNTER; ++i)
             if (m_auiEncounter[i] == IN_PROGRESS)
                 return true;
         return false;

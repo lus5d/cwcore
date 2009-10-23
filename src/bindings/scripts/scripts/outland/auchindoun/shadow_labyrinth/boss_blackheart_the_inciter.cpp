@@ -22,7 +22,7 @@ SDCategory: Auchindoun, Shadow Labyrinth
 EndScriptData */
 
 #include "precompiled.h"
-#include "def_shadow_labyrinth.h"
+#include "shadow_labyrinth.h"
 
 #define SPELL_INCITE_CHAOS    33676
 #define SPELL_INCITE_CHAOS_B  33684                         //debuff applied to each member of party
@@ -122,7 +122,7 @@ struct CW_DLL_DECL boss_blackheart_the_inciterAI : public ScriptedAI
             DoCast(m_creature, SPELL_INCITE_CHAOS);
 
             std::list<HostilReference *> t_list = m_creature->getThreatManager().getThreatList();
-            for(std::list<HostilReference *>::iterator itr = t_list.begin(); itr!= t_list.end(); ++itr)
+            for (std::list<HostilReference *>::iterator itr = t_list.begin(); itr!= t_list.end(); ++itr)
             {
                 Unit* target = Unit::GetUnit(*m_creature, (*itr)->getUnitGuid());
                 if (target && target->GetTypeId() == TYPEID_PLAYER)
@@ -162,7 +162,7 @@ void AddSC_boss_blackheart_the_inciter()
 {
     Script *newscript;
     newscript = new Script;
-    newscript->Name="boss_blackheart_the_inciter";
+    newscript->Name = "boss_blackheart_the_inciter";
     newscript->GetAI = &GetAI_boss_blackheart_the_inciter;
     newscript->RegisterSelf();
 }

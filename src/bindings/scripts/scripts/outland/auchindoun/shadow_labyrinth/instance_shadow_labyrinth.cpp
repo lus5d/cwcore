@@ -22,7 +22,7 @@ SDCategory: Auchindoun, Shadow Labyrinth
 EndScriptData */
 
 #include "precompiled.h"
-#include "def_shadow_labyrinth.h"
+#include "shadow_labyrinth.h"
 
 #define MAX_ENCOUNTER 5
 
@@ -62,7 +62,7 @@ struct CW_DLL_DECL instance_shadow_labyrinth : public ScriptedInstance
 
     bool IsEncounterInProgress() const
     {
-        for(uint8 i = 0; i < MAX_ENCOUNTER; ++i)
+        for (uint8 i = 0; i < MAX_ENCOUNTER; ++i)
             if (m_auiEncounter[i] == IN_PROGRESS) return true;
 
         return false;
@@ -203,7 +203,7 @@ struct CW_DLL_DECL instance_shadow_labyrinth : public ScriptedInstance
         std::istringstream loadStream(in);
         loadStream >> m_auiEncounter[0] >> m_auiEncounter[1] >> m_auiEncounter[2] >> m_auiEncounter[3] >> m_auiEncounter[4];
 
-        for(uint8 i = 0; i < MAX_ENCOUNTER; ++i)
+        for (uint8 i = 0; i < MAX_ENCOUNTER; ++i)
             if (m_auiEncounter[i] == IN_PROGRESS)
                 m_auiEncounter[i] = NOT_STARTED;
 

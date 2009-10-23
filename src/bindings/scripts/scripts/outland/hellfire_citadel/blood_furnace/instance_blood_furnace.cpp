@@ -22,7 +22,7 @@ SDCategory: Hellfire Citadel, Blood Furnace
 EndScriptData */
 
 #include "precompiled.h"
-#include "def_blood_furnace.h"
+#include "blood_furnace.h"
 
 #define ENTRY_SEWER1                 181823
 #define ENTRY_SEWER2                 181766
@@ -79,7 +79,6 @@ struct CW_DLL_DECL instance_blood_furnace : public ScriptedInstance
         PrisonCell7GUID = 0;
         PrisonCell8GUID = 0;
     }
-
 
     void OnCreatureCreate(Creature* pCreature, bool add)
     {
@@ -209,14 +208,13 @@ struct CW_DLL_DECL instance_blood_furnace : public ScriptedInstance
         std::istringstream loadStream(in);
         loadStream >> m_auiEncounter[0] >> m_auiEncounter[1] >> m_auiEncounter[2];
 
-        for(uint8 i = 0; i < MAX_ENCOUNTER; ++i)
+        for (uint8 i = 0; i < MAX_ENCOUNTER; ++i)
             if (m_auiEncounter[i] == IN_PROGRESS || m_auiEncounter[i] == FAIL)
                 m_auiEncounter[i] = NOT_STARTED;
 
         OUT_LOAD_INST_DATA_COMPLETE;
     }
 };
-
 
 InstanceData* GetInstanceData_instance_blood_furnace(Map* pMap)
 {

@@ -23,7 +23,7 @@ EndScriptData */
 
 #include "precompiled.h"
 #include "SpellMgr.h"
-#include "def_scarlet_monastery.h"
+#include "scarlet_monastery.h"
 
 //this texts are already used by 3975 and 3976
 #define SAY_ENTRANCE                -1189001
@@ -129,7 +129,7 @@ static Summon Text[]=
     {"Now, know demise!"}
 };
 
-#define EMOTE_LAUGHS    "laughs"
+#define EMOTE_LAUGHS    "Headless Horseman laughs"
 
 struct CW_DLL_DECL mob_wisp_invisAI : public ScriptedAI
 {
@@ -406,15 +406,15 @@ struct CW_DLL_DECL boss_headless_horsemanAI : public ScriptedAI
             headGUID = 0;
         }
 
-        if (pInstance)
-            pInstance->SetData(DATA_HORSEMAN_EVENT, NOT_STARTED);
+        //if (pInstance)
+        //    pInstance->SetData(DATA_HORSEMAN_EVENT, NOT_STARTED);
     }
 
     void FlyMode()
     {
         m_creature->SetVisibility(VISIBILITY_OFF);
         m_creature->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
-        m_creature->AddUnitMovementFlag(MOVEMENTFLAG_HOVER);
+        m_creature->AddUnitMovementFlag(MOVEMENTFLAG_ONTRANSPORT + MOVEMENTFLAG_LEVITATING);
         m_creature->SetSpeed(MOVE_WALK,5.0f,true);
         wp_reached = false;
         count = 0;
@@ -447,7 +447,7 @@ struct CW_DLL_DECL boss_headless_horsemanAI : public ScriptedAI
                     pInstance->SetData(GAMEOBJECT_PUMPKIN_SHRINE, 0);   //hide gameobject
                 break;
             case 19:
-                m_creature->RemoveUnitMovementFlag(MOVEMENTFLAG_HOVER);
+                m_creature->RemoveUnitMovementFlag(MOVEMENTFLAG_ONTRANSPORT + MOVEMENTFLAG_LEVITATING);
                 break;
             case 20:
             {
@@ -506,7 +506,7 @@ struct CW_DLL_DECL boss_headless_horsemanAI : public ScriptedAI
         std::list<Player*> temp;
         std::list<Player*>::iterator j;
 
-        for(Map::PlayerList::const_iterator i = PlayerList.begin(); i != PlayerList.end(); ++i)
+        for (Map::PlayerList::const_iterator i = PlayerList.begin(); i != PlayerList.end(); ++i)
             if ((m_creature->IsWithinLOSInMap(i->getSource()) || !checkLoS) && m_creature->getVictim() != i->getSource() &&
                 m_creature->IsWithinDistInMap(i->getSource(), range) && i->getSource()->isAlive())
                 temp.push_back(i->getSource());
@@ -560,7 +560,7 @@ struct CW_DLL_DECL boss_headless_horsemanAI : public ScriptedAI
             caster->GetMotionMaster()->MoveFollow(m_creature,6,urand(0,5));
             //DoResetThreat();//not sure if need
             std::list<HostilReference*>::iterator itr;
-            for(itr = caster->getThreatManager().getThreatList().begin(); itr != caster->getThreatManager().getThreatList().end(); ++itr)
+            for (itr = caster->getThreatManager().getThreatList().begin(); itr != caster->getThreatManager().getThreatList().end(); ++itr)
             {
                 Unit* pUnit = Unit::GetUnit((*m_creature), (*itr)->getUnitGuid());
                 if (pUnit && pUnit->isAlive() && pUnit != caster)
@@ -821,6 +821,13 @@ struct CW_DLL_DECL mob_pulsing_pumpkinAI : public ScriptedAI
 
 bool GOHello_go_loosely_turned_soil(Player* pPlayer, GameObject* soil)
 {
+    ScriptedInstance* pInstance = pPlayer->GetInstanceData();
+    if (pInstance)
+    {
+        if(pInstance->GetData(DATA_HORSEMAN_EVENT) != NOT_STARTED)
+            return true;
+        pInstance->SetData(DATA_HORSEMAN_EVENT, IN_PROGRESS);
+    }
 /*  if (soil->GetGoType() == GAMEOBJECT_TYPE_QUESTGIVER && plr->getLevel() > 64)
     {
         plr->PrepareQuestMenu(soil->GetGUID());

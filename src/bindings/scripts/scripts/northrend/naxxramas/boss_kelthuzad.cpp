@@ -22,7 +22,7 @@ SDCategory: Naxxramas
 EndScriptData */
 
 #include "precompiled.h"
-#include "def_naxxramas.h"
+#include "naxxramas.h"
 
 //when shappiron dies. dialog between kel and lich king (in this order)
 #define SAY_SAPP_DIALOG1            -1533084 //not used
@@ -236,7 +236,7 @@ struct CW_DLL_DECL boss_kelthuzadAI : public BossAI
                     {
                         std::vector<Unit*> unitList;
                         std::list<HostilReference*> *threatList = &me->getThreatManager().getThreatList();
-                        for(std::list<HostilReference*>::const_iterator itr = threatList->begin(); itr != threatList->end(); ++itr)
+                        for (std::list<HostilReference*>::const_iterator itr = threatList->begin(); itr != threatList->end(); ++itr)
                         {
                             if ((*itr)->getTarget()->GetTypeId() == TYPEID_PLAYER
                                 && (*itr)->getTarget()->getPowerType() == POWER_MANA

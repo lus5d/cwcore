@@ -22,8 +22,7 @@ SDCategory: Razorfen Kraul
 EndScriptData */
 
 #include "precompiled.h"
-#include "def_razorfen_kraul.h"
-
+#include "razorfen_kraul.h"
 
 #define WARD_KEEPERS_NR 2
 
@@ -48,7 +47,7 @@ struct CW_DLL_DECL instance_razorfen_kraul : public ScriptedInstance
 
         if (!players.isEmpty())
         {
-            for(Map::PlayerList::const_iterator itr = players.begin(); itr != players.end(); ++itr)
+            for (Map::PlayerList::const_iterator itr = players.begin(); itr != players.end(); ++itr)
             {
                 if (Player* plr = itr->getSource())
                     return plr;

@@ -10,7 +10,7 @@ Script Data End */
 update creature_template set scriptname = 'boss_sjonnir' where entry = '';
 *** SQL END ***/
 #include "precompiled.h"
-#include "def_halls_of_stone.h"
+#include "halls_of_stone.h"
 
 enum Spells
 {
@@ -190,7 +190,7 @@ struct CW_DLL_DECL boss_sjonnirAI : public ScriptedAI
                 if (pMap && pMap->IsDungeon())
                 {
                     Map::PlayerList const &players = pMap->GetPlayers();
-                    for(Map::PlayerList::const_iterator itr = players.begin(); itr != players.end(); ++itr)
+                    for (Map::PlayerList::const_iterator itr = players.begin(); itr != players.end(); ++itr)
                         itr->getSource()->CompletedAchievement(AchievAbuseTheOoze);
                 }
             }

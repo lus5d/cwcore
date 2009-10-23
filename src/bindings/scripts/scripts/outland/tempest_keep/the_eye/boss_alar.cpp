@@ -22,7 +22,7 @@ SDCategory: Tempest Keep, The Eye
 EndScriptData */
 
 #include "precompiled.h"
-#include "def_the_eye.h"
+#include "the_eye.h"
 
 #define SPELL_FLAME_BUFFET            34121 // Flame Buffet - every 1,5 secs in phase 1 if there is no victim in melee range and after Dive Bomb in phase 2 with same conditions
 #define SPELL_FLAME_QUILLS            34229 // Randomly after changing position in phase after watching tonns of movies, set probability 20%
@@ -288,7 +288,7 @@ struct CW_DLL_DECL boss_alarAI : public ScriptedAI
                         WaitTimer = 2000;
                         return;
                     case WE_SUMMON:
-                        for(uint8 i = 0; i < 2; ++i)
+                        for (uint8 i = 0; i < 2; ++i)
                             DoSpawnCreature(CREATURE_EMBER_OF_ALAR, 0, 0, 0, 0, TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT, 5000);
                         m_creature->SetFloatValue(UNIT_FIELD_BOUNDINGRADIUS, 10);
                         m_creature->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
@@ -506,17 +506,17 @@ void AddSC_boss_alar()
     Script *newscript;
 
     newscript = new Script;
-    newscript->Name="boss_alar";
+    newscript->Name = "boss_alar";
     newscript->GetAI = &GetAI_boss_alar;
     newscript->RegisterSelf();
 
     newscript = new Script;
-    newscript->Name="mob_ember_of_alar";
+    newscript->Name = "mob_ember_of_alar";
     newscript->GetAI = &GetAI_mob_ember_of_alar;
     newscript->RegisterSelf();
 
     newscript = new Script;
-    newscript->Name="mob_flame_patch_alar";
+    newscript->Name = "mob_flame_patch_alar";
     newscript->GetAI = &GetAI_mob_flame_patch_alar;
     newscript->RegisterSelf();
 }

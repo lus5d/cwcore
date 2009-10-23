@@ -24,7 +24,7 @@ SDCategory: Ulduar - Ulduar
 EndScriptData */
 
 #include "precompiled.h"
-#include "def_ulduar.h"
+#include "ulduar.h"
 
 // Any boss
 #define SPELL_SUPERCHARGE   61920
@@ -62,8 +62,6 @@ EndScriptData */
 #define SPELL_LIGHTNING_TENDRILS_H   63486
 #define SPELL_STORMSHIELD            64187
 
-
-
 enum eEnums
 {
     EVENT_ENRAGE,
@@ -87,14 +85,12 @@ enum eEnums
 
 };
 
-
-
 bool IsEncounterComplete(ScriptedInstance* pInstance, Creature* m_creature)
 {
    if (!pInstance || !m_creature)
         return false;
 
-    for(uint8 i = 0; i < 3; ++i)
+    for (uint8 i = 0; i < 3; ++i)
     {
         uint64 guid = pInstance->GetData64(DATA_STEELBREAKER+i);
         if(!guid)

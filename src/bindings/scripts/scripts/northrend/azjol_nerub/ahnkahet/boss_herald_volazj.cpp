@@ -25,7 +25,7 @@ SDCategory: Ahn'kahet
 EndScriptData */
 
 #include "precompiled.h"
-#include "def_ahnkahet.h"
+#include "ahnkahet.h"
 
 enum Spells
 {
@@ -131,7 +131,7 @@ struct CW_DLL_DECL boss_volazjAI : public ScriptedAI
         if (HeroicMode && uiEncounterTimer < 120000 && pMap && pMap->IsDungeon() && AchievQuickDemise)
         {
             Map::PlayerList const &players = pMap->GetPlayers();
-                    for(Map::PlayerList::const_iterator itr = players.begin(); itr != players.end(); ++itr)
+                    for (Map::PlayerList::const_iterator itr = players.begin(); itr != players.end(); ++itr)
                         itr->getSource()->CompletedAchievement(AchievQuickDemise);
         }
     }

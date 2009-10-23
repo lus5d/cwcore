@@ -22,7 +22,7 @@ SDCategory: Temple of Ahn'Qiraj
 EndScriptData */
 
 #include "precompiled.h"
-#include "def_temple_of_ahnqiraj.h"
+#include "temple_of_ahnqiraj.h"
 #include "Group.h"
 
 #define SAY_AGGRO1                  -1531000
@@ -296,7 +296,7 @@ void AddSC_boss_skeram()
 {
     Script *newscript;
     newscript = new Script;
-    newscript->Name="boss_skeram";
+    newscript->Name = "boss_skeram";
     newscript->GetAI = &GetAI_boss_skeram;
     newscript->RegisterSelf();
 }

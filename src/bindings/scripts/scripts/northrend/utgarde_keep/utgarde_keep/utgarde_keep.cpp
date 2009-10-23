@@ -17,7 +17,7 @@
  */
 
 #include "precompiled.h"
-#include "def_utgarde_keep.h"
+#include "utgarde_keep.h"
 
 uint32 entry_search[3] =
 {
@@ -108,7 +108,7 @@ struct CW_DLL_DECL npc_dragonflayer_forge_masterAI : public ScriptedAI
         float diff = 30.0f;
         int near_f = 0;
 
-        for(uint8 i = 0; i < 3 ; ++i)
+        for (uint8 i = 0; i < 3 ; ++i)
         {
             GameObject* temp;
             temp = m_creature->FindNearestGameObject(entry_search[i],30);

@@ -15,7 +15,7 @@
  */
 
 #include "precompiled.h"
-#include "def_naxxramas.h"
+#include "naxxramas.h"
 
 #define SAY_AGGRO               RAND(-1533075,-1533076,-1533077)
 #define SAY_SUMMON              -1533078
@@ -120,7 +120,7 @@ struct CW_DLL_DECL boss_nothAI : public BossAI
 
     void SummonUndead(uint32 entry, uint32 num)
     {
-        for(uint32 i = 0; i < num; ++i)
+        for (uint32 i = 0; i < num; ++i)
         {
             uint32 pos = rand()%MAX_SUMMON_POS;
             me->SummonCreature(entry, SummonPos[pos][0], SummonPos[pos][1], SummonPos[pos][2],

@@ -22,7 +22,7 @@ SDCategory: Zul'Gurub
 EndScriptData */
 
 #include "precompiled.h"
-#include "def_zulgurub.h"
+#include "zulgurub.h"
 
 #define SAY_AGGRO               -1309015
 #define SAY_DING_KILL           -1309016
@@ -219,7 +219,7 @@ struct CW_DLL_DECL boss_mandokirAI : public ScriptedAI
                     TargetInRange = 0;
 
                     std::list<HostilReference*>::iterator i = m_creature->getThreatManager().getThreatList().begin();
-                    for(; i != m_creature->getThreatManager().getThreatList().end(); ++i)
+                    for (; i != m_creature->getThreatManager().getThreatList().end(); ++i)
                     {
                         Unit* pUnit = Unit::GetUnit(*m_creature, (*i)->getUnitGuid());
                         if (pUnit && m_creature->IsWithinMeleeRange(pUnit))

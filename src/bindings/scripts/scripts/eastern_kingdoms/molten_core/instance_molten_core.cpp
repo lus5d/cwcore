@@ -22,7 +22,7 @@ SDCategory: Molten Core
 EndScriptData */
 
 #include "precompiled.h"
-#include "def_molten_core.h"
+#include "molten_core.h"
 
 #define MAX_ENCOUNTER      9
 
@@ -93,7 +93,6 @@ struct CW_DLL_DECL instance_molten_core : public ScriptedInstance
         return false;
     };
 
-
     void OnGameObjectCreate(GameObject* pGo, bool add)
     {
         switch(pGo->GetEntry())
@@ -124,7 +123,6 @@ struct CW_DLL_DECL instance_molten_core : public ScriptedInstance
             break;
         }
     }
-
 
     void OnCreatureCreate(Creature* pCreature, bool add)
     {

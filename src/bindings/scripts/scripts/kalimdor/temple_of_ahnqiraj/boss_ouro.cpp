@@ -22,7 +22,7 @@ SDCategory: Temple of Ahn'Qiraj
 EndScriptData */
 
 #include "precompiled.h"
-#include "def_temple_of_ahnqiraj.h"
+#include "temple_of_ahnqiraj.h"
 
 #define SPELL_SWEEP             26103
 #define SPELL_SANDBLAST         26102
@@ -133,7 +133,7 @@ void AddSC_boss_ouro()
 {
     Script *newscript;
     newscript = new Script;
-    newscript->Name="boss_ouro";
+    newscript->Name = "boss_ouro";
     newscript->GetAI = &GetAI_boss_ouro;
     newscript->RegisterSelf();
 }

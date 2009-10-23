@@ -26,7 +26,7 @@ npc_forest_frog
 EndContentData */
 
 #include "precompiled.h"
-#include "def_zulaman.h"
+#include "zulaman.h"
 
 /*######
 ## npc_forest_frog
@@ -45,9 +45,9 @@ struct CW_DLL_DECL npc_forest_frogAI : public ScriptedAI
 
     ScriptedInstance *pInstance;
 
-    void Reset() { }
+    void Reset() {}
 
-    void EnterCombat(Unit *who) { }
+    void EnterCombat(Unit *who) {}
 
     void DoSpawnRandom()
     {
@@ -147,7 +147,7 @@ bool GossipSelect_npc_zulaman_hostage(Player* pPlayer, Creature* pCreature, uint
         float x, y, z;
         pCreature->GetPosition(x, y, z);
         uint32 entry = pCreature->GetEntry();
-        for(uint8 i = 0; i < 4; ++i)
+        for (uint8 i = 0; i < 4; ++i)
         {
             if (HostageEntry[i] == entry)
             {

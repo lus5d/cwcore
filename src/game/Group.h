@@ -107,6 +107,8 @@ class Roll : public LootValidatorRef
         Roll(uint64 _guid, LootItem const& li)
             : itemGUID(_guid), itemid(li.itemid), itemRandomPropId(li.randomPropertyId), itemRandomSuffix(li.randomSuffix),
             totalPlayersRolling(0), totalNeed(0), totalGreed(0), totalDisenchant(0), totalPass(0), itemSlot(0) {}
+            : itemGUID(_guid), itemid(li.itemid), itemRandomPropId(li.randomPropertyId), itemRandomSuffix(li.randomSuffix), itemCount(li.count),
+            totalPlayersRolling(0), totalNeed(0), totalGreed(0), totalPass(0), itemSlot(0) {}
         ~Roll() { }
         void setLoot(Loot *pLoot) { link(pLoot, this); }
         Loot *getLoot() { return getTarget(); }
@@ -116,6 +118,7 @@ class Roll : public LootValidatorRef
         uint32 itemid;
         int32  itemRandomPropId;
         uint32 itemRandomSuffix;
+        uint8 itemCount;
         typedef std::map<uint64, RollVote> PlayerVote;
         PlayerVote playerVote;                              //vote position correspond with player position (in group)
         uint8 totalPlayersRolling;

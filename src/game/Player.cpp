@@ -1890,7 +1890,8 @@ bool Player::TeleportTo(uint32 mapid, float x, float y, float z, float orientati
             }
 
             // remove from old map now
-            if(oldmap) oldmap->Remove(this, false);
+            if(oldmap)
+                oldmap->Remove(this, false);
 
             // new final coordinates
             float final_x = x;
@@ -20357,9 +20358,9 @@ bool Player::RewardPlayerAndGroupAtKill(Unit* pVictim)
 
 void Player::RewardPlayerAndGroupAtEvent(uint32 creature_id, WorldObject* pRewardSource)
 {
-    if (!pRewardSource || pRewardSource->GetTypeId() != TYPEID_UNIT)
+    if (!pRewardSource)
         return;
-    uint64 creature_guid = pRewardSource->GetGUID();
+    uint64 creature_guid = (pRewardSource->GetTypeId() == TYPEID_UNIT) ? pRewardSource->GetGUID() : uint64(0);
 
     // prepare data for near group iteration
     if(Group *pGroup = GetGroup())

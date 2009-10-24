@@ -34,8 +34,7 @@ enum RollType
     ROLL_NEED         = 1,
     ROLL_GREED        = 2,
 	ROLL_DISENCHANT   = 3,
-    MAX_ROLL_TYPE     = 4,
-    MAX_ROLL_TYPE     = 5
+    MAX_ROLL_TYPE     = 4
 };
 
 #define ALL_ROLL_TYPE_MASK 0x0F

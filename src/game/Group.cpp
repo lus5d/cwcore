@@ -466,7 +466,6 @@ void Group::Disband(bool hideDestroy)
 void Group::SendLootStartRoll(uint32 CountDown, const Roll &r)
 {
     WorldPacket data(SMSG_LOOT_START_ROLL, (8+4+4+4+4+4+4+1));
-    WorldPacket data(SMSG_LOOT_START_ROLL, (8+4+4+4+4+4+4));
     data << uint64(r.itemGUID);                             // guid of rolled item
     data << uint32(r.totalPlayersRolling);                  // maybe the number of players rolling for it???
     data << uint32(r.itemid);                               // the itemEntryId for the item that shall be rolled for

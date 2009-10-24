@@ -38,8 +38,9 @@ enum RollVote
     PASS              = 0,
     NEED              = 1,
     GREED             = 2,
-    NOT_EMITED_YET    = 3,
-    NOT_VALID         = 4
+    DISENCHANT        = 3,
+    NOT_EMITED_YET    = 4,
+    NOT_VALID         = 5
 };
 
 enum GroupMemberOnlineStatus
@@ -55,10 +56,13 @@ enum GroupMemberOnlineStatus
     MEMBER_STATUS_UNK5      = 0x0080,                       // never seen
 };
 
-enum GroupType
+enum GroupType                                              // group type flags?
 {
     GROUPTYPE_NORMAL = 0,
-    GROUPTYPE_RAID   = 1
+    GROUPTYPE_BG     = 1,
+    GROUPTYPE_RAID   = 2,
+    GROUPTYPE_BGRAID = 3,
+    GROUPTYPE_LFD    = 4
 };
 
 class BattleGround;
@@ -102,7 +106,7 @@ class Roll : public LootValidatorRef
     public:
         Roll(uint64 _guid, LootItem const& li)
             : itemGUID(_guid), itemid(li.itemid), itemRandomPropId(li.randomPropertyId), itemRandomSuffix(li.randomSuffix),
-            totalPlayersRolling(0), totalNeed(0), totalGreed(0), totalPass(0), itemSlot(0) {}
+            totalPlayersRolling(0), totalNeed(0), totalGreed(0), totalDisenchant(0), totalPass(0), itemSlot(0) {}
         ~Roll() { }
         void setLoot(Loot *pLoot) { link(pLoot, this); }
         Loot *getLoot() { return getTarget(); }
@@ -117,6 +121,7 @@ class Roll : public LootValidatorRef
         uint8 totalPlayersRolling;
         uint8 totalNeed;
         uint8 totalGreed;
+        uint8 totalDisenchant;
         uint8 totalPass;
         uint8 itemSlot;
 };

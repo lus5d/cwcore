@@ -460,13 +460,14 @@ void Group::Disband(bool hideDestroy)
 
 void Group::SendLootStartRoll(uint32 CountDown, const Roll &r)
 {
-    WorldPacket data(SMSG_LOOT_START_ROLL, (8+4+4+4+4+4));
+    WorldPacket data(SMSG_LOOT_START_ROLL, (8+4+4+4+4+4+4+1));
     data << uint64(r.itemGUID);                             // guid of rolled item
     data << uint32(r.totalPlayersRolling);                  // maybe the number of players rolling for it???
     data << uint32(r.itemid);                               // the itemEntryId for the item that shall be rolled for
     data << uint32(r.itemRandomSuffix);                     // randomSuffix
     data << uint32(r.itemRandomPropId);                     // item random property ID
     data << uint32(CountDown);                              // the countdown time to choose "need" or "greed"
+    data << uint8(ALL_ROLL_TYPE_MASK);                      // roll type mask
 
     for (Roll::PlayerVote::const_iterator itr=r.playerVote.begin(); itr!=r.playerVote.end(); ++itr)
     {
@@ -731,8 +732,15 @@ void Group::CountRollVote(const uint64& playerGUID, const uint64& Guid, uint32 N
             itr->second = GREED;
         }
         break;
+        case ROLL_DISENCHANT:                               // player choose Disenchant
+        {
+            SendLootRoll(0, playerGUID, 128, ROLL_DISENCHANT, *roll);
+            ++roll->totalDisenchant;
+            itr->second = DISENCHANT;
+        }
+        break;
     }
-    if (roll->totalPass + roll->totalGreed + roll->totalNeed >= roll->totalPlayersRolling)
+    if (roll->totalPass + roll->totalNeed + roll->totalGreed + roll->totalDisenchant >= roll->totalPlayersRolling)
     {
         CountTheRoll(rollI, NumberOfPlayers);
     }
@@ -853,6 +861,39 @@ void Group::CountTheRoll(Rolls::iterator rollI, uint32 NumberOfPlayers)
             }
         }
     }
+    else if(roll->totalDisenchant > 0)
+    {
+        uint8 maxresul = 0;
+        uint64 maxguid  = (*roll->playerVote.begin()).first;
+        Player *player;
+
+        for( Roll::PlayerVote::const_iterator itr = roll->playerVote.begin(); itr != roll->playerVote.end(); ++itr)
+        {
+            if (itr->second != DISENCHANT)
+                continue;
+
+            uint8 randomN = urand(1, 99);
+            SendLootRoll(0, itr->first, randomN, ROLL_DISENCHANT, *roll);
+            if (maxresul < randomN)
+            {
+                maxguid  = itr->first;
+                maxresul = randomN;
+            }
+        }
+        SendLootRollWon(0, maxguid, maxresul, ROLL_DISENCHANT, *roll);
+        player = objmgr.GetPlayer(maxguid);
+
+        if(player && player->GetSession())
+        {
+            LootItem *item = &(roll->getLoot()->items[roll->itemSlot]);
+            item->is_looted = true;
+            roll->getLoot()->NotifyItemRemoved(roll->itemSlot);
+            --roll->getLoot()->unlootedCount;
+
+            ItemPrototype const *pProto = objmgr.GetItemPrototype(roll->itemid);
+            player->AutoStoreLoot(pProto->DisenchantID, LootTemplates_Disenchant, true);
+        }
+    }
     else
     {
         SendLootAllPassed(NumberOfPlayers, *roll);
@@ -957,6 +998,7 @@ void Group::SendUpdate()
             data << (uint8)(onlineState);
             data << (uint8)(citr2->group);                  // groupid
             data << (uint8)(citr2->assistant?0x01:0);       // 0x2 main assist, 0x4 main tank
+            data << uint8(0);                               // 3.3
         }
 
         data << uint64(m_leaderGuid);                       // leader guid
@@ -967,6 +1009,7 @@ void Group::SendUpdate()
             data << (uint8)m_lootThreshold;                 // loot threshold
             data << (uint8)m_dungeonDifficulty;             // Dungeon Difficulty
             data << (uint8)m_raidDifficulty;                // Raid Difficulty
+            data << uint8(0);                               // 3.3
         }
         player->GetSession()->SendPacket( &data );
     }
@@ -1211,10 +1254,16 @@ void Group::_removeRolls(const uint64 &guid)
         if(itr2 == roll->playerVote.end())
             continue;
 
-        if (itr2->second == GREED) --roll->totalGreed;
-        if (itr2->second == NEED) --roll->totalNeed;
-        if (itr2->second == PASS) --roll->totalPass;
-        if (itr2->second != NOT_VALID) --roll->totalPlayersRolling;
+        if (itr2->second == GREED)
+			--roll->totalGreed;
+        if (itr2->second == NEED)
+			--roll->totalNeed;
+        if (itr2->second == PASS)
+			--roll->totalPass;
+		if (itr2->second == DISENCHANT)
+0            --roll->totalDisenchant;
+        if (itr2->second != NOT_VALID)
+			--roll->totalPlayersRolling;
 
         roll->playerVote.erase(itr2);
 

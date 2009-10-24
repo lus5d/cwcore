@@ -2200,29 +2200,19 @@ bool Creature::_IsTargetAcceptable(const Unit *target) const
 {
     assert(target);
 
-    // if the target or myself are unattackable, the target is not acceptable
-    if (!isAttackableByAOE() || !target->isAttackableByAOE())
+    // if the target cannot be attacked, the target is not acceptable
+    if (!canAttack(target, true))
         return false;
 
     const Unit *myVictim = getAttackerForHelper();
-
-    // if I'm already fighting target, the target is acceptable
-    if (myVictim == target || target->getVictim() == this)
-        return true;
-
-    // if I'm hostile towards the target, the target is acceptable
-    if (IsHostileTo(target))
-        return true;
-
     const Unit *targetVictim = target->getAttackerForHelper();
 
-    // if the target does not have a victim, the target is not acceptable
-    if (!targetVictim)
-        return false;
+    // if I'm already fighting target, or I'm hostile towards the target, the target is acceptable
+    if (myVictim == target || targetVictim == this || IsHostileTo(target))
+        return true;
 
     // if the target's victim is friendly, and the target is neutral, the target is acceptable
-    // NOTE: !IsHostileTo(target) is true at this point
-    if (IsFriendlyTo(targetVictim) && !IsFriendlyTo(target))
+    if (targetVictim && IsFriendlyTo(targetVictim))// && !IsFriendlyTo(target)) <- already handled in !canAttack(target, true)
         return true;
 
     // if the target's victim is not friendly, or the target is friendly, the target is not acceptable

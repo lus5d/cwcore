@@ -16132,7 +16132,7 @@ void Player::_LoadBoundInstances(QueryResult *result)
     }
 }
 
-InstancePlayerBind Player::GetBoundInstance(uint32 mapid, Difficulty difficulty)
+InstancePlayerBind *Player::GetBoundInstance(uint32 mapid, Difficulty difficulty)
 {
     // some instances only have one difficulty
     MapDifficulty const* mapDiff = GetMapDifficultyData(mapid,difficulty);
@@ -16153,7 +16153,7 @@ InstanceSave *Player::GetInstanceSave(uint32 mapid)
     if(!pBind || !pBind->perm)
     {
         if(Group *group = GetGroup())
-            if(InstanceGroupBind *groupBind = group->GetBoundInstance(mapid, GetDungeonDifficulty())
+            if(InstanceGroupBind *groupBind = group->GetBoundInstance(mapid, GetDungeonDifficulty()))
                 pSave = groupBind->save;
     }
     return pSave;
@@ -16322,6 +16322,7 @@ bool Player::Satisfy(AccessRequirement const *ar, uint32 target_map, bool report
 {
     if(!isGameMaster() && ar)
     {
+		AreaTrigger const* at;
         uint32 LevelMin = 0;
         uint32 LevelMax = 0;
 
@@ -16329,7 +16330,7 @@ bool Player::Satisfy(AccessRequirement const *ar, uint32 target_map, bool report
         {
             if(ar->levelMin && getLevel() < ar->levelMin)
                 LevelMin = ar->levelMin;
-            if(ar->heroicLevelMin && GetDifficulty() == DUNGEON_DIFFICULTY_HEROIC && getLevel() < ar->heroicLevelMin)
+            if(ar->heroicLevelMin && GetDungeonDifficulty() == DUNGEON_DIFFICULTY_HEROIC && getLevel() < ar->heroicLevelMin)
                 LevelMin = ar->heroicLevelMin;
             if(ar->levelMax && getLevel() > ar->levelMax)
                 LevelMax = ar->levelMax;
@@ -16345,9 +16346,11 @@ bool Player::Satisfy(AccessRequirement const *ar, uint32 target_map, bool report
         else if(ar->item2 && !HasItemCount(ar->item2, 1))
             missingItem = ar->item2;
 
-		MapEntry const* mapEntry = sMapStore.LookupEntry(ar->target_mapId);
-        if(!mapEntry)
-            return;
+		MapEntry const* mapEntry = sMapStore.LookupEntry(at->target_mapId);
+        if(!mapEntry || !mapEntry->IsDungeon())
+		{
+			return true;
+		}
 
         bool isHeroicTargetMap = mapEntry->IsRaid()
             ? (GetPlayer()->GetRaidDifficulty()    >= RAID_DIFFICULTY_10MAN_HEROIC)

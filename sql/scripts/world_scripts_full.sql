@@ -795,8 +795,6 @@ UPDATE `creature_template` SET `ScriptName`='boss_gluth' WHERE `entry`=15932;
 UPDATE `creature_template` SET `ScriptName`='boss_thaddius' WHERE `entry`=15928;
 UPDATE `creature_template` SET `ScriptName`='mob_stalagg' WHERE `entry`=15929;
 UPDATE `creature_template` SET `ScriptName`='mob_feugen' WHERE `entry`=15930;
-UPDATE `creature_template` SET `ScriptName`='boss_stalagg' WHERE `entry`=15929;
-UPDATE `creature_template` SET `ScriptName`='boss_fugen' WHERE `entry`=15930;
 UPDATE `creature_template` SET `ScriptName`='boss_sapphiron' WHERE `entry`=15989;
 UPDATE `creature_template` SET `ScriptName`='boss_kelthuzad' WHERE `entry`=15990;
 UPDATE `creature_template` SET `ScriptName`='' WHERE `entry` IN (16062,30000);
@@ -968,7 +966,7 @@ UPDATE `creature_template` SET `ScriptName`='npc_kaya_flathoof' WHERE `entry`=11
 UPDATE `creature_template` SET `ScriptName`='npc_agnetta_tyrsdottar' WHERE `entry`=30154;
 UPDATE `creature_template` SET `ScriptName`='npc_frostborn_scout' WHERE `entry`=29811;
 UPDATE `creature_template` SET `ScriptName`='npc_thorim' WHERE `entry`=29445;
-UPDATE `creature_template` SET `ScriptName`='npc_goblin_prisoner' WHERE `entry`=29446;
+UPDATE `creature_template` SET `ScriptName`='npc_goblin_prisoner' WHERE `entry`=29466;
 UPDATE `gameobject_template` SET ScriptName = 'go_rusty_cage' WHERE `entry`=191544;
 
 /* STORMWIND CITY */

@@ -223,7 +223,7 @@ struct CW_DLL_DECL boss_mandokirAI : public ScriptedAI
                     {
                         Unit* pUnit = Unit::GetUnit(*m_creature, (*i)->getUnitGuid());
                         if (pUnit && m_creature->IsWithinMeleeRange(pUnit))
-                            TargetInRange++;
+                            ++TargetInRange;
                     }
 
                     if (TargetInRange > 3)

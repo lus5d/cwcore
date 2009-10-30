@@ -337,7 +337,7 @@ struct CW_DLL_DECL npc_brann_hosAI : public npc_escortAI
     void JumpToNextStep(uint32 uiTimer)
     {
       uiPhaseTimer = uiTimer;
-      uiStep++;
+      ++uiStep;
     }
 
     void StartWP()

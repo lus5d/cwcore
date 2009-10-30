@@ -627,11 +627,9 @@ struct CW_DLL_DECL boss_essence_of_angerAI : public ScriptedAI
 void npc_enslaved_soulAI::JustDied(Unit *killer)
 {
     if (ReliquaryGUID)
-    {
-        Creature* Reliquary = (Unit::GetCreature((*m_creature), ReliquaryGUID));
-        if (Reliquary)
-            CAST_AI(boss_reliquary_of_soulsAI, Reliquary->AI())->SoulDeathCount++;
-    }
+        if (Creature *Reliquary = (Unit::GetCreature((*m_creature), ReliquaryGUID)))
+            ++(CAST_AI(boss_reliquary_of_soulsAI, Reliquary->AI())->SoulDeathCount);
+
     DoCast(m_creature, SPELL_SOUL_RELEASE, true);
 }
 

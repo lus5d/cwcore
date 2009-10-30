@@ -527,7 +527,7 @@ struct CW_DLL_DECL boss_roarAI : public ScriptedAI
             {
                 m_creature->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
                 AggroTimer = 0;
-            }else AggroTimer -= diff;
+            } else AggroTimer -= diff;
         }
 
         if (!UpdateVictim())
@@ -819,12 +819,12 @@ struct CW_DLL_DECL boss_bigbadwolfAI : public ScriptedAI
             {
                 IsChasing = false;
 
-                if (Unit* target = Unit::GetUnit((*m_creature), HoodGUID))
+                if (Unit *pTarget = Unit::GetUnit((*m_creature), HoodGUID))
                 {
                     HoodGUID = 0;
-                    if (DoGetThreat(target))
-                        DoModifyThreatPercent(target, -100);
-                    m_creature->AddThreat(target, TempThreat);
+                    if (DoGetThreat(pTarget))
+                        DoModifyThreatPercent(pTarget, -100);
+                    m_creature->AddThreat(pTarget, TempThreat);
                     TempThreat = 0;
                 }
 
@@ -913,19 +913,19 @@ void PretendToDie(Creature* pCreature)
     pCreature->SetStandState(UNIT_STAND_STATE_DEAD);
 };
 
-void Resurrect(Creature* target)
+void Resurrect(Creature *pTarget)
 {
-    target->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
-    target->SetHealth(target->GetMaxHealth());
-    target->SetStandState(UNIT_STAND_STATE_STAND);
-    target->CastSpell(target, SPELL_RES_VISUAL, true);
-    if (target->getVictim())
+    pTarget->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
+    pTarget->SetHealth(pTarget->GetMaxHealth());
+    pTarget->SetStandState(UNIT_STAND_STATE_STAND);
+    pTarget->CastSpell(pTarget, SPELL_RES_VISUAL, true);
+    if (pTarget->getVictim())
     {
-        target->GetMotionMaster()->MoveChase(target->getVictim());
-        target->AI()->AttackStart(target->getVictim());
+        pTarget->GetMotionMaster()->MoveChase(pTarget->getVictim());
+        pTarget->AI()->AttackStart(pTarget->getVictim());
     }
         else
-            target->GetMotionMaster()->Initialize();
+            pTarget->GetMotionMaster()->Initialize();
 };
 
 struct CW_DLL_DECL boss_julianneAI : public ScriptedAI
@@ -1255,7 +1255,7 @@ void boss_julianneAI::UpdateAI(const uint32 diff)
         {
             DoScriptText(SAY_JULIANNE_ENTER, m_creature);
             EntryYellTimer = 0;
-        }else EntryYellTimer -= diff;
+        } else EntryYellTimer -= diff;
     }
 
     if (AggroYellTimer)
@@ -1266,7 +1266,7 @@ void boss_julianneAI::UpdateAI(const uint32 diff)
             m_creature->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
             m_creature->setFaction(16);
             AggroYellTimer = 0;
-        }else AggroYellTimer -= diff;
+        } else AggroYellTimer -= diff;
     }
 
     if (DrinkPoisonTimer)
@@ -1278,7 +1278,7 @@ void boss_julianneAI::UpdateAI(const uint32 diff)
             Phase = PHASE_ROMULO;
             SummonRomuloTimer = 10000;
             DrinkPoisonTimer = 0;
-        }else DrinkPoisonTimer -= diff;
+        } else DrinkPoisonTimer -= diff;
     }
 
     if (Phase == PHASE_ROMULO && !SummonedRomulo)
@@ -1311,7 +1311,7 @@ void boss_julianneAI::UpdateAI(const uint32 diff)
 
             ResurrectSelfTimer = 0;
             ResurrectTimer = 1000;
-        }else ResurrectSelfTimer -= diff;
+        } else ResurrectSelfTimer -= diff;
     }
 
     if (!UpdateVictim() || IsFakingDeath)

@@ -1449,10 +1449,16 @@ void WorldSession::HandleResetInstancesOpcode( WorldPacket & /*recv_data*/ )
     if(pGroup)
     {
         if(pGroup->IsLeader(_player->GetGUID()))
-            pGroup->ResetInstances(INSTANCE_RESET_ALL, _player);
+        {
+            pGroup->ResetInstances(INSTANCE_RESET_ALL, false, _player);
+            pGroup->ResetInstances(INSTANCE_RESET_ALL, true,_player);
+        }
     }
     else
-        _player->ResetInstances(INSTANCE_RESET_ALL);
+    {
+        _player->ResetInstances(INSTANCE_RESET_ALL, false);
+        _player->ResetInstances(INSTANCE_RESET_ALL, true);
+    }
 }
 
 void WorldSession::HandleSetDungeonDifficultyOpcode( WorldPacket & recv_data )
@@ -1462,14 +1468,14 @@ void WorldSession::HandleSetDungeonDifficultyOpcode( WorldPacket & recv_data )
     uint32 mode;
     recv_data >> mode;
 
-    if(mode == _player->GetDungeonDifficulty())
-        return;
-
-    if(mode > DUNGEON_DIFFICULTY_HEROIC)
+    if(mode >= MAX_DUNGEON_DIFFICULTY)
     {
         sLog.outError("WorldSession::HandleSetDungeonDifficultyOpcode: player %d sent an invalid instance mode %d!", _player->GetGUIDLow(), mode);
         return;
     }
+
+    if(Difficulty(mode) == _player->GetDungeonDifficulty())
+        return;
 
     // cannot reset while in an instance
     Map *map = _player->GetMap();
@@ -1488,14 +1494,14 @@ void WorldSession::HandleSetDungeonDifficultyOpcode( WorldPacket & recv_data )
         {
             // the difficulty is set even if the instances can't be reset
             //_player->SendDungeonDifficulty(true);
-            pGroup->ResetInstances(INSTANCE_RESET_CHANGE_DIFFICULTY, _player);
-            pGroup->SetDungeonDifficulty(mode);
+            pGroup->ResetInstances(INSTANCE_RESET_CHANGE_DIFFICULTY, false, _player);
+            pGroup->SetDungeonDifficulty(Difficulty(mode));
         }
     }
     else
     {
-        _player->ResetInstances(INSTANCE_RESET_CHANGE_DIFFICULTY);
-        _player->SetDungeonDifficulty(mode);
+        _player->ResetInstances(INSTANCE_RESET_CHANGE_DIFFICULTY, false);
+        _player->SetDungeonDifficulty(Difficulty(mode));
     }
 }
 
@@ -1507,14 +1513,14 @@ void WorldSession::HandleSetRaidDifficultyOpcode( WorldPacket & recv_data )
     uint32 mode;
     recv_data >> mode;
 
-    if(mode == _player->GetRaidDifficulty())
-        return;
-
-    if(mode > RAID_DIFFICULTY_25MAN_HEROIC)
+    if(mode >= MAX_RAID_DIFFICULTY)
     {
         sLog.outError("WorldSession::HandleSetRaidDifficultyOpcode: player %d sent an invalid instance mode %d!", _player->GetGUIDLow(), mode);
         return;
     }
+
+    if(RaidDifficulties(mode) == _player->GetRaidDifficulty())
+        return;
 
     // cannot reset while in an instance
     Map *map = _player->GetMap();
@@ -1534,14 +1540,14 @@ void WorldSession::HandleSetRaidDifficultyOpcode( WorldPacket & recv_data )
         {
             // the difficulty is set even if the instances can't be reset
             //_player->SendDungeonDifficulty(true);
-            pGroup->ResetInstances(INSTANCE_RESET_CHANGE_DIFFICULTY, _player);
-            pGroup->SetRaidDifficulty(mode);
+            pGroup->ResetInstances(INSTANCE_RESET_CHANGE_DIFFICULTY, true, _player);
+            pGroup->SetRaidDifficulty(Difficulty(mode));
         }
     }
     else
     {
-        _player->ResetInstances(INSTANCE_RESET_CHANGE_DIFFICULTY);
-        _player->SetRaidDifficulty(mode);
+        _player->ResetInstances(INSTANCE_RESET_CHANGE_DIFFICULTY, true);
+        _player->SetRaidDifficulty(Difficulty(mode));
     }
 }
 

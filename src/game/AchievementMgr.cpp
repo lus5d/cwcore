@@ -197,10 +197,10 @@ bool AchievementCriteriaRequirement::IsValid(AchievementCriteriaEntry const* cri
             }
             return true;
         case ACHIEVEMENT_CRITERIA_REQUIRE_MAP_DIFFICULTY:
-            if (difficalty.difficalty >= TOTAL_DUNGEON_DIFFICULTIES)
+            if (difficulty.difficulty >= MAX_DIFFICULTY)
             {
                 sLog.outErrorDb( "Table `achievement_criteria_requirement` (Entry: %u Type: %u) for requirement ACHIEVEMENT_CRITERIA_REQUIRE_MAP_DIFFICULTY (%u) have wrong difficulty in value1 (%u), ignore.",
-                    criteria->ID, criteria->requiredType,requirementType,difficalty.difficalty);
+                    criteria->ID, criteria->requiredType,dataType,difficulty.difficulty);
                 return false;
             }
             return true;
@@ -294,7 +294,7 @@ bool AchievementCriteriaRequirement::Meets(Player const* source, Unit const* tar
         case ACHIEVEMENT_CRITERIA_REQUIRE_DISABLED:
             return false;                                   // always fail
         case ACHIEVEMENT_CRITERIA_REQUIRE_MAP_DIFFICULTY:
-            return source->GetMap()->GetSpawnMode()==difficalty.difficalty;
+            return source->GetMap()->GetSpawnMode()==difficulty.difficulty;
         case ACHIEVEMENT_CRITERIA_REQUIRE_MAP_PLAYER_COUNT:
             return source->GetMap()->GetPlayersCountExceptGMs() <= map_players.maxcount;
         case ACHIEVEMENT_CRITERIA_REQUIRE_T_TEAM:

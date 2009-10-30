@@ -9669,9 +9669,8 @@ bool Unit::isSpellCrit(Unit *pVictim, SpellEntry const *spellProto, SpellSchoolM
                                     pVictim->RemoveAurasDueToSpell(flameShock->GetId(), GetGUID());
                                 return true;
                             }
-                            break;
                         }
-                    break;
+                        break;
                 }
             }
             break;

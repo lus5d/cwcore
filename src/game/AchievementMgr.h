@@ -125,8 +125,8 @@ struct AchievementCriteriaRequirement
         // ACHIEVEMENT_CRITERIA_REQUIRE_MAP_DIFFICULTY    = 12
         struct
         {
-            uint32 difficalty;
-        } difficalty;
+            uint32 difficulty;
+        } difficulty;
         // ACHIEVEMENT_CRITERIA_REQUIRE_MAP_PLAYER_COUNT  = 13
         struct
         {

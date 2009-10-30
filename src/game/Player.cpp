@@ -16347,20 +16347,19 @@ bool Player::Satisfy(AccessRequirement const *ar, uint32 target_map, bool report
             missingItem = ar->item2;
 
 		MapEntry const* mapEntry = sMapStore.LookupEntry(at->target_mapId);
-        if(!mapEntry || !mapEntry->IsDungeon())
-		{
-			return true;
-		}
+        if(!mapEntry)
+            return true;
 
-        bool isHeroicTargetMap = mapEntry->IsRaid()
-            ? (GetPlayer()->GetRaidDifficulty()    >= RAID_DIFFICULTY_10MAN_HEROIC)
-            : (GetPlayer()->GetDungeonDifficulty() >= DUNGEON_DIFFICULTY_HEROIC);
+        //bool isHeroicTargetMap = mapEntry->IsRaid()
+            //? (GetPlayer()->GetRaidDifficulty()    >= RAID_DIFFICULTY_10MAN_HEROIC)
+            //: (GetPlayer()->GetDungeonDifficulty() >= DUNGEON_DIFFICULTY_HEROIC);
 
         uint32 missingKey = 0;
         uint32 missingHeroicQuest = 0;
-        if(isHeroicTargetMap)
+        //if(isHeroicTargetMap)
         {
             if(ar->heroicKey)
+			
             {
                 if(!HasItemCount(ar->heroicKey, 1) &&
                     (!ar->heroicKey2 || !HasItemCount(ar->heroicKey2, 1)))

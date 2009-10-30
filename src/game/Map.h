@@ -294,10 +294,6 @@ class MANGOS_DLL_SPEC Map : public GridRefManager<NGridType>, public MaNGOS::Obj
         //function for setting up visibility distance for maps on per-type/per-Id basis
         virtual void InitVisibilityDistance();
 
-        float GetVisibilityDistance() const { return m_VisibleDistance; }
-        //function for setting up visibility distance for maps on per-type/per-Id basis
-        virtual void InitVisibilityDistance();
-
         void PlayerRelocation(Player *, float x, float y, float z, float angl);
         void CreatureRelocation(Creature *creature, float x, float y, float, float);
 

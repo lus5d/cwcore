@@ -3987,8 +3987,8 @@ bool ChatHandler::HandleLookupMapCommand(const char* args)
                 if(MapInfo->IsRaid())
                     ss << GetCWString(LANG_RAID);
 
-                if(MapInfo->SupportsHeroicMode())
-                    ss << GetCWString(LANG_HEROIC);
+                //if(MapInfo->SupportsHeroicMode())
+                    //ss << GetCWString(LANG_HEROIC);
 
                 if(MapInfo->IsMountAllowed())
                     ss << GetCWString(LANG_MOUNTABLE);

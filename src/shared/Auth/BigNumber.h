@@ -22,6 +22,7 @@
 #define _AUTH_BIGNUMBER_H
 
 #include "Common.h"
+#include "ByteBuffer.h"
 
 struct bignum_st;
 

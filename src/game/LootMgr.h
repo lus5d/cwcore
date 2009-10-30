@@ -24,6 +24,7 @@
 #include "ItemEnchantmentMgr.h"
 #include "ByteBuffer.h"
 #include "Utilities/LinkedReference/RefManager.h"
+#include "SharedDefines.h"
 
 #include <map>
 #include <vector>
@@ -81,15 +82,15 @@ struct LootStoreItem
     uint32  itemid;                                         // id of the item
     float   chance;                                         // always positive, chance to drop for both quest and non-quest items, chance to be used for refs
     int32   mincountOrRef;                                  // mincount for drop items (positive) or minus referenced TemplateleId (negative)
-    uint8   group       :7;
     uint16  lootmode;
+    uint8   group       :7;
     bool    needs_quest :1;                                 // quest drop (negative ChanceOrQuestChance in DB)
     uint8   maxcount    :8;                                 // max drop count for the item (mincountOrRef positive) or Ref multiplicator (mincountOrRef negative)
     uint16  conditionId :16;                                // additional loot condition Id
 
     // Constructor, converting ChanceOrQuestChance -> (chance, needs_quest)
     // displayid is filled in IsValid() which must be called after
-    LootStoreItem(uint32 _itemid, float _chanceOrQuestChance, uint8 _group, uint16 _lootmode, uint8 _conditionId, int32 _mincountOrRef, uint8 _maxcount)
+    LootStoreItem(uint32 _itemid, float _chanceOrQuestChance, uint16 _lootmode, uint8 _group, uint8 _conditionId, int32 _mincountOrRef, uint8 _maxcount)
         : itemid(_itemid), chance(fabs(_chanceOrQuestChance)), mincountOrRef(_mincountOrRef), lootmode(_lootmode),
         group(_group), needs_quest(_chanceOrQuestChance < 0), maxcount(_maxcount), conditionId(_conditionId)
          {}
@@ -188,7 +189,7 @@ class LootTemplate
         void Process(Loot& loot, LootStore const& store, bool rate, uint16 lootMode, uint8 groupId = 0) const;
 
         // True if template includes at least 1 quest drop entry
-        bool HasQuestDrop(LootTemplateMap const& store, uint8 GroupId = 0) const;
+        bool HasQuestDrop(LootTemplateMap const& store, uint8 groupId = 0) const;
         // True if template includes at least 1 quest drop for an active quest of the player
         bool HasQuestDropForPlayer(LootTemplateMap const& store, Player const * player, uint8 groupId = 0) const;
 

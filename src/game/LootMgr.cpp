@@ -84,7 +84,7 @@ void LootStore::Clear()
 // Actual checks are done within LootTemplate::Verify() which is called for every template
 void LootStore::Verify() const
 {
-    for (LootTemplateMap::const_iterator i = m_LootTemplates.begin(); i != m_LootTemplates.end(); ++i )
+    for (LootTemplateMap::const_iterator i = m_LootTemplates.begin(); i != m_LootTemplates.end(); ++i)
         i->second->Verify(*this, i->first);
 }
 
@@ -243,7 +243,7 @@ void LootStore::ReportNotExistedId(uint32 id) const
 // RATE_DROP_ITEMS is no longer used for all types of entries
 bool LootStoreItem::Roll(bool rate) const
 {
-    if(chance>=100.0f)
+    if(chance >= 100.0f)
         return true;
 
     if(mincountOrRef < 0)                                   // reference case
@@ -271,7 +271,7 @@ bool LootStoreItem::IsValid(LootStore const& store, uint32 entry) const
         return false;
     }
 
-    if( mincountOrRef > 0 )                                 // item (quest or non-quest) entry, maybe grouped
+    if (mincountOrRef > 0)                                  // item (quest or non-quest) entry, maybe grouped
     {
         ItemPrototype const *proto = objmgr.GetItemPrototype(itemid);
         if(!proto)
@@ -393,7 +393,7 @@ void Loot::AddItem(LootStoreItem const & item)
 void Loot::FillLoot(uint32 loot_id, LootStore const& store, Player* loot_owner, bool personal, uint16 lootMode /*= DEFAULT_LOOT_MODE*/)
 {
     // Must be provided
-    if(!loot_owner)
+    if (!loot_owner)
         return;
 
     LootTemplate const* tab = store.GetLootFor(loot_id);
@@ -410,7 +410,7 @@ void Loot::FillLoot(uint32 loot_id, LootStore const& store, Player* loot_owner, 
     tab->Process(*this, store, store.IsRatesAllowed(), lootMode);     // Processing is done there, callback via Loot::AddItem()
 
     // Setting access rights for group loot case
-    Group * pGroup=loot_owner->GetGroup();
+    Group * pGroup = loot_owner->GetGroup();
     if(!personal && pGroup)
     {
         for(GroupReference *itr = pGroup->GetFirstMember(); itr != NULL; itr = itr->next())
@@ -1065,9 +1065,9 @@ void LootTemplate::CheckLootRefs(LootTemplateMap const& store, LootIdSet* ref_se
 {
     for(LootStoreItemList::const_iterator ieItr = Entries.begin(); ieItr != Entries.end(); ++ieItr)
     {
-        if(ieItr->mincountOrRef < 0)
+        if (ieItr->mincountOrRef < 0)
         {
-            if(!LootTemplates_Reference.GetLootFor(-ieItr->mincountOrRef))
+            if (!LootTemplates_Reference.GetLootFor(-ieItr->mincountOrRef))
                 LootTemplates_Reference.ReportNotExistedId(-ieItr->mincountOrRef);
             else if(ref_set)
                 ref_set->erase(-ieItr->mincountOrRef);
@@ -1154,11 +1154,11 @@ void LoadLootTemplates_Gameobject()
     // remove real entries and check existence loot
     for(uint32 i = 1; i < sGOStorage.MaxEntry; ++i )
     {
-        if(GameObjectInfo const* gInfo = sGOStorage.LookupEntry<GameObjectInfo>(i))
+        if (GameObjectInfo const* gInfo = sGOStorage.LookupEntry<GameObjectInfo>(i))
         {
-            if(uint32 lootid = gInfo->GetLootId())
+            if (uint32 lootid = gInfo->GetLootId())
             {
-                if(!ids_set.count(lootid))
+                if (!ids_set.count(lootid))
                     LootTemplates_Gameobject.ReportNotExistedId(lootid);
                 else
                     ids_setUsed.insert(lootid);
@@ -1245,13 +1245,13 @@ void LoadLootTemplates_Prospecting()
     for(uint32 i = 1; i < sItemStorage.MaxEntry; ++i )
     {
         ItemPrototype const* proto = sItemStorage.LookupEntry<ItemPrototype>(i);
-        if(!proto)
+        if (!proto)
             continue;
 
-        if((proto->BagFamily & BAG_FAMILY_MASK_MINING_SUPP)==0)
+        if ((proto->BagFamily & BAG_FAMILY_MASK_MINING_SUPP)==0)
             continue;
 
-        if(ids_set.count(proto->ItemId))
+        if (ids_set.count(proto->ItemId))
             ids_set.erase(proto->ItemId);
     }
 

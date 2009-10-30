@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Copyright (C) 2008 - 2009 CW <http://www.CWcore.org/>
  *
  * This program is free software; you can redistribute it and/or modify

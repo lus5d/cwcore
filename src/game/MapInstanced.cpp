@@ -146,7 +146,7 @@ Map* MapInstanced::CreateInstance(const uint32 mapId, Player * player, uint32 in
             return NULL;
         // else log in at a saved instance
 
-        return CreateInstance(instanceId, pSave, pSave->GetDifficulty(IsRaid()));
+        return CreateInstance(instanceId, pSave, pSave->GetDifficulty());
     }
     else if(!player->GetSession()->PlayerLoading())
     {

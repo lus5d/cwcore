@@ -15107,7 +15107,7 @@ bool Player::LoadFromDB( uint32 guid, SqlQueryHolder *holder )
 
     // fix crash (because of if(Map *map = _FindMap(instanceId)) in MapInstanced::CreateInstance)
     if(instanceId)
-        if(InstanceSave * save = GetInstanceSave(mapId))
+        if(InstanceSave *save = GetInstanceSave(mapId))
             if(save->GetInstanceId() != instanceId)
                 instanceId = 0;
 
@@ -16132,7 +16132,7 @@ void Player::_LoadBoundInstances(QueryResult *result)
     }
 }
 
-InstancePlayerBind* Player::GetBoundInstance(uint32 mapid, Difficulty difficulty)
+InstancePlayerBind Player::GetBoundInstance(uint32 mapid, Difficulty difficulty)
 {
     // some instances only have one difficulty
     MapDifficulty const* mapDiff = GetMapDifficultyData(mapid,difficulty);
@@ -16146,14 +16146,14 @@ InstancePlayerBind* Player::GetBoundInstance(uint32 mapid, Difficulty difficulty
         return NULL;
 }
 
-InstanceSave * Player::GetInstanceSave(uint32 mapid)
+InstanceSave *Player::GetInstanceSave(uint32 mapid)
 {
     InstancePlayerBind *pBind = GetBoundInstance(mapid, GetDungeonDifficulty());
     InstanceSave *pSave = pBind ? pBind->save : NULL;
     if(!pBind || !pBind->perm)
     {
         if(Group *group = GetGroup())
-            if(InstanceGroupBind *groupBind = group->GetBoundInstance(mapid, GetDungeonDifficulty()))
+            if(InstanceGroupBind *groupBind = group->GetBoundInstance(mapid, GetDungeonDifficulty())
                 pSave = groupBind->save;
     }
     return pSave;
@@ -16179,7 +16179,7 @@ InstancePlayerBind* Player::BindToInstance(InstanceSave *save, bool permanent, b
 {
     if(save)
     {
-        InstancePlayerBind& bind = m_boundInstances[save->GetDungeonDifficulty()][save->GetMapId()];
+        InstancePlayerBind& bind = m_boundInstances[save->GetDifficulty()][save->GetMapId()];
         if(bind.save)
         {
             // update the save when the group kills a boss
@@ -16199,7 +16199,7 @@ InstancePlayerBind* Player::BindToInstance(InstanceSave *save, bool permanent, b
 
         bind.save = save;
         bind.perm = permanent;
-        if(!load) sLog.outDebug("Player::BindToInstance: %s(%d) is now bound to map %d, instance %d, difficulty %d", GetName(), GetGUIDLow(), save->GetMapId(), save->GetInstanceId(), save->GetDungeonDifficulty());
+        if(!load) sLog.outDebug("Player::BindToInstance: %s(%d) is now bound to map %d, instance %d, difficulty %d", GetName(), GetGUIDLow(), save->GetMapId(), save->GetInstanceId(), save->GetDifficulty());
         return &bind;
     }
     else
@@ -16225,7 +16225,7 @@ void Player::SendRaidInfo()
             {
                 InstanceSave *save = itr->second.save;
                 data << uint32(save->GetMapId());           // map id
-                data << uint32(save->GetDungeonDifficulty());      // difficulty
+                data << uint32(save->GetDifficulty());      // difficulty
                 data << uint64(save->GetInstanceId());      // instance id
                 data << uint32(save->GetResetTime() - now); // reset time
                 data << uint32(0);                          // is extended
@@ -16329,7 +16329,7 @@ bool Player::Satisfy(AccessRequirement const *ar, uint32 target_map, bool report
         {
             if(ar->levelMin && getLevel() < ar->levelMin)
                 LevelMin = ar->levelMin;
-            if(ar->heroicLevelMin && GetDungeonDifficulty() == DUNGEON_DIFFICULTY_HEROIC && getLevel() < ar->heroicLevelMin)
+            if(ar->heroicLevelMin && GetDifficulty() == DUNGEON_DIFFICULTY_HEROIC && getLevel() < ar->heroicLevelMin)
                 LevelMin = ar->heroicLevelMin;
             if(ar->levelMax && getLevel() > ar->levelMax)
                 LevelMax = ar->levelMax;
@@ -16345,7 +16345,7 @@ bool Player::Satisfy(AccessRequirement const *ar, uint32 target_map, bool report
         else if(ar->item2 && !HasItemCount(ar->item2, 1))
             missingItem = ar->item2;
 
-		MapEntry const* mapEntry = sMapStore.LookupEntry(at->target_mapId);
+		MapEntry const* mapEntry = sMapStore.LookupEntry(ar->target_mapId);
         if(!mapEntry)
             return;
 

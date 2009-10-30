@@ -943,7 +943,7 @@ struct BGData
     bool HasTaxiPath() const { return taxiPath[0] && taxiPath[1]; }
 };
 
-class MANGOS_DLL_SPEC Player : public Unit
+class CW_DLL_SPEC Player : public Unit
 {
     friend class WorldSession;
     friend void Item::AddToUpdateQueueOf(Player *player);
@@ -2190,6 +2190,7 @@ class MANGOS_DLL_SPEC Player : public Unit
         BoundInstancesMap m_boundInstances[MAX_DIFFICULTY];
         InstancePlayerBind* GetBoundInstance(uint32 mapid, Difficulty difficulty);
         BoundInstancesMap& GetBoundInstances(Difficulty difficulty) { return m_boundInstances[difficulty]; }
+		InstanceSave * GetInstanceSave(uint32 mapid);
         void UnbindInstance(uint32 mapid, Difficulty difficulty, bool unload = false);
         void UnbindInstance(BoundInstancesMap::iterator &itr, Difficulty difficulty, bool unload = false);
         InstancePlayerBind* BindToInstance(InstanceSave *save, bool permanent, bool load = false);

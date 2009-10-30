@@ -1645,7 +1645,7 @@ InstanceGroupBind* Group::BindToInstance(InstanceSave *save, bool permanent, boo
 {
     if(save && !isBGGroup())
     {
-        InstanceGroupBind& bind = m_boundInstances[save->GetDungeonDifficulty()][save->GetMapId()];
+        InstanceGroupBind& bind = m_boundInstances[save->GetDifficulty()][save->GetMapId()];
         if(bind.save)
         {
             // when a boss is killed or when copying the players's binds to the group
@@ -1663,7 +1663,7 @@ InstanceGroupBind* Group::BindToInstance(InstanceSave *save, bool permanent, boo
 
         bind.save = save;
         bind.perm = permanent;
-        if(!load) sLog.outDebug("Group::BindToInstance: %d is now bound to map %d, instance %d, difficulty %d", GUID_LOPART(GetLeaderGUID()), save->GetMapId(), save->GetInstanceId(), save->GetDungeonDifficulty());
+        if(!load) sLog.outDebug("Group::BindToInstance: %d is now bound to map %d, instance %d, difficulty %d", GUID_LOPART(GetLeaderGUID()), save->GetMapId(), save->GetInstanceId(), save->GetDifficulty());
         return &bind;
     }
     else
@@ -1689,7 +1689,7 @@ void Group::_homebindIfInstance(Player *player)
         // leaving the group in an instance, the homebind timer is started
         // unless the player is permanently saved to the instance
         InstanceSave *save = sInstanceSaveManager.GetInstanceSave(player->GetInstanceId());
-        InstancePlayerBind *playerBind = save ? player->GetBoundInstance(save->GetMapId(), save->GetDungeonDifficulty()) : NULL;
+        InstancePlayerBind *playerBind = save ? player->GetBoundInstance(save->GetMapId(), save->GetDifficulty()) : NULL;
         if(!playerBind || !playerBind->perm)
             player->m_InstanceValid = false;
     }

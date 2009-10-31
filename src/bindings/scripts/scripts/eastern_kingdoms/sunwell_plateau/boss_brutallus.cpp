@@ -104,6 +104,7 @@ struct CW_DLL_DECL boss_brutallusAI : public ScriptedAI
 
         m_creature->CastSpell(m_creature, SPELL_DUAL_WIELD, true);
         m_creature->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
+        m_creature->SetReactState(REACT_DEFENSIVE); //enables MoveInLineOfSight
         Madrigosa = Unit::GetUnit(*m_creature, pInstance->GetData64(DATA_MADRIGOSA));
         //Creature* boss = Unit::GetCreature((*m_creature),AzgalorGUID);
         if (!Madrigosa) error_log("Madrigosa was not found");
@@ -217,7 +218,7 @@ struct CW_DLL_DECL boss_brutallusAI : public ScriptedAI
                 ++IntroPhase;
                 break;
             case 7:
-                m_creature->DealDamage(Madrigosa, Madrigosa->GetHealth(), NULL, DIRECT_DAMAGE, SPELL_SCHOOL_MASK_NORMAL, NULL, true);
+                m_creature->Kill(Madrigosa);
                 DoScriptText(YELL_MADR_DEATH, Madrigosa);
                 m_creature->SetHealth(m_creature->GetMaxHealth());
                 m_creature->AttackStop();
@@ -256,13 +257,13 @@ struct CW_DLL_DECL boss_brutallusAI : public ScriptedAI
     {
         if (IsIntro)
         {
-            if (IntroPhaseTimer < diff)
+            if (IntroPhaseTimer <= diff)
                 DoIntro();
             else IntroPhaseTimer -= diff;
 
             if (IntroPhase == 3 + 1)
             {
-                if (IntroFrostBoltTimer < diff)
+                if (IntroFrostBoltTimer <= diff)
                 {
                     if (Madrigosa)
                     {
@@ -276,30 +277,30 @@ struct CW_DLL_DECL boss_brutallusAI : public ScriptedAI
         if (!UpdateVictim() || IsIntro)
             return;
 
-        if (SlashTimer < diff)
+        if (SlashTimer <= diff)
         {
             DoCast(m_creature->getVictim(), SPELL_METEOR_SLASH);
             SlashTimer = 11000;
         } else SlashTimer -= diff;
 
-        if (StompTimer < diff)
+        if (StompTimer <= diff)
         {
             DoScriptText(RAND(YELL_LOVE1,YELL_LOVE2,YELL_LOVE3), m_creature);
             DoCast(m_creature->getVictim(), SPELL_STOMP);
             StompTimer = 30000;
         } else StompTimer -= diff;
 
-        if (BurnTimer < diff)
+        if (BurnTimer <= diff)
         {
-            if (Unit *target = SelectTarget(SELECT_TARGET_RANDOM, 0, 100, true))
-                if(!target->HasAura(SPELL_BURN))
+            std::list<Unit*> pTargets;
+            SelectTargetList(pTargets, 10, SELECT_TARGET_RANDOM, 100, true);
+            for (std::list<Unit*>::iterator i = pTargets.begin(); i != pTargets.end(); ++i)
+                if(!(*i)->HasAura(SPELL_BURN))
                 {
-                    target->CastSpell(target, SPELL_BURN, true);
-                    BurnTimer = urand(60000,180000);
-                } else
-                    BurnTimer = 1000 + diff; // if target has SPELL_BURN, wait a bit.
-            else
-                BurnTimer = urand(60000,180000); // no targets!?
+                    DoCast(*i, SPELL_BURN, true);
+                    break;
+                }
+            BurnTimer = urand(60000,180000);
         } else BurnTimer -= diff;
 
         if (BerserkTimer < diff && !Enraged)

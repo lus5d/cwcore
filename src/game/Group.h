@@ -1,7 +1,7 @@
 /*
  * Copyright (C) 2005-2009 MaNGOS <http://getmangos.com/>
  *
- * Copyright (C) 2009 CWCore <http://www.wow-extrem.de/>
+ * Copyright (C) 2009 CWCore <http://www.CWcore.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,6 +25,7 @@
 #include "GroupRefManager.h"
 #include "BattleGround.h"
 #include "LootMgr.h"
+#include "DBCEnums.h"
 
 #include <map>
 #include <vector>
@@ -91,7 +92,6 @@ enum GroupUpdateFlags
     GROUP_UPDATE_FLAG_PET_AURAS         = 0x00040000,       // uint64 mask, for each bit set uint32 spellid + uint8 unk, pet auras...
     GROUP_UPDATE_FLAG_VEHICLE_SEAT      = 0x00080000,       // uint32 vehicle_seat_id (index from VehicleSeat.dbc)
     GROUP_UPDATE_PET                    = 0x0007FC00,       // all pet flags
-    GROUP_UPDATE_VEHICLE                = 0x000FFC00,       // all vehicle flags
     GROUP_UPDATE_FULL                   = 0x0007FFFF,       // all known flags
 };
 
@@ -197,9 +197,9 @@ class CW_DLL_SPEC Group
         bool IsLeader(const uint64& guid) const { return (GetLeaderGUID() == guid); }
         uint64 GetMemberGUID(const std::string& name)
         {
-            for(member_citerator itr = m_memberSlots.begin(); itr != m_memberSlots.end(); ++itr)
+            for (member_citerator itr = m_memberSlots.begin(); itr != m_memberSlots.end(); ++itr)
             {
-                if(itr->name == name)
+                if (itr->name == name)
                 {
                     return itr->guid;
                 }
@@ -209,7 +209,7 @@ class CW_DLL_SPEC Group
         bool IsAssistant(uint64 guid) const
         {
             member_citerator mslot = _getMemberCSlot(guid);
-            if(mslot==m_memberSlots.end())
+            if (mslot==m_memberSlots.end())
                 return false;
 
             return mslot->assistant;
@@ -220,7 +220,7 @@ class CW_DLL_SPEC Group
         bool SameSubGroup(uint64 guid1,const uint64& guid2) const
         {
             member_citerator mslot2 = _getMemberCSlot(guid2);
-            if(mslot2==m_memberSlots.end())
+            if (mslot2==m_memberSlots.end())
                 return false;
 
             return SameSubGroup(guid1,&*mslot2);
@@ -229,7 +229,7 @@ class CW_DLL_SPEC Group
         bool SameSubGroup(uint64 guid1, MemberSlot const* slot2) const
         {
             member_citerator mslot1 = _getMemberCSlot(guid1);
-            if(mslot1==m_memberSlots.end() || !slot2)
+            if (mslot1==m_memberSlots.end() || !slot2)
                 return false;
 
             return (mslot1->group==slot2->group);
@@ -249,7 +249,7 @@ class CW_DLL_SPEC Group
         uint8  GetMemberGroup(uint64 guid) const
         {
             member_citerator mslot = _getMemberCSlot(guid);
-            if(mslot==m_memberSlots.end())
+            if (mslot==m_memberSlots.end())
                 return (MAXRAIDSIZE/MAXGROUPSIZE+1);
 
             return mslot->group;
@@ -266,36 +266,38 @@ class CW_DLL_SPEC Group
 
         void SetAssistant(uint64 guid, const bool &state)
         {
-            if(!isRaidGroup())
+            if (!isRaidGroup())
                 return;
-            if(_setAssistantFlag(guid, state))
+            if (_setAssistantFlag(guid, state))
                 SendUpdate();
         }
         void SetMainTank(uint64 guid)
         {
-            if(!isRaidGroup())
+            if (!isRaidGroup())
                 return;
 
-            if(_setMainTank(guid))
+            if (_setMainTank(guid))
                 SendUpdate();
         }
         void SetMainAssistant(uint64 guid)
         {
-            if(!isRaidGroup())
+            if (!isRaidGroup())
                 return;
 
-            if(_setMainAssistant(guid))
+            if (_setMainAssistant(guid))
                 SendUpdate();
         }
 
         void SetTargetIcon(uint8 id, uint64 guid);
-        void SetDungeonDifficulty(uint8 difficulty);
-        uint8 GetDungeonDifficulty() { return m_dungeonDifficulty; }
-        void SetRaidDifficulty(uint8 difficulty);
-        uint8 GetRaidDifficulty() { return m_raidDifficulty; }
+
+        Difficulty GetDifficulty(bool isRaid) const { return isRaid ? m_raidDifficulty : m_dungeonDifficulty; }
+        Difficulty GetDungeonDifficulty() const { return m_dungeonDifficulty; }
+        Difficulty GetRaidDifficulty() const { return m_raidDifficulty; }
+        void SetDungeonDifficulty(Difficulty difficulty);
+        void SetRaidDifficulty(Difficulty difficulty);
         uint16 InInstance();
         bool InCombatToInstance(uint32 instanceId);
-        void ResetInstances(uint8 method, Player* SendMsgTo);
+        void ResetInstances(uint8 method, bool isRaid, Player* SendMsgTo);
 
         // -no description-
         //void SendInit(WorldSession *session);
@@ -339,8 +341,9 @@ class CW_DLL_SPEC Group
 
         InstanceGroupBind* BindToInstance(InstanceSave *save, bool permanent, bool load = false);
         void UnbindInstance(uint32 mapid, uint8 difficulty, bool unload = false);
-        InstanceGroupBind* GetBoundInstance(uint32 mapid, uint8 difficulty);
-        BoundInstancesMap& GetBoundInstances(uint8 difficulty) { return m_boundInstances[difficulty]; }
+        InstanceGroupBind* GetBoundInstance(Player* player);
+        InstanceGroupBind* GetBoundInstance(Map* aMap);
+        BoundInstancesMap& GetBoundInstances(Difficulty difficulty) { return m_boundInstances[difficulty]; }
 
         // FG: evil hacks
         void BroadcastGroupUpdate(void);
@@ -374,7 +377,7 @@ class CW_DLL_SPEC Group
 
         member_citerator _getMemberCSlot(uint64 Guid) const
         {
-            for(member_citerator itr = m_memberSlots.begin(); itr != m_memberSlots.end(); ++itr)
+            for (member_citerator itr = m_memberSlots.begin(); itr != m_memberSlots.end(); ++itr)
             {
                 if (itr->guid == Guid)
                     return itr;
@@ -384,7 +387,7 @@ class CW_DLL_SPEC Group
 
         member_witerator _getMemberWSlot(uint64 Guid)
         {
-            for(member_witerator itr = m_memberSlots.begin(); itr != m_memberSlots.end(); ++itr)
+            for (member_witerator itr = m_memberSlots.begin(); itr != m_memberSlots.end(); ++itr)
             {
                 if (itr->guid == Guid)
                     return itr;
@@ -412,15 +415,15 @@ class CW_DLL_SPEC Group
         uint64              m_mainTank;
         uint64              m_mainAssistant;
         GroupType           m_groupType;
-        uint8               m_dungeonDifficulty;
-        uint8               m_raidDifficulty;
+        Difficulty          m_dungeonDifficulty;
+        Difficulty          m_raidDifficulty;
         BattleGround*       m_bgGroup;
         uint64              m_targetIcons[TARGETICONCOUNT];
         LootMethod          m_lootMethod;
         ItemQualities       m_lootThreshold;
         uint64              m_looterGuid;
         Rolls               RollId;
-        BoundInstancesMap   m_boundInstances[TOTAL_DUNGEON_DIFFICULTIES];
+        BoundInstancesMap   m_boundInstances[MAX_DIFFICULTY];
         uint8*              m_subGroupsCounts;
 };
 #endif

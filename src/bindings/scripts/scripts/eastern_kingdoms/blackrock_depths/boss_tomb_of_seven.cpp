@@ -24,12 +24,20 @@ EndScriptData */
 #include "precompiled.h"
 #include "blackrock_depths.h"
 
-enum eEnums
+enum Spells
 {
-    SPELL_SMELT_DARK_IRON       = 14891,
-    SPELL_LEARN_SMELT           = 14894,
-    QUEST_SPECTRAL_CHALICE      = 4083,
-    SKILLPOINT_MIN              = 230
+    SPELL_SMELT_DARK_IRON                                  = 14891,
+    SPELL_LEARN_SMELT                                      = 14894,
+};
+
+enum Quests
+{
+    QUEST_SPECTRAL_CHALICE                                 = 4083
+};
+
+enum Misc
+{
+    DATA_SKILLPOINT_MIN                                    = 230
 };
 
 #define GOSSIP_ITEM_TEACH_1 "Teach me the art of smelting dark iron"
@@ -39,10 +47,10 @@ enum eEnums
 
 bool GossipHello_boss_gloomrel(Player* pPlayer, Creature* pCreature)
 {
-    if (pPlayer->GetQuestRewardStatus(QUEST_SPECTRAL_CHALICE) == 1 && pPlayer->GetSkillValue(SKILL_MINING) >= SKILLPOINT_MIN && !pPlayer->HasSpell(SPELL_SMELT_DARK_IRON))
+    if (pPlayer->GetQuestRewardStatus(QUEST_SPECTRAL_CHALICE) == 1 && pPlayer->GetSkillValue(SKILL_MINING) >= DATA_SKILLPOINT_MIN && !pPlayer->HasSpell(SPELL_SMELT_DARK_IRON))
         pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_ITEM_TEACH_1, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);
 
-    if (pPlayer->GetQuestRewardStatus(QUEST_SPECTRAL_CHALICE) == 0 && pPlayer->GetSkillValue(SKILL_MINING) >= SKILLPOINT_MIN)
+    if (pPlayer->GetQuestRewardStatus(QUEST_SPECTRAL_CHALICE) == 0 && pPlayer->GetSkillValue(SKILL_MINING) >= DATA_SKILLPOINT_MIN)
         pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_ITEM_TRIBUTE, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 2);
 
     pPlayer->SEND_GOSSIP_MENU(pCreature->GetNpcTextId(), pCreature->GetGUID());
@@ -77,13 +85,13 @@ bool GossipSelect_boss_gloomrel(Player* pPlayer, Creature* pCreature, uint32 uiS
     return true;
 }
 
-enum eSpells
+enum DoomrelSpells
 {
-    SPELL_SHADOWBOLTVOLLEY               = 15245,
-    SPELL_IMMOLATE                       = 12742,
-    SPELL_CURSEOFWEAKNESS                = 12493,
-    SPELL_DEMONARMOR                     = 13787,
-    SPELL_SUMMON_VOIDWALKERS             = 15092
+    SPELL_SHADOWBOLTVOLLEY                                 = 15245,
+    SPELL_IMMOLATE                                         = 12742,
+    SPELL_CURSEOFWEAKNESS                                  = 12493,
+    SPELL_DEMONARMOR                                       = 13787,
+    SPELL_SUMMON_VOIDWALKERS                               = 15092
 };
 
 struct CW_DLL_DECL boss_doomrelAI : public ScriptedAI
@@ -153,34 +161,34 @@ struct CW_DLL_DECL boss_doomrelAI : public ScriptedAI
             return;
 
         //ShadowVolley_Timer
-        if (ShadowVolley_Timer < diff)
+        if (ShadowVolley_Timer <= diff)
         {
             DoCast(m_creature->getVictim(),SPELL_SHADOWBOLTVOLLEY);
             ShadowVolley_Timer = 12000;
-        }else ShadowVolley_Timer -= diff;
+        } else ShadowVolley_Timer -= diff;
 
         //Immolate_Timer
-        if (Immolate_Timer < diff)
+        if (Immolate_Timer <= diff)
         {
-            if (Unit* target = SelectUnit(SELECT_TARGET_RANDOM,0))
-                DoCast(target,SPELL_IMMOLATE);
+            if (Unit *pTarget = SelectTarget(SELECT_TARGET_RANDOM, 0, 100, true))
+                DoCast(pTarget,SPELL_IMMOLATE);
 
             Immolate_Timer = 25000;
-        }else Immolate_Timer -= diff;
+        } else Immolate_Timer -= diff;
 
         //CurseOfWeakness_Timer
-        if (CurseOfWeakness_Timer < diff)
+        if (CurseOfWeakness_Timer <= diff)
         {
             DoCast(m_creature->getVictim(),SPELL_CURSEOFWEAKNESS);
             CurseOfWeakness_Timer = 45000;
-        }else CurseOfWeakness_Timer -= diff;
+        } else CurseOfWeakness_Timer -= diff;
 
         //DemonArmor_Timer
-        if (DemonArmor_Timer < diff)
+        if (DemonArmor_Timer <= diff)
         {
             DoCast(m_creature,SPELL_DEMONARMOR);
             DemonArmor_Timer = 300000;
-        }else DemonArmor_Timer -= diff;
+        } else DemonArmor_Timer -= diff;
 
         //Summon Voidwalkers
         if (!Voidwalkers && m_creature->GetHealth()*100 / m_creature->GetMaxHealth() < 51)

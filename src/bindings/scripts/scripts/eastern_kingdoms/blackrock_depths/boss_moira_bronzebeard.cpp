@@ -23,12 +23,15 @@ EndScriptData */
 
 #include "precompiled.h"
 
-#define SPELL_HEAL              10917
-#define SPELL_RENEW             10929
-#define SPELL_SHIELD            10901
-#define SPELL_MINDBLAST         10947
-#define SPELL_SHADOWWORDPAIN    10894
-#define SPELL_SMITE             10934
+enum Spells
+{
+    SPELL_HEAL                                             = 10917,
+    SPELL_RENEW                                            = 10929,
+    SPELL_SHIELD                                           = 10901,
+    SPELL_MINDBLAST                                        = 10947,
+    SPELL_SHADOWWORDPAIN                                   = 10894,
+    SPELL_SMITE                                            = 10934
+};
 
 struct CW_DLL_DECL boss_moira_bronzebeardAI : public ScriptedAI
 {
@@ -62,25 +65,25 @@ struct CW_DLL_DECL boss_moira_bronzebeardAI : public ScriptedAI
             return;
 
         //MindBlast_Timer
-        if (MindBlast_Timer < diff)
+        if (MindBlast_Timer <= diff)
         {
             DoCast(m_creature->getVictim(),SPELL_MINDBLAST);
             MindBlast_Timer = 14000;
-        }else MindBlast_Timer -= diff;
+        } else MindBlast_Timer -= diff;
 
         //ShadowWordPain_Timer
-        if (ShadowWordPain_Timer < diff)
+        if (ShadowWordPain_Timer <= diff)
         {
             DoCast(m_creature->getVictim(),SPELL_SHADOWWORDPAIN);
             ShadowWordPain_Timer = 18000;
-        }else ShadowWordPain_Timer -= diff;
+        } else ShadowWordPain_Timer -= diff;
 
         //Smite_Timer
-        if (Smite_Timer < diff)
+        if (Smite_Timer <= diff)
         {
             DoCast(m_creature->getVictim(),SPELL_SMITE);
             Smite_Timer = 10000;
-        }else Smite_Timer -= diff;
+        } else Smite_Timer -= diff;
 
     }
 };

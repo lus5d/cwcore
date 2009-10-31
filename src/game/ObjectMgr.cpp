@@ -3205,10 +3205,14 @@ void ObjectMgr::BuildPlayerLevelInfo(uint8 race, uint8 _class, uint8 level, Play
 
 void ObjectMgr::LoadGuilds()
 {
-    Guild *newguild;
+    Guild *newGuild;
     uint32 count = 0;
 
-    QueryResult *result = CharacterDatabase.Query( "SELECT guildid FROM guild" );
+    //                                                    0             1          2          3           4           5           6
+    QueryResult *result = CharacterDatabase.Query("SELECT guild.guildid,guild.name,leaderguid,EmblemStyle,EmblemColor,BorderStyle,BorderColor,"
+    //   7               8    9    10         11        12
+        "BackgroundColor,info,motd,createdate,BankMoney,COUNT(guild_bank_tab.guildid) "
+        "FROM guild LEFT JOIN guild_bank_tab ON guild.guildid = guild_bank_tab.guildid GROUP BY guild.guildid ORDER BY guildid ASC");
 
     if( !result )
     {
@@ -3222,27 +3226,54 @@ void ObjectMgr::LoadGuilds()
         return;
     }
 
+    // load guild ranks
+    //                                                                0       1   2     3      4
+    QueryResult *guildRanksResult   = CharacterDatabase.Query("SELECT guildid,rid,rname,rights,BankMoneyPerDay FROM guild_rank ORDER BY guildid ASC, rid ASC");
+
+    // load guild members
+    //                                                                0       1                 2    3     4       5                  6
+    QueryResult *guildMembersResult = CharacterDatabase.Query("SELECT guildid,guild_member.guid,rank,pnote,offnote,BankResetTimeMoney,BankRemMoney,"
+    //   7                 8                9                 10               11                12
+        "BankResetTimeTab0,BankRemSlotsTab0,BankResetTimeTab1,BankRemSlotsTab1,BankResetTimeTab2,BankRemSlotsTab2,"
+    //   13                14               15                16               17                18
+        "BankResetTimeTab3,BankRemSlotsTab3,BankResetTimeTab4,BankRemSlotsTab4,BankResetTimeTab5,BankRemSlotsTab5,"
+    //   19               20                21                22               23
+        "characters.name, characters.level, characters.class, characters.zone, characters.logout_time "
+        "FROM guild_member LEFT JOIN characters ON characters.guid = guild_member.guid ORDER BY guildid ASC");
+
+    // load guild bank tab rights
+    //                                                                      0       1     2   3       4
+    QueryResult *guildBankTabRightsResult = CharacterDatabase.Query("SELECT guildid,TabId,rid,gbright,SlotPerDay FROM guild_bank_right ORDER BY guildid ASC, TabId ASC");
+
     barGoLink bar( result->GetRowCount() );
 
     do
     {
-        Field *fields = result->Fetch();
+        //Field *fields = result->Fetch();
 
         bar.step();
         ++count;
 
-        newguild = new Guild;
-        if(!newguild->LoadGuildFromDB(fields[0].GetUInt32()))
+        newGuild = new Guild;
+        if (!newGuild->LoadGuildFromDB(result) ||
+            !newGuild->LoadRanksFromDB(guildRanksResult) ||
+            !newGuild->LoadMembersFromDB(guildMembersResult) ||
+            !newGuild->LoadBankRightsFromDB(guildBankTabRightsResult) ||
+            !newGuild->CheckGuildStructure()
+            )
         {
-            newguild->Disband();
-            delete newguild;
+            newGuild->Disband();
+            delete newGuild;
             continue;
         }
-        AddGuild(newguild);
+        AddGuild(newGuild);
 
     }while( result->NextRow() );
 
     delete result;
+    delete guildRanksResult;
+    delete guildMembersResult;
+    delete guildBankTabRightsResult;
 
     //delete unused LogGuid records in guild_eventlog and guild_bank_eventlog table
     //you can comment these lines if you don't plan to change CONFIG_GUILD_EVENT_LOG_COUNT and CONFIG_GUILD_BANK_EVENT_LOG_COUNT
@@ -3257,7 +3288,11 @@ void ObjectMgr::LoadArenaTeams()
 {
     uint32 count = 0;
 
-    QueryResult *result = CharacterDatabase.Query( "SELECT arenateamid FROM arena_team" );
+    //                                                     0                      1    2           3    4               5
+    QueryResult *result = CharacterDatabase.Query( "SELECT arena_team.arenateamid,name,captainguid,type,BackgroundColor,EmblemStyle,"
+    //   6           7           8            9      10    11   12     13    14
+        "EmblemColor,BorderStyle,BorderColor, rating,games,wins,played,wins2,rank "
+        "FROM arena_team LEFT JOIN arena_team_stats ON arena_team.arenateamid = arena_team_stats.arenateamid ORDER BY arena_team.arenateamid ASC" );
 
     if( !result )
     {
@@ -3271,6 +3306,12 @@ void ObjectMgr::LoadArenaTeams()
         return;
     }
 
+    // load arena_team members
+    QueryResult *arenaTeamMembersResult = CharacterDatabase.Query(
+    //          0           1           2           3         4             5           6               7    8
+        "SELECT arenateamid,member.guid,played_week,wons_week,played_season,wons_season,personal_rating,name,class "
+        "FROM arena_team_member member LEFT JOIN characters chars on member.guid = chars.guid ORDER BY member.arenateamid ASC");
+
     barGoLink bar( result->GetRowCount() );
 
     do
@@ -3280,16 +3321,19 @@ void ObjectMgr::LoadArenaTeams()
         bar.step();
         ++count;
 
-        ArenaTeam *newarenateam = new ArenaTeam;
-        if(!newarenateam->LoadArenaTeamFromDB(fields[0].GetUInt32()))
+        ArenaTeam *newArenaTeam = new ArenaTeam;
+        if (!newArenaTeam->LoadArenaTeamFromDB(result) ||
+            !newArenaTeam->LoadMembersFromDB(arenaTeamMembersResult))
         {
-            delete newarenateam;
+            newArenaTeam->Disband(NULL);
+            delete newArenaTeam;
             continue;
         }
-        AddArenaTeam(newarenateam);
+        AddArenaTeam(newArenaTeam);
     }while( result->NextRow() );
 
     delete result;
+    delete arenaTeamMembersResult;
 
     sLog.outString();
     sLog.outString( ">> Loaded %u arenateam definitions", count );
@@ -3436,7 +3480,14 @@ void ObjectMgr::LoadGroups()
                 continue;
             }
 
-            InstanceSave *save = sInstanceSaveManager.AddInstanceSave(mapEntry->MapID, fields[2].GetUInt32(), fields[4].GetUInt8(), (time_t)fields[5].GetUInt64(), (fields[6].GetUInt32() == 0), true);
+            uint32 diff = fields[4].GetUInt8();
+            if(diff >= (mapEntry->IsRaid() ? MAX_RAID_DIFFICULTY : MAX_DUNGEON_DIFFICULTY))
+            {
+                sLog.outErrorDb("Wrong dungeon difficulty use in group_instance table: %d", diff);
+                diff = 0;                                   // default for both difficaly types
+            }
+
+            InstanceSave *save = sInstanceSaveManager.AddInstanceSave(mapEntry->MapID, fields[2].GetUInt32(), Difficulty(diff), (time_t)fields[5].GetUInt64(), (fields[6].GetUInt32() == 0), true);
             group->BindToInstance(save, fields[3].GetBool(), true);
         }while( result->NextRow() );
         delete result;
@@ -4782,15 +4833,15 @@ void ObjectMgr::LoadInstanceTemplate()
     for(uint32 i = 0; i < sInstanceTemplate.MaxEntry; i++)
     {
         InstanceTemplate* temp = (InstanceTemplate*)GetInstanceTemplate(i);
-        if(!temp) continue;
+        if(!temp)
+            continue;
+
         const MapEntry* entry = sMapStore.LookupEntry(temp->map);
         if(!entry)
         {
             sLog.outErrorDb("ObjectMgr::LoadInstanceTemplate: bad mapid %d for template!", temp->map);
             continue;
         }
-        else if(!entry->HasResetTime())
-            continue;
 
         //FIXME: now exist heroic instance, normal/heroic raid instances
         // entry->resetTimeHeroic store reset time for both heroic mode instance (raid and non-raid)
@@ -4799,16 +4850,24 @@ void ObjectMgr::LoadInstanceTemplate()
         // but at some point wee need implement reset time dependent from raid instance mode
         if(temp->reset_delay == 0)
         {
+            MapDifficulty const* mapDiffNorm   = GetMapDifficultyData(temp->map,DUNGEON_DIFFICULTY_NORMAL);
+            MapDifficulty const* mapDiffHeroic = GetMapDifficultyData(temp->map,DUNGEON_DIFFICULTY_HEROIC);
+
+            // no reset time
+            if ((!mapDiffNorm || mapDiffNorm->resetTime == 0) &&
+                (!mapDiffHeroic || mapDiffHeroic->resetTime == 0))
+                continue;
+
             // use defaults from the DBC
-            /*if(entry->resetTimeHeroic)                      // for both raid and non raids, read above
+            if(mapDiffHeroic && mapDiffHeroic->resetTime)   // for both raid and non raids, read above
             {
-                temp->reset_delay = entry->resetTimeHeroic / DAY;
+                temp->reset_delay = mapDiffHeroic->resetTime / DAY;
             }
-            else if (entry->resetTimeRaid && entry->map_type == MAP_RAID)
+            else if (mapDiffNorm && mapDiffNorm->resetTime && entry->map_type == MAP_RAID)
                                                             // for normal raid only
             {
-                temp->reset_delay = entry->resetTimeRaid / DAY;
-            }*/
+                temp->reset_delay = mapDiffNorm->resetTime / DAY;
+            }
         }
 
         // the reset_delay must be at least one day

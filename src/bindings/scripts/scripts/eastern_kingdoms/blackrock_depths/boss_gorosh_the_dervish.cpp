@@ -23,8 +23,11 @@ EndScriptData */
 
 #include "precompiled.h"
 
-#define SPELL_WHIRLWIND             15589
-#define SPELL_MORTALSTRIKE          24573
+enum Spells
+{
+    SPELL_WHIRLWIND                                        = 15589,
+    SPELL_MORTALSTRIKE                                     = 24573
+};
 
 struct CW_DLL_DECL boss_gorosh_the_dervishAI : public ScriptedAI
 {
@@ -50,18 +53,18 @@ struct CW_DLL_DECL boss_gorosh_the_dervishAI : public ScriptedAI
             return;
 
         //WhirlWind_Timer
-        if (WhirlWind_Timer < diff)
+        if (WhirlWind_Timer <= diff)
         {
             DoCast(m_creature,SPELL_WHIRLWIND);
             WhirlWind_Timer = 15000;
-        }else WhirlWind_Timer -= diff;
+        } else WhirlWind_Timer -= diff;
 
         //MortalStrike_Timer
-        if (MortalStrike_Timer < diff)
+        if (MortalStrike_Timer <= diff)
         {
             DoCast(m_creature->getVictim(),SPELL_MORTALSTRIKE);
             MortalStrike_Timer = 15000;
-        }else MortalStrike_Timer -= diff;
+        } else MortalStrike_Timer -= diff;
 
         DoMeleeAttackIfReady();
     }

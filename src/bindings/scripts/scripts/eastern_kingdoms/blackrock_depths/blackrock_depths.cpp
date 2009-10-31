@@ -62,11 +62,11 @@ bool GOHello_go_shadowforge_brazier(Player* pPlayer, GameObject* pGo)
 
 enum eGrimstone
 {
-    NPC_GRIMSTONE       = 10096,
-    NPC_THELDREN        = 16059,
+    NPC_GRIMSTONE                                          = 10096,
+    NPC_THELDREN                                           = 16059,
 
     //4 or 6 in total? 1+2+1 / 2+2+2 / 3+3. Depending on this, code should be changed.
-    MAX_MOB_AMOUNT      = 4
+    MAX_MOB_AMOUNT                                         = 4
 };
 
 uint32 RingMob[]=
@@ -108,12 +108,15 @@ bool AreaTrigger_at_ring_of_law(Player* pPlayer, AreaTriggerEntry *at)
 ## npc_grimstone
 ######*/
 
-#define SCRIPT_TEXT1    -1000000
-#define SCRIPT_TEXT2    -1000000
-#define SCRIPT_TEXT3    -1000000
-#define SCRIPT_TEXT4    -1000000
-#define SCRIPT_TEXT5    -1000000
-#define SCRIPT_TEXT6    -1000000
+enum GrimstoneTexts
+{
+    SCRIPT_TEXT1                                           = -1000000,
+    SCRIPT_TEXT2                                           = -1000001,
+    SCRIPT_TEXT3                                           = -1000002,
+    SCRIPT_TEXT4                                           = -1000003,
+    SCRIPT_TEXT5                                           = -1000004,
+    SCRIPT_TEXT6                                           = -1000005
+};
 
 //TODO: implement quest part of event (different end boss)
 struct CW_DLL_DECL npc_grimstoneAI : public npc_escortAI
@@ -257,7 +260,7 @@ struct CW_DLL_DECL npc_grimstoneAI : public npc_escortAI
                         }
                     }
                 }
-            }else MobDeath_Timer -= diff;
+            } else MobDeath_Timer -= diff;
         }
 
         if (Event_Timer)
@@ -325,7 +328,7 @@ struct CW_DLL_DECL npc_grimstoneAI : public npc_escortAI
                     break;
                 }
                 ++EventPhase;
-            }else Event_Timer -= diff;
+            } else Event_Timer -= diff;
         }
 
         if (CanWalk)
@@ -342,9 +345,12 @@ CreatureAI* GetAI_npc_grimstone(Creature* pCreature)
 ## mob_phalanx
 ######*/
 
-#define SPELL_THUNDERCLAP       8732
-#define SPELL_FIREBALLVOLLEY    22425
-#define SPELL_MIGHTYBLOW        14099
+enum PhalanxSpells
+{
+    SPELL_THUNDERCLAP                                      = 8732,
+    SPELL_FIREBALLVOLLEY                                   = 22425,
+    SPELL_MIGHTYBLOW                                       = 14099
+};
 
 struct CW_DLL_DECL mob_phalanxAI : public ScriptedAI
 {
@@ -368,28 +374,28 @@ struct CW_DLL_DECL mob_phalanxAI : public ScriptedAI
             return;
 
         //ThunderClap_Timer
-        if (ThunderClap_Timer < diff)
+        if (ThunderClap_Timer <= diff)
         {
             DoCast(m_creature->getVictim(),SPELL_THUNDERCLAP);
             ThunderClap_Timer = 10000;
-        }else ThunderClap_Timer -= diff;
+        } else ThunderClap_Timer -= diff;
 
         //FireballVolley_Timer
         if (m_creature->GetHealth()*100 / m_creature->GetMaxHealth() < 51)
         {
-            if (FireballVolley_Timer < diff)
+            if (FireballVolley_Timer <= diff)
             {
                 DoCast(m_creature->getVictim(),SPELL_FIREBALLVOLLEY);
                 FireballVolley_Timer = 15000;
-            }else FireballVolley_Timer -= diff;
+            } else FireballVolley_Timer -= diff;
         }
 
         //MightyBlow_Timer
-        if (MightyBlow_Timer < diff)
+        if (MightyBlow_Timer <= diff)
         {
             DoCast(m_creature->getVictim(),SPELL_MIGHTYBLOW);
             MightyBlow_Timer = 10000;
-        }else MightyBlow_Timer -= diff;
+        } else MightyBlow_Timer -= diff;
 
         DoMeleeAttackIfReady();
     }
@@ -403,8 +409,11 @@ CreatureAI* GetAI_mob_phalanx(Creature* pCreature)
 ## npc_kharan_mighthammer
 ######*/
 
-#define QUEST_4001  4001
-#define QUEST_4342  4342
+enum KharamQuests
+{
+    QUEST_4001                                             = 4001,
+    QUEST_4342                                             = 4342
+};
 
 #define GOSSIP_ITEM_KHARAN_1    "I need to know where the princess are, Kharan!"
 #define GOSSIP_ITEM_KHARAN_2    "All is not lost, Kharan!"
@@ -489,10 +498,21 @@ bool GossipSelect_npc_kharan_mighthammer(Player* pPlayer, Creature* pCreature, u
 ## npc_lokhtos_darkbargainer
 ######*/
 
-#define ITEM_THRORIUM_BROTHERHOOD_CONTRACT               18628
-#define ITEM_SULFURON_INGOT                              17203
-#define QUEST_A_BINDING_CONTRACT                         7604
-#define SPELL_CREATE_THORIUM_BROTHERHOOD_CONTRACT_DND    23059
+enum LokhtosItems
+{
+    ITEM_THRORIUM_BROTHERHOOD_CONTRACT                     = 18628,
+    ITEM_SULFURON_INGOT                                    = 17203
+};
+
+enum LokhtosQuests
+{
+    QUEST_A_BINDING_CONTRACT                               = 7604
+};
+
+enum LokhtosSpells
+{
+    SPELL_CREATE_THORIUM_BROTHERHOOD_CONTRACT_DND          = 23059
+};
 
 #define GOSSIP_ITEM_SHOW_ACCESS     "Show me what I have access to, Lothos."
 #define GOSSIP_ITEM_GET_CONTRACT    "Get Thorium Brotherhood Contract"
@@ -537,7 +557,11 @@ bool GossipSelect_npc_lokhtos_darkbargainer(Player* pPlayer, Creature* pCreature
 ## npc_dughal_stormwing
 ######*/
 
-#define QUEST_JAIL_BREAK        4322
+enum DughalQuests
+{
+    QUEST_JAIL_BREAK                                       = 4322
+};
+
 #define SAY_DUGHAL_FREE         "Thank you, $N! I'm free!!!"
 #define GOSSIP_DUGHAL           "You're free, Dughal! Get out of here!"
 
@@ -696,12 +720,12 @@ struct CW_DLL_DECL npc_marshal_windsorAI : public npc_escortAI
 
     void EnterCombat(Unit* who)
         {
-        switch(rand()%3)
-            {
-            case 0:m_creature->Say(SAY_WINDSOR_AGGRO1, LANG_UNIVERSAL, PlayerGUID);break;
-            case 1:m_creature->Say(SAY_WINDSOR_AGGRO2, LANG_UNIVERSAL, PlayerGUID);break;
-            case 2:m_creature->Say(SAY_WINDSOR_AGGRO3, LANG_UNIVERSAL, PlayerGUID);break;
-            }
+        switch (urand(0,2))
+        {
+            case 0: m_creature->Say(SAY_WINDSOR_AGGRO1, LANG_UNIVERSAL, PlayerGUID); break;
+            case 1: m_creature->Say(SAY_WINDSOR_AGGRO2, LANG_UNIVERSAL, PlayerGUID); break;
+            case 2: m_creature->Say(SAY_WINDSOR_AGGRO3, LANG_UNIVERSAL, PlayerGUID); break;
+        }
         }
 
     void Reset() {}
@@ -892,12 +916,12 @@ struct CW_DLL_DECL npc_marshal_reginald_windsorAI : public npc_escortAI
 
     void EnterCombat(Unit* who)
         {
-        switch(rand()%3)
-            {
-            case 0:m_creature->Say(SAY_WINDSOR_AGGRO1, LANG_UNIVERSAL, PlayerGUID);break;
-            case 1:m_creature->Say(SAY_WINDSOR_AGGRO2, LANG_UNIVERSAL, PlayerGUID);break;
-            case 2:m_creature->Say(SAY_WINDSOR_AGGRO3, LANG_UNIVERSAL, PlayerGUID);break;
-            }
+        switch (urand(0,2))
+        {
+            case 0: m_creature->Say(SAY_WINDSOR_AGGRO1, LANG_UNIVERSAL, PlayerGUID); break;
+            case 1: m_creature->Say(SAY_WINDSOR_AGGRO2, LANG_UNIVERSAL, PlayerGUID); break;
+            case 2: m_creature->Say(SAY_WINDSOR_AGGRO3, LANG_UNIVERSAL, PlayerGUID); break;
+        }
         }
     void Reset() {}
 
@@ -1095,9 +1119,20 @@ bool GossipSelect_npc_tobias_seecher(Player* pPlayer, Creature* pCreature, uint3
 ## npc_rocknot
 ######*/
 
-#define SAY_GOT_BEER        -1230000
-#define SPELL_DRUNKEN_RAGE  14872
-#define QUEST_ALE           4295
+enum RocknotSays
+{
+    SAY_GOT_BEER                                           = -1230000
+};
+
+enum RocknotSpells
+{
+    SPELL_DRUNKEN_RAGE                                     = 14872
+};
+
+enum RocknotQuests
+{
+    QUEST_ALE                                              = 4295
+};
 
 struct CW_DLL_DECL npc_rocknotAI : public npc_escortAI
 {
@@ -1164,7 +1199,7 @@ struct CW_DLL_DECL npc_rocknotAI : public npc_escortAI
                 DoGo(DATA_GO_BAR_KEG,0);
                 BreakKeg_Timer = 0;
                 BreakDoor_Timer = 1000;
-            }else BreakKeg_Timer -= diff;
+            } else BreakKeg_Timer -= diff;
         }
 
         if (BreakDoor_Timer)
@@ -1183,7 +1218,7 @@ struct CW_DLL_DECL npc_rocknotAI : public npc_escortAI
                 pInstance->SetData(TYPE_BAR,DONE);
 
                 BreakDoor_Timer = 0;
-            }else BreakDoor_Timer -= diff;
+            } else BreakDoor_Timer -= diff;
         }
 
         npc_escortAI::UpdateAI(diff);
@@ -1243,10 +1278,10 @@ void AddSC_blackrock_depths()
     newscript->pAreaTrigger = &AreaTrigger_at_ring_of_law;
     newscript->RegisterSelf();
 
-     newscript = new Script;
-     newscript->Name = "npc_grimstone";
-     newscript->GetAI = &GetAI_npc_grimstone;
-     newscript->RegisterSelf();
+    newscript = new Script;
+    newscript->Name = "npc_grimstone";
+    newscript->GetAI = &GetAI_npc_grimstone;
+    newscript->RegisterSelf();
 
     newscript = new Script;
     newscript->Name = "mob_phalanx";
@@ -1290,7 +1325,6 @@ void AddSC_blackrock_depths()
     newscript->GetAI = &GetAI_npc_marshal_reginald_windsor;
     newscript->RegisterSelf();
 */
-
      newscript = new Script;
      newscript->Name = "npc_rocknot";
      newscript->GetAI = &GetAI_npc_rocknot;

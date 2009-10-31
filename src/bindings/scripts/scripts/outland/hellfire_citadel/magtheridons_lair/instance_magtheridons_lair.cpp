@@ -147,7 +147,8 @@ struct CW_DLL_DECL instance_magtheridons_lair : public ScriptedInstance
                     }
                     CageTimer = 0;
                     HandleGameObject(DoorGUID, true);
-                }break;
+                }
+                break;
             case IN_PROGRESS: // Event start.
                 if (m_auiEncounter[1] != IN_PROGRESS)
                 {
@@ -167,7 +168,8 @@ struct CW_DLL_DECL instance_magtheridons_lair : public ScriptedInstance
                         CageTimer = 120000;
                     }
                     HandleGameObject(DoorGUID, false);
-                }break;
+                }
+                break;
             case DONE: // Add buff and check if all channelers are dead.
                 for (std::set<uint64>::iterator i = ChannelerGUID.begin(); i != ChannelerGUID.end(); ++i)
                 {
@@ -178,7 +180,8 @@ struct CW_DLL_DECL instance_magtheridons_lair : public ScriptedInstance
                         data = IN_PROGRESS;
                         break;
                     }
-                }break;
+                }
+                break;
             }
             m_auiEncounter[1] = data;
             break;
@@ -212,7 +215,7 @@ struct CW_DLL_DECL instance_magtheridons_lair : public ScriptedInstance
                     Magtheridon->AI()->AttackStart(Magtheridon->SelectNearestTarget(999));
                 }
                 CageTimer = 0;
-            }else CageTimer -= diff;
+            } else CageTimer -= diff;
         }
 
         if (RespawnTimer)
@@ -230,7 +233,7 @@ struct CW_DLL_DECL instance_magtheridons_lair : public ScriptedInstance
                     }
                 }
                 RespawnTimer = 0;
-            }else RespawnTimer -= diff;
+            } else RespawnTimer -= diff;
         }
     }
 };

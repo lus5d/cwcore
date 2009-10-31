@@ -187,14 +187,16 @@ void DoScriptText(int32 iTextEntry, WorldObject* pSource, Unit* pTarget)
                     pSource->MonsterWhisper(iTextEntry, pTarget->GetGUID());
                 else
                     error_log("TSCR: DoScriptText entry %i cannot whisper without target unit (TYPEID_PLAYER).", iTextEntry);
-            }break;
+            }
+            break;
         case CHAT_TYPE_BOSS_WHISPER:
             {
                 if (pTarget && pTarget->GetTypeId() == TYPEID_PLAYER)
                     pSource->MonsterWhisper(iTextEntry, pTarget->GetGUID(), true);
                 else
                     error_log("TSCR: DoScriptText entry %i cannot whisper without target unit (TYPEID_PLAYER).", iTextEntry);
-            }break;
+            }
+            break;
         case CHAT_TYPE_ZONE_YELL:
             pSource->MonsterYellToZone(iTextEntry, pData->uiLanguage, pTarget ? pTarget->GetGUID() : 0);
             break;

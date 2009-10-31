@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2009 CWCore <http://www.wow-extrem.de/>
+ * Copyright (C) 2008 - 2009 CW <http://www.CWcore.org/>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -107,8 +107,8 @@ struct CW_DLL_DECL boss_razuviousAI : public BossAI
                     events.ScheduleEvent(EVENT_SHOUT, 25000);
                     return;
                 case EVENT_KNIFE:
-                    if (Unit *target = SelectTarget(SELECT_TARGET_RANDOM, 0, 45))
-                        DoCast(target, SPELL_JAGGED_KNIFE);
+                    if (Unit *pTarget = SelectTarget(SELECT_TARGET_RANDOM, 0, 45))
+                        DoCast(pTarget, SPELL_JAGGED_KNIFE);
                     events.ScheduleEvent(EVENT_KNIFE, 25000);
                     return;
                 case EVENT_COMMAND:

@@ -23,10 +23,16 @@ EndScriptData */
 
 #include "precompiled.h"
 
-#define EMOTE_GENERIC_FRENZY_KILL   -1000001
+enum Yells
+{
+    EMOTE_GENERIC_FRENZY_KILL                              = -1000001
+};
 
-#define SPELL_GROUNDTREMOR          6524
-#define SPELL_FRENZY                28371
+enum Spells
+{
+    SPELL_GROUNDTREMOR                                     = 6524,
+    SPELL_FRENZY                                           = 28371
+};
 
 struct CW_DLL_DECL boss_grizzleAI : public ScriptedAI
 {
@@ -52,22 +58,22 @@ struct CW_DLL_DECL boss_grizzleAI : public ScriptedAI
             return;
 
         //GroundTremor_Timer
-        if (GroundTremor_Timer < diff)
+        if (GroundTremor_Timer <= diff)
         {
             DoCast(m_creature->getVictim(),SPELL_GROUNDTREMOR);
             GroundTremor_Timer = 8000;
-        }else GroundTremor_Timer -= diff;
+        } else GroundTremor_Timer -= diff;
 
         //Frenzy_Timer
         if (m_creature->GetHealth()*100 / m_creature->GetMaxHealth() < 51)
         {
-            if (Frenzy_Timer < diff)
+            if (Frenzy_Timer <= diff)
             {
                 DoCast(m_creature,SPELL_FRENZY);
                 DoScriptText(EMOTE_GENERIC_FRENZY_KILL, m_creature);
 
                 Frenzy_Timer = 15000;
-            }else Frenzy_Timer -= diff;
+            } else Frenzy_Timer -= diff;
         }
 
         DoMeleeAttackIfReady();

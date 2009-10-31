@@ -1,4 +1,4 @@
-/* Copyright (C) 2009 CWCore <http://www.wow-extrem.de/>
+/* Copyright (C) 2008 - 2009 CW <http://www.CWcore.org/>
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
@@ -93,8 +93,8 @@ struct CW_DLL_DECL boss_anubrekhanAI : public BossAI
                     //Cast Impale on a random target
                     //Do NOT cast it when we are afflicted by locust swarm
                     if (!me->HasAura(SPELL_LOCUSTSWARM))
-                        if (Unit* target = SelectUnit(SELECT_TARGET_RANDOM, 0))
-                            DoCast(target, SPELL_IMPALE);
+                        if (Unit *pTarget = SelectUnit(SELECT_TARGET_RANDOM, 0))
+                            DoCast(pTarget, SPELL_IMPALE);
                     events.ScheduleEvent(EVENT_IMPALE, 15000, 1);
                     events.DelayEvents(1500, 1);
                     return;

@@ -34,7 +34,7 @@ template<class T>
 void
 ConfusedMovementGenerator<T>::Initialize(T &unit)
 {
-    const float wander_distance=11;
+    const float wander_distance = 11;
     float x,y,z;
     x = unit.GetPositionX();
     y = unit.GetPositionY();
@@ -77,7 +77,7 @@ ConfusedMovementGenerator<T>::Initialize(T &unit)
         }
 
         unit.UpdateGroundPositionZ(i_waypoints[idx][0],i_waypoints[idx][1],z);
-        i_waypoints[idx][2] =  z;
+        i_waypoints[idx][2] = z;
     }
 
     unit.SetUInt64Value(UNIT_FIELD_TARGET, 0);

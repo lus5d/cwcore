@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2009 CWCore <http://www.wow-extrem.de/>
+ * Copyright (C) 2008 - 2009 CW <http://www.CWcore.org/>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -67,9 +67,7 @@ struct CW_DLL_DECL boss_freyaAI : public BossAI
         DoMeleeAttackIfReady();
 
         EnterEvadeIfOutOfCombatArea(diff);
-
     }
-
 };
 
 CreatureAI* GetAI_boss_freya(Creature* pCreature)
@@ -84,5 +82,4 @@ void AddSC_boss_freya()
     newscript->Name = "boss_freya";
     newscript->GetAI = &GetAI_boss_freya;
     newscript->RegisterSelf();
-
 }

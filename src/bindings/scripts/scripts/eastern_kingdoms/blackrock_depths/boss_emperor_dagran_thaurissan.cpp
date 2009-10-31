@@ -23,11 +23,17 @@ EndScriptData */
 
 #include "precompiled.h"
 
-#define SAY_AGGRO                       -1230001
-#define SAY_SLAY                        -1230002
+enum Yells
+{
+    SAY_AGGRO                                              = -1230001,
+    SAY_SLAY                                               = -1230002
+};
 
-#define SPELL_HANDOFTHAURISSAN          17492
-#define SPELL_AVATAROFFLAME             15636
+enum Spells
+{
+    SPELL_HANDOFTHAURISSAN                                 = 17492,
+    SPELL_AVATAROFFLAME                                    = 15636
+};
 
 struct CW_DLL_DECL boss_draganthaurissanAI : public ScriptedAI
 {
@@ -61,30 +67,30 @@ struct CW_DLL_DECL boss_draganthaurissanAI : public ScriptedAI
         if (!UpdateVictim())
             return;
 
-        if (HandOfThaurissan_Timer < diff)
+        if (HandOfThaurissan_Timer <= diff)
         {
-            if (Unit* target = SelectUnit(SELECT_TARGET_RANDOM,0))
-                DoCast(target,SPELL_HANDOFTHAURISSAN);
+            if (Unit *pTarget = SelectUnit(SELECT_TARGET_RANDOM,0))
+                DoCast(pTarget,SPELL_HANDOFTHAURISSAN);
 
             //3 Hands of Thaurissan will be casted
             //if (Counter < 3)
             //{
             //    HandOfThaurissan_Timer = 1000;
-            //    Counter++;
+            //    ++Counter;
             //}
             //else
             //{
                 HandOfThaurissan_Timer = 5000;
-                //Counter=0;
+                //Counter = 0;
             //}
-        }else HandOfThaurissan_Timer -= diff;
+        } else HandOfThaurissan_Timer -= diff;
 
         //AvatarOfFlame_Timer
-        if (AvatarOfFlame_Timer < diff)
+        if (AvatarOfFlame_Timer <= diff)
         {
             DoCast(m_creature->getVictim(),SPELL_AVATAROFFLAME);
             AvatarOfFlame_Timer = 18000;
-        }else AvatarOfFlame_Timer -= diff;
+        } else AvatarOfFlame_Timer -= diff;
 
         DoMeleeAttackIfReady();
     }

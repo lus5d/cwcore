@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2009 CWCore <http://www.wow-extrem.de/>
+ * Copyright (C) 2008 - 2009 CW <http://www.CWcore.org/>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,10 +17,8 @@
  */
 
 /* ScriptData
-Name: razorscale
-%Complete: 90
-Comment: Made by Epsik from WoW Arthas wow.dsl.net.pk
-Category:
+SDName: razorscale
+SD%Complete: 65
 EndScriptData */
 
 #include "precompiled.h"
@@ -41,16 +39,12 @@ EndScriptData */
 #define SPELL_FLAMEBREATH           63317
 #define SPELL_FUSEARMOR             64771
 #define SPELL_DEVOURINGFLAME        63014
-#define SPELL_KNOCK_AWAY            19633
-
-#define SPELL_BELLOWINGROAR         18431
-#define SPELL_HEATED_GROUND         22191
 
 #define SPELL_SUMMONADDS            17646
 
 #define CREATURE_ADDS               33846
 
-static float MovementLocations[4][3]=
+static float MovementLocations[4][3] =
 {
     {607.7, -281.9, 408.6},
     {602.0, -245.5, 424.7},
@@ -58,7 +52,7 @@ static float MovementLocations[4][3]=
     {624.1, -251.8, 426.1}
 };
 
-static float SpawnLocations[4][3]=
+static float SpawnLocations[4][3] =
 {
     {602.0, -248.1, 391.2},
     {624.4, -232-4, 391.1},
@@ -77,9 +71,7 @@ struct CW_DLL_DECL boss_razorscaleAI : public BossAI
     uint32 DEVOURINGFLAMETimer;
     uint32 MovementTimer;
     uint32 SummonAddsTimer;
-    uint32 BellowingRoarTimer;
     uint32 WingBuffetTimer;
-    uint32 KnockAwayTimer;
     uint32 FireballTimer;
 
     bool InitialSpawn;
@@ -93,9 +85,7 @@ struct CW_DLL_DECL boss_razorscaleAI : public BossAI
         FUSEARMORTimer = 15000;
         MovementTimer = 3000;
         SummonAddsTimer = 45000;
-        BellowingRoarTimer = 30000;
         WingBuffetTimer = 17000;
-        KnockAwayTimer = 15000;
         FireballTimer = 18000;
 
         InitialSpawn = true;
@@ -156,48 +146,37 @@ struct CW_DLL_DECL boss_razorscaleAI : public BossAI
 
         if (Phase == 1 || Phase == 3)
         {
-            if (FlameBreathTimer < diff)
+            if (FlameBreathTimer <= diff)
             {
-                DoCast(m_creature->getVictim(), SPELL_FLAMEBREATH);
+                DoCastVictim(SPELL_FLAMEBREATH);
                 FlameBreathTimer = 15000;
             } else FlameBreathTimer -= diff;
 
-            if (DEVOURINGFLAMETimer < diff)
+            if (DEVOURINGFLAMETimer <= diff)
             {
-                if (Unit *target = SelectTarget(SELECT_TARGET_RANDOM, 0, 100, true))
-                    if (!m_creature->HasInArc(M_PI, target))
-                        DoCast(target, SPELL_DEVOURINGFLAME);
+                std::list<Unit*> pTargets;
+                SelectTargetList(pTargets, 10, SELECT_TARGET_RANDOM, 100, true);
+                for (std::list<Unit*>::iterator i = pTargets.begin(); i != pTargets.end(); ++i)
+                    if (!m_creature->HasInArc(M_PI, *i))
+                    {
+                        DoCast(*i, SPELL_DEVOURINGFLAME);
+                        break;
+                    }
 
                 DEVOURINGFLAMETimer = 10000;
             } else DEVOURINGFLAMETimer -= diff;
 
-            if (FUSEARMORTimer < diff)
+            if (FUSEARMORTimer <= diff)
             {
-                DoCast(m_creature->getVictim(), SPELL_FUSEARMOR);
+                DoCastVictim(SPELL_FUSEARMOR);
                 FUSEARMORTimer = 10000;
             } else FUSEARMORTimer -= diff;
 
-            if (WingBuffetTimer < diff)
+            if (WingBuffetTimer <= diff)
             {
-                DoCast(m_creature->getVictim(), SPELL_WINGBUFFET);
+                DoCast(SPELL_WINGBUFFET);
                 WingBuffetTimer = urand(7000,14000);
             } else WingBuffetTimer -= diff;
-
-            if (KnockAwayTimer < diff)
-            {
-                if (urand(0,99) < 30)
-                    DoCast(m_creature->getVictim(), SPELL_KNOCK_AWAY);
-                KnockAwayTimer = 15000;
-            } else KnockAwayTimer -= diff;
-
-            if (Phase == 3)
-            {
-                if (BellowingRoarTimer < diff)
-                {
-                    DoCast(m_creature->getVictim(), SPELL_BELLOWINGROAR);
-                    BellowingRoarTimer = 30000;
-                } else BellowingRoarTimer -= diff;
-            }
 
             DoMeleeAttackIfReady();
         }
@@ -209,26 +188,34 @@ struct CW_DLL_DECL boss_razorscaleAI : public BossAI
 
             InitialSpawn = false;
 
-            if (FireballTimer < diff)
+            if (FireballTimer <= diff)
             {
-                DoCast(SelectUnit(SELECT_TARGET_RANDOM, 0), SPELL_FIREBALL);
+                std::list<Unit*> pTargets;
+                SelectTargetList(pTargets, 10, SELECT_TARGET_RANDOM, 100, true);
+                for (std::list<Unit*>::iterator i = pTargets.begin(); i != pTargets.end(); ++i)
+                    if (!m_creature->HasInArc(M_PI, *i))
+                    {
+                        DoCast(*i, SPELL_FIREBALL);
+                        break;
+                    }
 
                 FireballTimer = 18000;
             } else FireballTimer -= diff;
 
-            if (MovementTimer < diff)
+            if (MovementTimer <= diff)
             {
                 if (urand(0,99) < 30)
                 {
                     DoScriptText(EMOTE_BREATH, m_creature);
-                    DoCast(m_creature->getVictim(), SPELL_FLAMEBUFFET);
+                    if (Unit *pTarget = SelectTarget(SELECT_TARGET_RANDOM, 0, 100, true))
+                        DoCast(pTarget, SPELL_FLAMEBUFFET);
                 }
                 else ChangePosition();
 
                 MovementTimer = 25000;
             } else MovementTimer -= diff;
 
-            if (SummonAddsTimer < diff)
+            if (SummonAddsTimer <= diff)
                 SummonAdds();
             else SummonAddsTimer -= diff;
         }
@@ -246,8 +233,9 @@ struct CW_DLL_DECL boss_razorscaleAI : public BossAI
         for (uint32 i = 0; i < 4; ++i)
         {
             uint8 random = urand(0,3);
-            if (Creature* Add = m_creature->SummonCreature(CREATURE_ADDS, SpawnLocations[random][0], SpawnLocations[random][1], SpawnLocations[random][2], 0, TEMPSUMMON_TIMED_OR_CORPSE_DESPAWN, 30000))
-                Add->AI()->AttackStart(SelectTarget(SELECT_TARGET_RANDOM, 0, 0, true));
+            if (Creature *pAdd = m_creature->SummonCreature(CREATURE_ADDS, SpawnLocations[random][0], SpawnLocations[random][1], SpawnLocations[random][2], 0, TEMPSUMMON_TIMED_OR_CORPSE_DESPAWN, 30000))
+                if (Unit *pTarget = SelectTarget(SELECT_TARGET_RANDOM, 0, 200, true))
+                    pAdd->AI()->AttackStart(pTarget);
         }
         SummonAddsTimer = 45000;
     }

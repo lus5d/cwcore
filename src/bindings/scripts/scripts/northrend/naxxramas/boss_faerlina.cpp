@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2009 CWCore <http://www.wow-extrem.de/>
+ * Copyright (C) 2008 - 2009 CW <http://www.CWcore.org/>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -111,8 +111,8 @@ struct CW_DLL_DECL boss_faerlinaAI : public BossAI
                     events.ScheduleEvent(EVENT_POISON, urand(12000,15000));
                     return;
                 case EVENT_FIRE:
-                    if (Unit* target = SelectUnit(SELECT_TARGET_RANDOM, 0))
-                        DoCast(target, HEROIC(SPELL_RAIN_OF_FIRE,H_SPELL_RAIN_OF_FIRE));
+                    if (Unit *pTarget = SelectUnit(SELECT_TARGET_RANDOM, 0))
+                        DoCast(pTarget, HEROIC(SPELL_RAIN_OF_FIRE,H_SPELL_RAIN_OF_FIRE));
                     events.ScheduleEvent(EVENT_FIRE, urand(6000,18000));
                     return;
                 case EVENT_FRENZY:

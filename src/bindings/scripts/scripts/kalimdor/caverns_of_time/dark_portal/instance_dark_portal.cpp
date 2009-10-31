@@ -324,7 +324,7 @@ struct CW_DLL_DECL instance_dark_portal : public ScriptedInstance
 
                 DoSpawnPortal();
                 NextPortal_Timer = RiftWaves[GetRiftWaveId()].NextPortalTime;
-            }else NextPortal_Timer -= diff;
+            } else NextPortal_Timer -= diff;
         }
     }
 };

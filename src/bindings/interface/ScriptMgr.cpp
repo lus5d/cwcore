@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2008-2009 Trinity <http://www.trinitycore.org/>
+ * Copyright (C) 2009 CWCore <http://www.wow-extrem.de/>
  *
  * Thanks to the original authors: MaNGOS <http://getmangos.com/>
  *
@@ -33,7 +33,7 @@ Script *m_scripts[MAX_SCRIPTS];
 extern void AddSC_default();
 // -------------------
 
-TRINITY_DLL_EXPORT
+CW_DLL_EXPORT
 void ScriptsFree()
 {                                                           // Free resources before library unload
     for(int i = 0; i < num_sc_scripts; i++)
@@ -42,7 +42,7 @@ void ScriptsFree()
     num_sc_scripts = 0;
 }
 
-TRINITY_DLL_EXPORT
+CW_DLL_EXPORT
 void ScriptsInit(char const* cfg_file = "cwcore.conf")
 {
     num_sc_scripts = 0;
@@ -83,7 +83,7 @@ void Script::RegisterSelf()
 //********************************
 //*** Functions to be Exported ***
 
-TRINITY_DLL_EXPORT
+CW_DLL_EXPORT
 void OnLogin(Player *pPlayer)
 {
     Script *tmpscript = m_scripts[GetScriptId("scripted_on_events")];
@@ -91,7 +91,7 @@ void OnLogin(Player *pPlayer)
     tmpscript->pOnLogin(pPlayer);
 }
 
-TRINITY_DLL_EXPORT
+CW_DLL_EXPORT
 void OnLogout(Player *pPlayer)
 {
     Script *tmpscript = m_scripts[GetScriptId("scripted_on_events")];
@@ -99,7 +99,7 @@ void OnLogout(Player *pPlayer)
     tmpscript->pOnLogout(pPlayer);
 }
 
-TRINITY_DLL_EXPORT
+CW_DLL_EXPORT
 void OnPVPKill(Player *killer, Player *killed)
 {
     Script *tmpscript = m_scripts[GetScriptId("scripted_on_events")];
@@ -107,7 +107,7 @@ void OnPVPKill(Player *killer, Player *killed)
     tmpscript->pOnPVPKill(killer, killed);
 }
 
-TRINITY_DLL_EXPORT
+CW_DLL_EXPORT
 bool OnSpellCast (Unit *pUnitTarget, Item *pItemTarget, GameObject *pGoTarget, uint32 i, SpellEntry const *spell)
 {
     Script *tmpscript = m_scripts[GetScriptId("scripted_on_events")];
@@ -115,7 +115,7 @@ bool OnSpellCast (Unit *pUnitTarget, Item *pItemTarget, GameObject *pGoTarget, u
     return tmpscript->pOnSpellCast(pUnitTarget,pItemTarget,pGoTarget,i,spell);
 }
 
-TRINITY_DLL_EXPORT
+CW_DLL_EXPORT
 uint32 OnGetXP(Player *pPlayer, uint32 amount)
 {
     Script *tmpscript = m_scripts[GetScriptId("scripted_on_events")];
@@ -123,7 +123,7 @@ uint32 OnGetXP(Player *pPlayer, uint32 amount)
     return tmpscript->pOnGetXP(pPlayer,amount);
 }
 
-TRINITY_DLL_EXPORT
+CW_DLL_EXPORT
 uint32 OnGetMoney(Player *pPlayer, int32 amount)
 {
     Script *tmpscript = m_scripts[GetScriptId("scripted_on_events")];
@@ -131,7 +131,7 @@ uint32 OnGetMoney(Player *pPlayer, int32 amount)
     return tmpscript->pOnGetMoney(pPlayer,amount);
 }
 
-TRINITY_DLL_EXPORT
+CW_DLL_EXPORT
 bool OnPlayerChat(Player *pPlayer, const char *text)
 {
     Script *tmpscript = m_scripts[GetScriptId("scripted_on_events")];
@@ -139,7 +139,7 @@ bool OnPlayerChat(Player *pPlayer, const char *text)
     return tmpscript->pOnPlayerChat(pPlayer,text);
 }
 
-TRINITY_DLL_EXPORT
+CW_DLL_EXPORT
 void OnServerStartup()
 {
     Script *tmpscript = m_scripts[GetScriptId("scripted_on_events")];
@@ -147,7 +147,7 @@ void OnServerStartup()
     tmpscript->pOnServerStartup();
 }
 
-TRINITY_DLL_EXPORT
+CW_DLL_EXPORT
 void OnServerShutdown()
 {
     Script *tmpscript = m_scripts[GetScriptId("scripted_on_events")];
@@ -155,7 +155,7 @@ void OnServerShutdown()
     tmpscript->pOnServerShutdown();
 }
 
-TRINITY_DLL_EXPORT
+CW_DLL_EXPORT
 void OnAreaChange(Player *pPlayer, AreaTableEntry const *pArea)
 {
     Script *tmpscript = m_scripts[GetScriptId("scripted_on_events")];
@@ -163,7 +163,7 @@ void OnAreaChange(Player *pPlayer, AreaTableEntry const *pArea)
     tmpscript->pOnAreaChange(pPlayer, pArea);
 }
 
-TRINITY_DLL_EXPORT
+CW_DLL_EXPORT
 bool OnItemClick (Player *pPlayer, Item *pItem)
 {
     Script *tmpscript = m_scripts[GetScriptId("scripted_on_events")];
@@ -171,7 +171,7 @@ bool OnItemClick (Player *pPlayer, Item *pItem)
     return tmpscript->pOnItemClick(pPlayer,pItem);
 }
 
-TRINITY_DLL_EXPORT
+Cw_DLL_EXPORT
 bool OnItemOpen (Player *pPlayer, Item *pItem)
 {
     Script *tmpscript = m_scripts[GetScriptId("scripted_on_events")];
@@ -179,7 +179,7 @@ bool OnItemOpen (Player *pPlayer, Item *pItem)
     return tmpscript->pOnItemOpen(pPlayer,pItem);
 }
 
-TRINITY_DLL_EXPORT
+CW_DLL_EXPORT
 bool OnGoClick (Player *pPlayer, GameObject *pGameObject)
 {
     Script *tmpscript = m_scripts[GetScriptId("scripted_on_events")];
@@ -187,7 +187,7 @@ bool OnGoClick (Player *pPlayer, GameObject *pGameObject)
     return tmpscript->pOnGoClick(pPlayer,pGameObject);
 }
 
-TRINITY_DLL_EXPORT
+CW_DLL_EXPORT
 void OnCreatureKill (Player *pPlayer, Creature *pCreature)
 {
     Script *tmpscript = m_scripts[GetScriptId("scripted_on_events")];
@@ -195,12 +195,12 @@ void OnCreatureKill (Player *pPlayer, Creature *pCreature)
     tmpscript->pOnCreatureKill(pPlayer,pCreature);
 }
 
-TRINITY_DLL_EXPORT
+CW_DLL_EXPORT
 char const* ScriptsVersion()
 {
-    return "Default Trinity scripting library";
+    return "Default CW scripting library";
 }
-TRINITY_DLL_EXPORT
+CW_DLL_EXPORT
 bool GossipHello ( Player * player, Creature *_Creature )
 {
     Script *tmpscript = m_scripts[_Creature->GetScriptId()];
@@ -210,7 +210,7 @@ bool GossipHello ( Player * player, Creature *_Creature )
     return tmpscript->pGossipHello(player,_Creature);
 }
 
-TRINITY_DLL_EXPORT
+CW_DLL_EXPORT
 bool GossipSelect( Player *player, Creature *_Creature, uint32 sender, uint32 action )
 {
     debug_log("TSCR: Gossip selection, sender: %d, action: %d",sender, action);
@@ -222,7 +222,7 @@ bool GossipSelect( Player *player, Creature *_Creature, uint32 sender, uint32 ac
     return tmpscript->pGossipSelect(player,_Creature,sender,action);
 }
 
-TRINITY_DLL_EXPORT
+CW_DLL_EXPORT
 bool GossipSelectWithCode( Player *player, Creature *_Creature, uint32 sender, uint32 action, const char* sCode )
 {
     debug_log("TSCR: Gossip selection with code, sender: %d, action: %d",sender, action);
@@ -234,7 +234,7 @@ bool GossipSelectWithCode( Player *player, Creature *_Creature, uint32 sender, u
     return tmpscript->pGossipSelectWithCode(player,_Creature,sender,action,sCode);
 }
 
-TRINITY_DLL_EXPORT
+CW_DLL_EXPORT
 bool GOSelect( Player *player, GameObject *_GO, uint32 sender, uint32 action )
 {
     if(!_GO)
@@ -248,7 +248,7 @@ bool GOSelect( Player *player, GameObject *_GO, uint32 sender, uint32 action )
     return tmpscript->pGOSelect(player,_GO,sender,action);
 }
 
-TRINITY_DLL_EXPORT
+CW_DLL_EXPORT
 bool GOSelectWithCode( Player *player, GameObject *_GO, uint32 sender, uint32 action, const char* sCode )
 {
     if(!_GO)
@@ -262,7 +262,7 @@ bool GOSelectWithCode( Player *player, GameObject *_GO, uint32 sender, uint32 ac
     return tmpscript->pGOSelectWithCode(player,_GO,sender,action,sCode);
 }
 
-TRINITY_DLL_EXPORT
+CW_DLL_EXPORT
 bool QuestAccept( Player *player, Creature *_Creature, Quest const *_Quest )
 {
     Script *tmpscript = m_scripts[_Creature->GetScriptId()];
@@ -272,7 +272,7 @@ bool QuestAccept( Player *player, Creature *_Creature, Quest const *_Quest )
     return tmpscript->pQuestAccept(player,_Creature,_Quest);
 }
 
-TRINITY_DLL_EXPORT
+CW_DLL_EXPORT
 bool QuestSelect( Player *player, Creature *_Creature, Quest const *_Quest )
 {
     Script *tmpscript = m_scripts[_Creature->GetScriptId()];
@@ -282,7 +282,7 @@ bool QuestSelect( Player *player, Creature *_Creature, Quest const *_Quest )
     return tmpscript->pQuestSelect(player,_Creature,_Quest);
 }
 
-TRINITY_DLL_EXPORT
+CW_DLL_EXPORT
 bool QuestComplete( Player *player, Creature *_Creature, Quest const *_Quest )
 {
     Script *tmpscript = m_scripts[_Creature->GetScriptId()];
@@ -292,7 +292,7 @@ bool QuestComplete( Player *player, Creature *_Creature, Quest const *_Quest )
     return tmpscript->pQuestComplete(player,_Creature,_Quest);
 }
 
-TRINITY_DLL_EXPORT
+CW_DLL_EXPORT
 bool ChooseReward( Player *player, Creature *_Creature, Quest const *_Quest, uint32 opt )
 {
     Script *tmpscript = m_scripts[_Creature->GetScriptId()];
@@ -302,7 +302,7 @@ bool ChooseReward( Player *player, Creature *_Creature, Quest const *_Quest, uin
     return tmpscript->pChooseReward(player,_Creature,_Quest,opt);
 }
 
-TRINITY_DLL_EXPORT
+CW_DLL_EXPORT
 uint32 NPCDialogStatus( Player *player, Creature *_Creature )
 {
     Script *tmpscript = m_scripts[_Creature->GetScriptId()];
@@ -312,7 +312,7 @@ uint32 NPCDialogStatus( Player *player, Creature *_Creature )
     return tmpscript->pNPCDialogStatus(player,_Creature);
 }
 
-TRINITY_DLL_EXPORT
+CW_DLL_EXPORT
 uint32 GODialogStatus( Player *player, GameObject *_GO )
 {
     Script *tmpscript = m_scripts[_GO->GetGOInfo()->ScriptId];
@@ -322,7 +322,7 @@ uint32 GODialogStatus( Player *player, GameObject *_GO )
     return tmpscript->pGODialogStatus(player,_GO);
 }
 
-TRINITY_DLL_EXPORT
+CW_DLL_EXPORT
 bool ItemHello( Player *player, Item *_Item, Quest const *_Quest )
 {
     Script *tmpscript = m_scripts[_Item->GetProto()->ScriptId];
@@ -332,7 +332,7 @@ bool ItemHello( Player *player, Item *_Item, Quest const *_Quest )
     return tmpscript->pItemHello(player,_Item,_Quest);
 }
 
-TRINITY_DLL_EXPORT
+CW_DLL_EXPORT
 bool ItemQuestAccept( Player *player, Item *_Item, Quest const *_Quest )
 {
     Script *tmpscript = m_scripts[_Item->GetProto()->ScriptId];
@@ -342,7 +342,7 @@ bool ItemQuestAccept( Player *player, Item *_Item, Quest const *_Quest )
     return tmpscript->pItemQuestAccept(player,_Item,_Quest);
 }
 
-TRINITY_DLL_EXPORT
+CW_DLL_EXPORT
 bool GOHello( Player *player, GameObject *_GO )
 {
     Script *tmpscript = m_scripts[_GO->GetGOInfo()->ScriptId];
@@ -352,7 +352,7 @@ bool GOHello( Player *player, GameObject *_GO )
     return tmpscript->pGOHello(player,_GO);
 }
 
-TRINITY_DLL_EXPORT
+CW_DLL_EXPORT
 bool GOQuestAccept( Player *player, GameObject *_GO, Quest const *_Quest )
 {
     Script *tmpscript = m_scripts[_GO->GetGOInfo()->ScriptId];
@@ -362,7 +362,7 @@ bool GOQuestAccept( Player *player, GameObject *_GO, Quest const *_Quest )
     return tmpscript->pGOQuestAccept(player,_GO,_Quest);
 }
 
-TRINITY_DLL_EXPORT
+CW_DLL_EXPORT
 bool GOChooseReward( Player *player, GameObject *_GO, Quest const *_Quest, uint32 opt )
 {
     Script *tmpscript = m_scripts[_GO->GetGOInfo()->ScriptId];
@@ -372,7 +372,7 @@ bool GOChooseReward( Player *player, GameObject *_GO, Quest const *_Quest, uint3
     return tmpscript->pGOChooseReward(player,_GO,_Quest,opt);
 }
 
-TRINITY_DLL_EXPORT
+CW_DLL_EXPORT
 bool AreaTrigger( Player *player, AreaTriggerEntry * atEntry)
 {
     Script *tmpscript = m_scripts[GetAreaTriggerScriptId(atEntry->id)];
@@ -381,7 +381,7 @@ bool AreaTrigger( Player *player, AreaTriggerEntry * atEntry)
     return tmpscript->pAreaTrigger(player, atEntry);
 }
 
-TRINITY_DLL_EXPORT
+CW_DLL_EXPORT
 CreatureAI* GetAI(Creature *_Creature)
 {
     Script *tmpscript = m_scripts[_Creature->GetScriptId()];
@@ -390,7 +390,7 @@ CreatureAI* GetAI(Creature *_Creature)
     return tmpscript->GetAI(_Creature);
 }
 
-TRINITY_DLL_EXPORT
+CW_DLL_EXPORT
 bool ItemUse( Player *player, Item* _Item, SpellCastTargets const& targets)
 {
     Script *tmpscript = m_scripts[_Item->GetProto()->ScriptId];
@@ -399,7 +399,7 @@ bool ItemUse( Player *player, Item* _Item, SpellCastTargets const& targets)
     return tmpscript->pItemUse(player,_Item,targets);
 }
 
-TRINITY_DLL_EXPORT
+CW_DLL_EXPORT
 bool ItemExpire( Player *player, ItemPrototype const *_ItemProto)
 {
     Script *tmpscript = m_scripts[_ItemProto->ScriptId];
@@ -408,7 +408,7 @@ bool ItemExpire( Player *player, ItemPrototype const *_ItemProto)
     return tmpscript->pItemExpire(player,_ItemProto);
 }
 
-TRINITY_DLL_EXPORT
+CW_DLL_EXPORT
 bool EffectDummyCreature(Unit *caster, uint32 spellId, uint32 effIndex, Creature *crTarget )
 {
     Script *tmpscript = m_scripts[crTarget->GetScriptId()];
@@ -418,7 +418,7 @@ bool EffectDummyCreature(Unit *caster, uint32 spellId, uint32 effIndex, Creature
     return tmpscript->pEffectDummyCreature(caster, spellId,effIndex,crTarget);
 }
 
-TRINITY_DLL_EXPORT
+CW_DLL_EXPORT
 bool EffectDummyGameObj(Unit *caster, uint32 spellId, uint32 effIndex, GameObject *gameObjTarget )
 {
     Script *tmpscript = m_scripts[gameObjTarget->GetGOInfo()->ScriptId];
@@ -429,7 +429,7 @@ bool EffectDummyGameObj(Unit *caster, uint32 spellId, uint32 effIndex, GameObjec
 }
 
 
-TRINITY_DLL_EXPORT
+CW_DLL_EXPORT
 bool EffectDummyItem(Unit *caster, uint32 spellId, uint32 effIndex, Item *itemTarget )
 {
     Script *tmpscript = m_scripts[itemTarget->GetProto()->ScriptId];
@@ -439,7 +439,7 @@ bool EffectDummyItem(Unit *caster, uint32 spellId, uint32 effIndex, Item *itemTa
     return tmpscript->pEffectDummyItem(caster, spellId,effIndex,itemTarget);
 }
 
-TRINITY_DLL_EXPORT
+CW_DLL_EXPORT
 InstanceData* CreateInstanceData(Map *map)
 {
     if (!map->IsDungeon()) return NULL;

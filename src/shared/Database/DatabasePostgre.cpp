@@ -1,7 +1,7 @@
 /*
  * Copyright (C) 2005-2009 MaNGOS <http://getmangos.com/>
  *
- * Copyright (C) 2008-2009 Trinity <http://www.trinitycore.org/>
+ * Copyright (C) 2009 CWCore <http://www.wow-extrem.de/>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -141,7 +141,7 @@ bool DatabasePostgre::_Query(const char *sql, PGresult** pResult, uint64* pRowCo
     }
     else
     {
-        #ifdef TRINITY_DEBUG
+        #ifdef CW_DEBUG
         sLog.outDebug("[%u ms] SQL: %s", getMSTime() - _s, sql );
         #endif
     }
@@ -242,7 +242,7 @@ bool DatabasePostgre::DirectExecute(const char* sql)
         }
         else
         {
-            #ifdef TRINITY_DEBUG
+            #ifdef CW_DEBUG
             sLog.outDebug("[%u ms] SQL: %s", getMSTime() - _s, sql );
             #endif
         }

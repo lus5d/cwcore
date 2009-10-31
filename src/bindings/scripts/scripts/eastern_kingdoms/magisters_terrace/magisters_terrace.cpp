@@ -102,7 +102,7 @@ struct CW_DLL_DECL npc_kalecgosAI : public ScriptedAI
     {
         if (m_uiTransformTimer)
         {
-            if (m_uiTransformTimer < uiDiff)
+            if (m_uiTransformTimer <= uiDiff)
             {
                 m_creature->CastSpell(m_creature,SPELL_ORB_KILL_CREDIT,false);
                 DoWorkaroundForQuestCredit();
@@ -112,7 +112,7 @@ struct CW_DLL_DECL npc_kalecgosAI : public ScriptedAI
                 m_creature->UpdateEntry(NPC_KAEL);
 
                 m_uiTransformTimer = 0;
-            }else m_uiTransformTimer -= uiDiff;
+            } else m_uiTransformTimer -= uiDiff;
         }
     }
 };

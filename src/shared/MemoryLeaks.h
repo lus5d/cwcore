@@ -16,8 +16,8 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-#ifndef TRINITYSERVER_MEMORY_H
-#define TRINITYSERVER_MEMORY_H
+#ifndef CWSERVER_MEMORY_H
+#define CWSERVER_MEMORY_H
 
 #include "Platform/CompilerDefs.h"
 
@@ -41,7 +41,7 @@
 
 #include "Policies/Singleton.h"
 
-struct MemoryManager : public Trinity::Singleton < MemoryManager >
+struct MemoryManager : public CW::Singleton < MemoryManager >
 {
     MemoryManager();
 };

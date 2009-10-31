@@ -326,7 +326,7 @@ struct CW_DLL_DECL npc_disciple_of_naralexAI : public npc_escortAI
                     break;
                 }
             }
-        }else eventTimer -= diff;
+        } else eventTimer -= diff;
     }
 };
 

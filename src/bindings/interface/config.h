@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2008-2009 Trinity <http://www.trinitycore.org/>
+ * Copyright (C) 2009 CWCore <http://www.wow-extrem.de/>
  *
  * Thanks to the original authors: MaNGOS <http://getmangos.com/>
  *
@@ -25,10 +25,10 @@
 
 #ifdef WIN32
 //#include <windows.h>
-#define TRINITY_DLL_EXPORT extern "C" __declspec(dllexport)
+#define CW_DLL_EXPORT extern "C" __declspec(dllexport)
 #elif defined( __GNUC__ )
-#define TRINITY_DLL_EXPORT extern "C"
+#define CW_DLL_EXPORT extern "C"
 #else
-#define TRINITY_DLL_EXPORT extern "C" export
+#define CW_DLL_EXPORT extern "C" export
 #endif
 

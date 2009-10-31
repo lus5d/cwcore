@@ -1,4 +1,4 @@
-/* Copyright (C) 2009 CWCore <http://www.wow-extrem.de/>
+/* Copyright (C) 2008 - 2009 CW <http://www.CWcore.org/>
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
@@ -103,11 +103,11 @@ struct CW_DLL_DECL boss_patchwerkAI : public BossAI
                     std::list<HostilReference*>::iterator i = me->getThreatManager().getThreatList().begin();
                     for (; i != me->getThreatManager().getThreatList().end(); ++i)
                     {
-                        Unit* target = (*i)->getTarget();
-                        if (target->isAlive() && target->GetHealth() > MostHP && me->IsWithinMeleeRange(target))
+                        Unit *pTarget = (*i)->getTarget();
+                        if (pTarget->isAlive() && pTarget->GetHealth() > MostHP && me->IsWithinMeleeRange(pTarget))
                         {
-                            MostHP = target->GetHealth();
-                            pMostHPTarget = target;
+                            MostHP = pTarget->GetHealth();
+                            pMostHPTarget = pTarget;
                         }
                     }
 

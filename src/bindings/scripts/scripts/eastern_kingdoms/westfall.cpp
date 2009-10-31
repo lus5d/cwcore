@@ -151,13 +151,13 @@ struct CW_DLL_DECL npc_daphne_stilwellAI : public npc_escortAI
         if (!UpdateVictim())
             return;
 
-        if (uiShootTimer < diff)
+        if (uiShootTimer <= diff)
         {
             uiShootTimer = 1500;
 
             if (!m_creature->IsWithinDist(m_creature->getVictim(), ATTACK_DISTANCE))
                 DoCast(m_creature->getVictim(), SPELL_SHOOT);
-        }else uiShootTimer -= diff;
+        } else uiShootTimer -= diff;
     }
 };
 

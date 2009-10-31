@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2009 CWCore <http://www.wow-extrem.de/>
+ * Copyright (C) 2008 - 2009 CW <http://www.CWcore.org/>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -103,10 +103,10 @@ struct CW_DLL_DECL boss_flame_leviathanAI : public BossAI
     }
 
     // TODO: effect 0 and effect 1 may be on different target
-    void SpellHitTarget(Unit *target, const SpellEntry *spell)
+    void SpellHitTarget(Unit *pTarget, const SpellEntry *spell)
     {
         if (spell->Id == SPELL_PURSUED)
-            AttackStart(target);
+            AttackStart(pTarget);
     }
 
     void JustDied(Unit *victim)
@@ -154,7 +154,7 @@ struct CW_DLL_DECL boss_flame_leviathanAI : public BossAI
                     UpdateVictim(); // begin to kill other things
                 return;
             case EVENT_MISSILE:
-                //TODO: without unittarget no visual effect
+                //TODO: without target no visual effect
                 //DoCastAOE(SPELL_MISSILE_BARRAGE);
                 DoCast(me->getVictim(), SPELL_MISSILE_BARRAGE);
                 events.RepeatEvent(1500);

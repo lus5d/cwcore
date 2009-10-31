@@ -280,21 +280,21 @@ struct CW_DLL_DECL boss_felblood_kaelthasAI : public ScriptedAI
                         DoCast(m_creature, SPELL_SHOCK_BARRIER, true);
                         DoCast(m_creature->getVictim(), SPELL_PYROBLAST);
                         PyroblastTimer = 60000;
-                    }else PyroblastTimer -= diff;
+                    } else PyroblastTimer -= diff;
                 }
 
-                if (FireballTimer < diff)
+                if (FireballTimer <= diff)
                 {
                     DoCast(m_creature->getVictim(), Heroic ? SPELL_FIREBALL_HEROIC : SPELL_FIREBALL_NORMAL);
-                    FireballTimer = 2000 + rand()%4000;
-                }else FireballTimer -= diff;
+                    FireballTimer = urand(2000,6000);
+                } else FireballTimer -= diff;
 
-                if (PhoenixTimer < diff)
+                if (PhoenixTimer <= diff)
                 {
 
-                    Unit* target = SelectUnit(SELECT_TARGET_RANDOM,1);
+                    Unit *pTarget = SelectUnit(SELECT_TARGET_RANDOM,1);
 
-                    uint32 random = rand()%2 + 1;
+                    uint8 random = urand(1,2);
                     float x = KaelLocations[random][0];
                     float y = KaelLocations[random][1];
 

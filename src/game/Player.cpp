@@ -16153,7 +16153,7 @@ InstanceSave *Player::GetInstanceSave(uint32 mapid)
     if(!pBind || !pBind->perm)
     {
         if(Group *group = GetGroup())
-            if(InstanceGroupBind *groupBind = group->GetBoundInstance(mapid, GetDungeonDifficulty()))
+            if(InstanceGroupBind *groupBind = group->GetBoundInstance(this))
                 pSave = groupBind->save;
     }
     return pSave;

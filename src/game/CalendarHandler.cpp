@@ -53,7 +53,7 @@ void WorldSession::HandleCalendarGetCalendar(WorldPacket &recv_data)
             {
                 InstanceSave *save = itr->second.save;
                 data << uint32(save->GetMapId());
-                data << uint32(save->GetDungeonDifficulty());
+                data << uint32(save->GetDifficulty());
                 data << uint32(save->GetResetTime() - cur_time);
                 data << uint64(save->GetInstanceId());      // instance save id as unique instance copy id
                 ++counter;

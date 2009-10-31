@@ -200,7 +200,7 @@ bool AchievementCriteriaRequirement::IsValid(AchievementCriteriaEntry const* cri
             if (difficulty.difficulty >= MAX_DIFFICULTY)
             {
                 sLog.outErrorDb( "Table `achievement_criteria_requirement` (Entry: %u Type: %u) for requirement ACHIEVEMENT_CRITERIA_REQUIRE_MAP_DIFFICULTY (%u) have wrong difficulty in value1 (%u), ignore.",
-                    criteria->ID, criteria->requiredType,dataType,difficulty.difficulty);
+                    criteria->ID, criteria->requiredType,requirementType,difficulty.difficulty);
                 return false;
             }
             return true;

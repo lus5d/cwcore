@@ -1,7 +1,7 @@
 /*
  * Copyright (C) 2005-2009 MaNGOS <http://getmangos.com/>
  *
- * Copyright (C) 2009 CWCore <http://www.wow-extrem.de/>
+ * Copyright (C) 2009 CWCore <http://www.CWcore.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,6 +19,7 @@
  */
 
 #ifdef MULTI_THREAD_MAP
+//#include <omp.h>
 #endif
 #include "MapManager.h"
 #include "InstanceSaveMgr.h"
@@ -88,7 +89,7 @@ void MapManager::checkAndCorrectGridStatesArray()
     bool ok = true;
     for(int i=0;i<MAX_GRID_STATE; i++)
     {
-        if(i_GridStates[i] != si_GridStates[i])
+        if (i_GridStates[i] != si_GridStates[i])
         {
             sLog.outError("MapManager::checkGridStates(), GridState: si_GridStates is currupt !!!");
             ok = false;
@@ -96,16 +97,16 @@ void MapManager::checkAndCorrectGridStatesArray()
         }
         #ifdef CW_DEBUG
         // inner class checking only when compiled with debug
-        if(!si_GridStates[i]->checkMagic())
+        if (!si_GridStates[i]->checkMagic())
         {
             ok = false;
             si_GridStates[i]->setMagic();
         }
         #endif
     }
-    if(!ok)
+    if (!ok)
         ++i_GridStateErrorCount;
-    if(i_GridStateErrorCount > 2)
+    if (i_GridStateErrorCount > 2)
         assert(false);                                      // force a crash. Too many errors
 }
 
@@ -114,7 +115,7 @@ MapManager::_createBaseMap(uint32 id)
 {
     Map *m = _findMap(id);
 
-    if( m == NULL )
+    if ( m == NULL )
     {
         Guard guard(*this);
 
@@ -141,7 +142,7 @@ MapManager::_createBaseMap(uint32 id)
 Map* MapManager::CreateMap(uint32 id, const WorldObject* obj, uint32 instanceId)
 {
     ASSERT(obj);
-    //if(!obj->IsInWorld()) sLog.outError("GetMap: called for map %d with object (typeid %d, guid %d, mapid %d, instanceid %d) who is not in world!", id, obj->GetTypeId(), obj->GetGUIDLow(), obj->GetMapId(), obj->GetInstanceId());
+    //if (!obj->IsInWorld()) sLog.outError("GetMap: called for map %d with object (typeid %d, guid %d, mapid %d, instanceid %d) who is not in world!", id, obj->GetTypeId(), obj->GetGUIDLow(), obj->GetMapId(), obj->GetInstanceId());
     Map *m = _createBaseMap(id);
 
     if (m && (obj->GetTypeId() == TYPEID_PLAYER) && m->Instanceable()) m = ((MapInstanced*)m)->CreateInstance(id, (Player*)obj, instanceId);
@@ -152,10 +153,10 @@ Map* MapManager::CreateMap(uint32 id, const WorldObject* obj, uint32 instanceId)
 Map* MapManager::FindMap(uint32 mapid, uint32 instanceId) const
 {
     Map *map = _findMap(mapid);
-    if(!map)
+    if (!map)
         return NULL;
 
-    if(!map->Instanceable())
+    if (!map->Instanceable())
         return instanceId == 0 ? map : NULL;
 
     return ((MapInstanced*)map)->FindMap(instanceId);
@@ -168,15 +169,15 @@ Map* MapManager::FindMap(uint32 mapid, uint32 instanceId) const
 bool MapManager::CanPlayerEnter(uint32 mapid, Player* player)
 {
     const MapEntry *entry = sMapStore.LookupEntry(mapid);
-    if(!entry) return false;
+    if (!entry) return false;
     const char *mapName = entry->name[player->GetSession()->GetSessionDbcLocale()];
 
-    if(entry->map_type == MAP_INSTANCE || entry->map_type == MAP_RAID)
+    if (entry->map_type == MAP_INSTANCE || entry->map_type == MAP_RAID)
     {
         if (entry->map_type == MAP_RAID)
         {
             // GMs can avoid raid limitations
-            if(!player->isGameMaster() && !sWorld.getConfig(CONFIG_INSTANCE_IGNORE_RAID))
+            if (!player->isGameMaster() && !sWorld.getConfig(CONFIG_INSTANCE_IGNORE_RAID))
             {
                 // can only enter in a raid group
                 Group* group = player->GetGroup();
@@ -195,25 +196,25 @@ bool MapManager::CanPlayerEnter(uint32 mapid, Player* player)
         MapDifficulty const* mapDiff = GetMapDifficultyData(entry->MapID,player->GetDifficulty(entry->map_type == MAP_RAID));
         if (!mapDiff)
         {
-            bool isHeroicTargetMap = entry->map_type == MAP_RAID
-                ? (player->GetRaidDifficulty()    >= RAID_DIFFICULTY_10MAN_HEROIC)
-                : (player->GetDungeonDifficulty() >= DUNGEON_DIFFICULTY_HEROIC);
+            bool isNormalTargetMap = entry->map_type == MAP_RAID
+                ? (player->GetRaidDifficulty()    == RAID_DIFFICULTY_10MAN_NORMAL)
+                : (player->GetDungeonDifficulty() == DUNGEON_DIFFICULTY_NORMAL);
 
             //Send aborted message
             // FIX ME: what about absent normal/heroic mode with specific players limit...
-            player->SendTransferAborted(mapid, TRANSFER_ABORT_DIFFICULTY, isHeroicTargetMap ? DUNGEON_DIFFICULTY_HEROIC : DUNGEON_DIFFICULTY_NORMAL);
+            player->SendTransferAborted(mapid, TRANSFER_ABORT_DIFFICULTY, isNormalTargetMap ? DUNGEON_DIFFICULTY_NORMAL : DUNGEON_DIFFICULTY_HEROIC);
             return false;
         }
 
         if (!player->isAlive())
         {
-            if(Corpse *corpse = player->GetCorpse())
+            if (Corpse *corpse = player->GetCorpse())
             {
                 // let enter in ghost mode in instance that connected to inner instance with corpse
                 uint32 instance_map = corpse->GetMapId();
                 do
                 {
-                    if(instance_map==mapid)
+                    if (instance_map==mapid)
                         break;
 
                     InstanceTemplate const* instance = objmgr.GetInstanceTemplate(instance_map);
@@ -234,15 +235,16 @@ bool MapManager::CanPlayerEnter(uint32 mapid, Player* player)
                 sLog.outDebug("Map::CanEnter - player '%s' is dead but doesn't have a corpse!", player->GetName());
             }
         }
-        
+
+        // Requirements
         InstanceTemplate const* instance = objmgr.GetInstanceTemplate(mapid);
-        if(!instance)
+        if (!instance)
             return false;
 
         //Get instance where player's group is bound & its map
         if (player->GetGroup())
         {
-            InstanceGroupBind* boundedInstance = player->GetGroup()->GetBoundInstance(mapid, player->GetDungeonDifficulty());
+            InstanceGroupBind* boundedInstance = player->GetGroup()->GetBoundInstance(player);
             if (boundedInstance && boundedInstance->save)
             {
                 if (Map *boundedMap = MapManager::Instance().FindMap(mapid,boundedInstance->save->GetInstanceId()))
@@ -255,7 +257,7 @@ bool MapManager::CanPlayerEnter(uint32 mapid, Player* player)
                         //TODO: send some kind of error message to the player
                         return false;
                     }
-                    
+
                     //Encounters in progress
                     if (((InstanceMap*)boundedMap)->GetInstanceData() && ((InstanceMap*)boundedMap)->GetInstanceData()->IsEncounterInProgress())
                     {
@@ -263,7 +265,7 @@ bool MapManager::CanPlayerEnter(uint32 mapid, Player* player)
                         player->SendTransferAborted(mapid, TRANSFER_ABORT_ZONE_IN_COMBAT);
                         return(false);
                     }
-                    
+
                     //Instance is full
                     int8 maxPlayers = (player->GetDungeonDifficulty() == DUNGEON_DIFFICULTY_HEROIC) ? instance->maxPlayersHeroic : instance->maxPlayers;
                     if (maxPlayers != -1) //-1: unlimited access
@@ -300,7 +302,7 @@ void
 MapManager::Update(uint32 diff)
 {
     i_timer.Update(diff);
-    if( !i_timer.Passed() )
+    if ( !i_timer.Passed() )
         return;
 
 #ifdef MULTI_THREAD_MAP
@@ -393,7 +395,7 @@ void MapManager::InitMaxInstanceId()
     i_MaxInstanceId = 0;
 
     QueryResult *result = CharacterDatabase.Query( "SELECT MAX(id) FROM instance" );
-    if( result )
+    if ( result )
     {
         i_MaxInstanceId = result->Fetch()[0].GetUInt32();
         delete result;
@@ -406,10 +408,10 @@ uint32 MapManager::GetNumInstances()
     for(MapMapType::iterator itr = i_maps.begin(); itr != i_maps.end(); ++itr)
     {
         Map *map = itr->second;
-        if(!map->Instanceable()) continue;
+        if (!map->Instanceable()) continue;
         MapInstanced::InstancedMaps &maps = ((MapInstanced *)map)->GetInstancedMaps();
         for(MapInstanced::InstancedMaps::iterator mitr = maps.begin(); mitr != maps.end(); ++mitr)
-            if(mitr->second->IsDungeon()) ret++;
+            if (mitr->second->IsDungeon()) ret++;
     }
     return ret;
 }
@@ -420,12 +422,11 @@ uint32 MapManager::GetNumPlayersInInstances()
     for(MapMapType::iterator itr = i_maps.begin(); itr != i_maps.end(); ++itr)
     {
         Map *map = itr->second;
-        if(!map->Instanceable()) continue;
+        if (!map->Instanceable()) continue;
         MapInstanced::InstancedMaps &maps = ((MapInstanced *)map)->GetInstancedMaps();
         for(MapInstanced::InstancedMaps::iterator mitr = maps.begin(); mitr != maps.end(); ++mitr)
-            if(mitr->second->IsDungeon())
+            if (mitr->second->IsDungeon())
                 ret += ((InstanceMap*)mitr->second)->GetPlayers().getSize();
     }
     return ret;
 }
-

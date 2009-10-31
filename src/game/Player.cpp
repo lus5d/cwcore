@@ -16323,7 +16323,6 @@ bool Player::Satisfy(AccessRequirement const *ar, uint32 target_map, bool report
 {
     if(!isGameMaster() && ar)
     {
-		AreaTrigger const* at;
         uint32 LevelMin = 0;
         uint32 LevelMax = 0;
 
@@ -16347,18 +16346,9 @@ bool Player::Satisfy(AccessRequirement const *ar, uint32 target_map, bool report
         else if(ar->item2 && !HasItemCount(ar->item2, 1))
             missingItem = ar->item2;
 
-		MapEntry const* mapEntry = sMapStore.LookupEntry(at->target_mapId);
-        if(!mapEntry)
-            return true;
-
-        //bool isHeroicTargetMap = mapEntry->IsRaid()
-            //? (GetPlayer()->GetRaidDifficulty()    >= RAID_DIFFICULTY_10MAN_HEROIC)
-            //: (GetPlayer()->GetDungeonDifficulty() >= DUNGEON_DIFFICULTY_HEROIC);
-
         uint32 missingKey = 0;
         uint32 missingHeroicQuest = 0;
-        //if(isHeroicTargetMap)
-        {
+		{
             if(ar->heroicKey)
 			
             {

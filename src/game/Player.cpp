@@ -16344,6 +16344,10 @@ bool Player::Satisfy(AccessRequirement const *ar, uint32 target_map, bool report
         else if(ar->item2 && !HasItemCount(ar->item2, 1))
             missingItem = ar->item2;
 
+		bool isNormalTargetMap = mapEntry->IsRaid()
+            ? (GetPlayer()->GetRaidDifficulty() == RAID_DIFFICULTY_10MAN_NORMAL)
+            : (GetPlayer()->GetDungeonDifficulty() == DUNGEON_DIFFICULTY_NORMAL);
+
         uint32 missingKey = 0;
         uint32 missingHeroicQuest = 0;
 		{

@@ -178,7 +178,7 @@ Creature::~Creature()
 void Creature::AddToWorld()
 {
     ///- Register the creature for guid lookup
-    if(!IsInWorld())
+    if(!IsInWorld() && GetGUIDHigh()==HIGHGUID_UNIT)
     {
         if(m_zoneScript)
             m_zoneScript->OnCreatureCreate(this, true);
@@ -193,7 +193,7 @@ void Creature::AddToWorld()
 
 void Creature::RemoveFromWorld()
 {
-    if(IsInWorld())
+    if(IsInWorld() && GetGUIDHigh()==HIGHGUID_UNIT)
     {
         if(m_zoneScript)
             m_zoneScript->OnCreatureCreate(this, false);

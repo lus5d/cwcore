@@ -311,6 +311,12 @@ class CW_DLL_SPEC Map : public GridRefManager<NGridType>, public MaNGOS::ObjectL
             return loaded(p);
         }
 
+        bool IsLoaded(float x, float y) const
+        {
+            GridPair p = MaNGOS::ComputeGridPair(x, y);
+            return loaded(p);
+        }
+
         bool GetUnloadLock(const GridPair &p) const { return getNGrid(p.x_coord, p.y_coord)->getUnloadLock(); }
         void SetUnloadLock(const GridPair &p, bool on) { getNGrid(p.x_coord, p.y_coord)->setUnloadExplicitLock(on); }
         void LoadGrid(float x, float y);

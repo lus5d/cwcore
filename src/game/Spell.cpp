@@ -853,10 +853,10 @@ void Spell::CleanupTargetList()
 
 void Spell::AddUnitTarget(Unit* pVictim, uint32 effIndex)
 {
-    if( m_spellInfo->Effect[effIndex] == 0 )
+    if (m_spellInfo->Effect[effIndex] == 0)
         return;
 
-    if(!CheckTarget(pVictim, effIndex))
+    if (!CheckTarget(pVictim, effIndex))
         return;
 
     // Check for effect immune skip if immuned
@@ -901,7 +901,7 @@ void Spell::AddUnitTarget(Unit* pVictim, uint32 effIndex)
     }
 
     // Calculate hit result
-    if(m_originalCaster)
+    if (m_originalCaster)
     {
         target.missCondition = m_originalCaster->SpellHitResult(pVictim, m_spellInfo, m_canReflect);
         if(m_skipCheck && target.missCondition != SPELL_MISS_IMMUNE)
@@ -948,8 +948,7 @@ void Spell::AddUnitTarget(Unit* pVictim, uint32 effIndex)
 
 void Spell::AddUnitTarget(uint64 unitGUID, uint32 effIndex)
 {
-    Unit* unit = m_caster->GetGUID() == unitGUID ? m_caster : ObjectAccessor::GetUnit(*m_caster, unitGUID);
-    if (unit)
+    if (Unit* unit = m_caster->GetGUID() == unitGUID ? m_caster : ObjectAccessor::GetUnit(*m_caster, unitGUID))
         AddUnitTarget(unit, effIndex);
 }
 
@@ -2131,25 +2130,25 @@ void Spell::SelectEffectTargets(uint32 i, uint32 cur)
 
         case TARGET_TYPE_CHANNEL:
         {
-            if(!m_originalCaster || !m_originalCaster->GetCurrentSpell(CURRENT_CHANNELED_SPELL))
+            if (!m_originalCaster || !m_originalCaster->GetCurrentSpell(CURRENT_CHANNELED_SPELL))
             {
                 sLog.outError( "SPELL: no current channeled spell for spell ID %u", m_spellInfo->Id );
                 break;
             }
 
-            switch(cur)
+            switch (cur)
             {
                 case TARGET_UNIT_CHANNEL:
                     // in some cases unittarget is invalid and crash. do not know why it happens.
-                    if(Unit* target = Unit::GetUnit(*m_caster, m_originalCaster->GetCurrentSpell(CURRENT_CHANNELED_SPELL)->m_targets.getUnitTargetGUID()))
+                    if (Unit* target = Unit::GetUnit(*m_caster, m_originalCaster->GetCurrentSpell(CURRENT_CHANNELED_SPELL)->m_targets.getUnitTargetGUID()))
                         AddUnitTarget(target, i);
                     else
                         sLog.outError( "SPELL: cannot find channel spell target for spell ID %u", m_spellInfo->Id );
                     break;
                 case TARGET_DEST_CHANNEL:
-                    if(m_originalCaster->GetCurrentSpell(CURRENT_CHANNELED_SPELL)->m_targets.HasDst())
+                    if (m_originalCaster->GetCurrentSpell(CURRENT_CHANNELED_SPELL)->m_targets.HasDst())
                         m_targets = m_originalCaster->GetCurrentSpell(CURRENT_CHANNELED_SPELL)->m_targets;
-                    else if(Unit* target = Unit::GetUnit(*m_caster, m_originalCaster->GetCurrentSpell(CURRENT_CHANNELED_SPELL)->m_targets.getUnitTargetGUID()))
+                    else if (Unit* target = Unit::GetUnit(*m_caster, m_originalCaster->GetCurrentSpell(CURRENT_CHANNELED_SPELL)->m_targets.getUnitTargetGUID()))
                         m_targets.setDst(target);
                     else
                         sLog.outError( "SPELL: cannot find channel spell destination for spell ID %u", m_spellInfo->Id );
@@ -2160,7 +2159,7 @@ void Spell::SelectEffectTargets(uint32 i, uint32 cur)
 
         default:
         {
-            switch(cur)
+            switch (cur)
             {
                 case TARGET_GAMEOBJECT:
                 case TARGET_OBJECT_USE:
@@ -2168,9 +2167,9 @@ void Spell::SelectEffectTargets(uint32 i, uint32 cur)
                         AddGOTarget(m_targets.getGOTarget(), i);
                     break;
                 case TARGET_GAMEOBJECT_ITEM:
-                    if(m_targets.getGOTargetGUID())
+                    if (m_targets.getGOTargetGUID())
                         AddGOTarget(m_targets.getGOTarget(), i);
-                    else if(m_targets.getItemTarget())
+                    else if (m_targets.getItemTarget())
                         AddItemTarget(m_targets.getItemTarget(), i);
                     break;
                 default:
@@ -2181,10 +2180,10 @@ void Spell::SelectEffectTargets(uint32 i, uint32 cur)
         }
     }
 
-    if(pushType == PUSH_CHAIN) // Chain
+    if (pushType == PUSH_CHAIN) // Chain
     {
         Unit *target = m_targets.getUnitTarget();
-        if(!target)
+        if (!target)
         {
             sLog.outError("SPELL: no chain unit target for spell ID %u", m_spellInfo->Id);
             return;
@@ -2192,10 +2191,10 @@ void Spell::SelectEffectTargets(uint32 i, uint32 cur)
 
         //Chain: 2, 6, 22, 25, 45, 77
         uint32 maxTargets = m_spellInfo->EffectChainTarget[i];
-        if(modOwner)
+        if (modOwner)
             modOwner->ApplySpellMod(m_spellInfo->Id, SPELLMOD_JUMP_TARGETS, maxTargets, this);
 
-        if(maxTargets > 1)
+        if (maxTargets > 1)
         {
             //otherwise, this multiplier is used for something else
             m_damageMultipliers[i] = 1.0f;
@@ -2204,13 +2203,13 @@ void Spell::SelectEffectTargets(uint32 i, uint32 cur)
             float range;
             std::list<Unit*> unitList;
 
-            switch(cur)
+            switch (cur)
             {
                 case TARGET_UNIT_NEARBY_ENEMY:
                 case TARGET_UNIT_TARGET_ENEMY:
                 case TARGET_UNIT_NEARBY_ENTRY: // fix me
                     range = GetSpellMaxRange(m_spellInfo, false);
-                    if(modOwner) modOwner->ApplySpellMod(m_spellInfo->Id, SPELLMOD_RANGE, range, this);
+                    if (modOwner) modOwner->ApplySpellMod(m_spellInfo->Id, SPELLMOD_RANGE, range, this);
                     SearchChainTarget(unitList, range, maxTargets, SPELL_TARGETS_ENEMY);
                     break;
                 case TARGET_UNIT_CHAINHEAL:
@@ -2218,7 +2217,7 @@ void Spell::SelectEffectTargets(uint32 i, uint32 cur)
                 case TARGET_UNIT_NEARBY_ALLY_UNK:
                 case TARGET_UNIT_NEARBY_RAID:
                     range = GetSpellMaxRange(m_spellInfo, true);
-                    if(modOwner) modOwner->ApplySpellMod(m_spellInfo->Id, SPELLMOD_RANGE, range, this);
+                    if (modOwner) modOwner->ApplySpellMod(m_spellInfo->Id, SPELLMOD_RANGE, range, this);
                     SearchChainTarget(unitList, range, maxTargets, SPELL_TARGETS_CHAINHEAL);
                     break;
             }
@@ -2229,7 +2228,7 @@ void Spell::SelectEffectTargets(uint32 i, uint32 cur)
         else
             AddUnitTarget(target, i);
     }
-    else if(pushType)
+    else if (pushType)
     {
         // Dummy, just for client
         if(EffectTargetType[m_spellInfo->Effect[i]] != SPELL_REQUIRE_UNIT)
@@ -2273,7 +2272,7 @@ void Spell::SelectEffectTargets(uint32 i, uint32 cur)
         if(targetType == SPELL_TARGETS_ENTRY)
         {
             SpellScriptTargetBounds bounds = spellmgr.GetSpellScriptTargetBounds(m_spellInfo->Id);
-            if(bounds.first==bounds.second)
+            if(bounds.first == bounds.second)
             {
                 // Custom entries
                 // TODO: move these to sql
@@ -2282,8 +2281,7 @@ void Spell::SelectEffectTargets(uint32 i, uint32 cur)
                     case 46584: // Raise Dead
                     {
                         m_targets.m_targetMask &= ~TARGET_FLAG_DEST_LOCATION;
-                        WorldObject* result = FindCorpseUsing<MaNGOS::RaiseDeadObjectCheck> ();
-                        if(result)
+                        if (WorldObject* result = FindCorpseUsing<MaNGOS::RaiseDeadObjectCheck> ())
                         {
                             switch(result->GetTypeId())
                             {
@@ -2312,14 +2310,14 @@ void Spell::SelectEffectTargets(uint32 i, uint32 cur)
 
                             WorldObject* result = FindCorpseUsing <CW::ExplodeCorpseObjectCheck> ();
 
-                            if(result)
+                            if (result)
                             {
-                                switch(result->GetTypeId())
+                                switch (result->GetTypeId())
                                 {
-                                case TYPEID_UNIT:
-                                case TYPEID_PLAYER:
-                                    m_targets.setUnitTarget((Unit*)result);
-                                    break;
+                                    case TYPEID_UNIT:
+                                    case TYPEID_PLAYER:
+                                        m_targets.setUnitTarget((Unit*)result);
+                                        break;
                                 }
                             }
                             else
@@ -2360,11 +2358,11 @@ void Spell::SelectEffectTargets(uint32 i, uint32 cur)
                 }
             }
         }
-        else if(targetType)
+        else if (targetType)
             SearchAreaTarget(unitList, radius, pushType, targetType);
         else
         {
-            switch(cur)
+            switch (cur)
             {
                 case TARGET_UNIT_AREA_PARTY_SRC:
                 case TARGET_UNIT_AREA_PARTY_DST:
@@ -4301,11 +4299,11 @@ void Spell::HandleThreatSpells(uint32 spellId)
 void Spell::HandleEffects(Unit *pUnitTarget,Item *pItemTarget,GameObject *pGOTarget,uint32 i)
 {
 
-    if(!Script->OnSpellCast(pUnitTarget,pItemTarget,pGOTarget,i,m_spellInfo))
+    if (!Script->OnSpellCast(pUnitTarget,pItemTarget,pGOTarget,i,m_spellInfo))
         return;
 
     //effect has been handled, skip it
-    if(m_effectMask & (1<<i))
+    if (m_effectMask & (1<<i))
         return;
 
     unitTarget = pUnitTarget;
@@ -4319,7 +4317,7 @@ void Spell::HandleEffects(Unit *pUnitTarget,Item *pItemTarget,GameObject *pGOTar
     //we do not need DamageMultiplier here.
     damage = CalculateDamage(i, NULL);
 
-    if(eff<TOTAL_SPELL_EFFECTS)
+    if(eff < TOTAL_SPELL_EFFECTS)
     {
         //sLog.outDebug( "WORLD: Spell FX %d < TOTAL_SPELL_EFFECTS ", eff);
         (this->*SpellEffects[eff])(i);

@@ -254,16 +254,16 @@ void Unit::Update( uint32 p_time )
     //not implemented before 3.0.2
     //if(!hasUnitState(UNIT_STAT_CASTING))
     {
-        if(uint32 base_att = getAttackTimer(BASE_ATTACK))
+        if (uint32 base_att = getAttackTimer(BASE_ATTACK))
             setAttackTimer(BASE_ATTACK, (p_time >= base_att ? 0 : base_att - p_time));
-        if(uint32 ranged_att = getAttackTimer(RANGED_ATTACK))
+        if (uint32 ranged_att = getAttackTimer(RANGED_ATTACK))
             setAttackTimer(RANGED_ATTACK, (p_time >= ranged_att ? 0 : ranged_att - p_time));
-        if(uint32 off_att = getAttackTimer(OFF_ATTACK))
+        if (uint32 off_att = getAttackTimer(OFF_ATTACK))
             setAttackTimer(OFF_ATTACK, (p_time >= off_att ? 0 : off_att - p_time));
     }
 
     // update abilities available only for fraction of time
-    UpdateReactives( p_time );
+    UpdateReactives(p_time);
 
     ModifyAuraState(AURA_STATE_HEALTHLESS_20_PERCENT, GetHealth() < GetMaxHealth()*0.20f);
     ModifyAuraState(AURA_STATE_HEALTHLESS_35_PERCENT, GetHealth() < GetMaxHealth()*0.35f);
@@ -14943,16 +14943,16 @@ void Unit::ExitVehicle()
 
 void Unit::BuildMovementPacket(ByteBuffer *data) const
 {
-    switch(GetTypeId())
+    switch (GetTypeId())
     {
         case TYPEID_UNIT:
-            if(canFly())
+            if (canFly())
                 const_cast<Unit*>(this)->AddUnitMovementFlag(MOVEMENTFLAG_FORWARD | MOVEMENTFLAG_LEVITATING);
             break;
         case TYPEID_PLAYER:
             // remove unknown, unused etc flags for now
             const_cast<Unit*>(this)->RemoveUnitMovementFlag(MOVEMENTFLAG_SPLINE2);
-            if(isInFlight())
+            if (isInFlight())
             {
                 WPAssert(const_cast<Unit*>(this)->GetMotionMaster()->GetCurrentMovementGeneratorType() == FLIGHT_MOTION_TYPE);
                 const_cast<Unit*>(this)->AddUnitMovementFlag(MOVEMENTFLAG_FORWARD | MOVEMENTFLAG_SPLINE2);

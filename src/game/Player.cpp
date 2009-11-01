@@ -2509,7 +2509,7 @@ void Player::GiveXP(uint32 xp, Unit* victim)
 // Current player experience not update (must be update by caller)
 void Player::GiveLevel(uint32 level)
 {
-    if ( level == getLevel() )
+    if (level == getLevel())
         return;
 
     PlayerLevelInfo info;
@@ -2545,7 +2545,7 @@ void Player::GiveLevel(uint32 level)
 
     SetLevel(level);
 
-    UpdateSkillsForLevel ();
+    UpdateSkillsForLevel();
 
     // save base values (bonuses already included in stored stats
     for(uint8 i = STAT_STRENGTH; i < MAX_STATS; ++i)
@@ -2614,7 +2614,7 @@ void Player::InitTalentForLevel()
         }
         // else update amount of free points
         else
-            SetFreeTalentPoints(talentPointsForLevel-m_usedTalentCount);
+            SetFreeTalentPoints(talentPointsForLevel - m_usedTalentCount);
     }
 
     if(!GetSession()->PlayerLoading())
@@ -2623,7 +2623,7 @@ void Player::InitTalentForLevel()
 
 void Player::InitStatsForLevel(bool reapplyMods)
 {
-    if(reapplyMods)                                         //reapply stats values only on .reset stats (level) command
+    if (reapplyMods)                                        //reapply stats values only on .reset stats (level) command
         _RemoveAllStatBonuses();
 
     PlayerClassLevelInfo classInfo;
@@ -2664,7 +2664,7 @@ void Player::InitStatsForLevel(bool reapplyMods)
         SetUInt32Value(index, 0);
 
     SetUInt32Value(PLAYER_FIELD_MOD_HEALING_DONE_POS,0);
-    for (uint8 i = 0; i < 7; i++)
+    for (uint8 i = 0; i < 7; ++i)
     {
         SetUInt32Value(PLAYER_FIELD_MOD_DAMAGE_DONE_NEG+i, 0);
         SetUInt32Value(PLAYER_FIELD_MOD_DAMAGE_DONE_POS+i, 0);
@@ -2672,22 +2672,22 @@ void Player::InitStatsForLevel(bool reapplyMods)
     }
 
     //reset attack power, damage and attack speed fields
-    SetFloatValue(UNIT_FIELD_BASEATTACKTIME, 2000.0f );
-    SetFloatValue(UNIT_FIELD_BASEATTACKTIME + 1, 2000.0f ); // offhand attack time
-    SetFloatValue(UNIT_FIELD_RANGEDATTACKTIME, 2000.0f );
+    SetFloatValue(UNIT_FIELD_BASEATTACKTIME, 2000.0f);
+    SetFloatValue(UNIT_FIELD_BASEATTACKTIME + 1, 2000.0f); // offhand attack time
+    SetFloatValue(UNIT_FIELD_RANGEDATTACKTIME, 2000.0f);
 
-    SetFloatValue(UNIT_FIELD_MINDAMAGE, 0.0f );
-    SetFloatValue(UNIT_FIELD_MAXDAMAGE, 0.0f );
-    SetFloatValue(UNIT_FIELD_MINOFFHANDDAMAGE, 0.0f );
-    SetFloatValue(UNIT_FIELD_MAXOFFHANDDAMAGE, 0.0f );
-    SetFloatValue(UNIT_FIELD_MINRANGEDDAMAGE, 0.0f );
-    SetFloatValue(UNIT_FIELD_MAXRANGEDDAMAGE, 0.0f );
+    SetFloatValue(UNIT_FIELD_MINDAMAGE, 0.0f);
+    SetFloatValue(UNIT_FIELD_MAXDAMAGE, 0.0f);
+    SetFloatValue(UNIT_FIELD_MINOFFHANDDAMAGE, 0.0f);
+    SetFloatValue(UNIT_FIELD_MAXOFFHANDDAMAGE, 0.0f);
+    SetFloatValue(UNIT_FIELD_MINRANGEDDAMAGE, 0.0f);
+    SetFloatValue(UNIT_FIELD_MAXRANGEDDAMAGE, 0.0f);
 
-    SetInt32Value(UNIT_FIELD_ATTACK_POWER,            0 );
-    SetInt32Value(UNIT_FIELD_ATTACK_POWER_MODS,       0 );
+    SetInt32Value(UNIT_FIELD_ATTACK_POWER,            0);
+    SetInt32Value(UNIT_FIELD_ATTACK_POWER_MODS,       0);
     SetFloatValue(UNIT_FIELD_ATTACK_POWER_MULTIPLIER,0.0f);
-    SetInt32Value(UNIT_FIELD_RANGED_ATTACK_POWER,     0 );
-    SetInt32Value(UNIT_FIELD_RANGED_ATTACK_POWER_MODS,0 );
+    SetInt32Value(UNIT_FIELD_RANGED_ATTACK_POWER,     0);
+    SetInt32Value(UNIT_FIELD_RANGED_ATTACK_POWER_MODS,0);
     SetFloatValue(UNIT_FIELD_RANGED_ATTACK_POWER_MULTIPLIER,0.0f);
 
     // Base crit values (will be recalculated in UpdateAllStats() at loading and in _ApplyAllStatBonuses() at reset
@@ -2711,7 +2711,7 @@ void Player::InitStatsForLevel(bool reapplyMods)
     SetResistanceBuffMods(SpellSchools(0), true, 0.0f);
     SetResistanceBuffMods(SpellSchools(0), false, 0.0f);
     // set other resistance to original value (0)
-    for (uint8 i = 1; i < MAX_SPELL_SCHOOL; i++)
+    for (uint8 i = 1; i < MAX_SPELL_SCHOOL; ++i)
     {
         SetResistance(SpellSchools(i), 0);
         SetResistanceBuffMods(SpellSchools(i), true, 0.0f);
@@ -2758,9 +2758,9 @@ void Player::InitStatsForLevel(bool reapplyMods)
     RemoveByteFlag(UNIT_FIELD_BYTES_2, 1, UNIT_BYTE2_FLAG_FFA_PVP | UNIT_BYTE2_FLAG_SANCTUARY);
 
     // restore if need some important flags
-    SetUInt32Value(PLAYER_FIELD_BYTES2, 0 );                // flags empty by default
+    SetUInt32Value(PLAYER_FIELD_BYTES2, 0);                 // flags empty by default
 
-    if(reapplyMods)                                         //reapply stats values only on .reset stats (level) command
+    if (reapplyMods)                                        // reapply stats values only on .reset stats (level) command
         _ApplyAllStatBonuses();
 
     // set current level health and mana/energy to maximum after applying all mods.
@@ -7316,16 +7316,16 @@ void Player::ApplyItemEquipSpell(Item *item, bool apply, bool form_change)
         _Spell const& spellData = proto->Spells[i];
 
         // no spell
-        if(!spellData.SpellId )
+        if (!spellData.SpellId)
             continue;
 
         // wrong triggering type
-        if(apply && spellData.SpellTrigger != ITEM_SPELLTRIGGER_ON_EQUIP)
+        if (apply && spellData.SpellTrigger != ITEM_SPELLTRIGGER_ON_EQUIP)
             continue;
 
         // check if it is valid spell
         SpellEntry const* spellproto = sSpellStore.LookupEntry(spellData.SpellId);
-        if(!spellproto)
+        if (!spellproto)
             continue;
 
         ApplyEquipSpell(spellproto,item,apply,form_change);
@@ -7361,8 +7361,8 @@ void Player::ApplyEquipSpell(SpellEntry const* spellInfo, Item* item, bool apply
                 return;                                     // and remove only not compatible at form change
         }
 
-        if(item)
-            RemoveAurasDueToItemSpell(item,spellInfo->Id);  // un-apply all spells , not only at-equipped
+        if (item)
+            RemoveAurasDueToItemSpell(item,spellInfo->Id);  // un-apply all spells, not only at-equipped
         else
             RemoveAurasDueToSpell(spellInfo->Id);           // un-apply spell (item set case)
     }
@@ -7370,7 +7370,7 @@ void Player::ApplyEquipSpell(SpellEntry const* spellInfo, Item* item, bool apply
 
 void Player::UpdateEquipSpellsAtFormChange()
 {
-    for (uint8 i = 0; i < INVENTORY_SLOT_BAG_END; i++)
+    for (uint8 i = 0; i < INVENTORY_SLOT_BAG_END; ++i)
     {
         if(m_items[i] && !m_items[i]->IsBroken())
         {
@@ -7425,12 +7425,10 @@ void Player::CastItemCombatSpell(Unit *target, WeaponAttackType attType, uint32 
                             continue;
                         // Check if item is useable (forms or disarm)
                         if (attType == BASE_ATTACK)
-                        {
-                            if (!((Player*)this)->IsUseEquipedWeapon(true))
+                            if (!IsUseEquipedWeapon(true))
                                 continue;
-                        }
                     }
-                    ((Player*)this)->CastItemCombatSpell(target, attType, procVictim, procEx, item, proto);
+                    CastItemCombatSpell(target, attType, procVictim, procEx, item, proto);
                 }
     }
 }
@@ -7441,36 +7439,36 @@ void Player::CastItemCombatSpell(Unit *target, WeaponAttackType attType, uint32 
     if (procVictim & PROC_FLAG_TAKEN_ANY_DAMAGE)
     //if (damageInfo->procVictim & PROC_FLAG_TAKEN_ANY_DAMAGE)
     {
-        for (int i = 0; i < 5; i++)
+        for (uint8 i = 0; i < 5; ++i)
         {
             _Spell const& spellData = proto->Spells[i];
 
             // no spell
-            if(!spellData.SpellId )
+            if (!spellData.SpellId)
                 continue;
 
             // wrong triggering type
-            if(spellData.SpellTrigger != ITEM_SPELLTRIGGER_CHANCE_ON_HIT)
+            if (spellData.SpellTrigger != ITEM_SPELLTRIGGER_CHANCE_ON_HIT)
                 continue;
 
             SpellEntry const *spellInfo = sSpellStore.LookupEntry(spellData.SpellId);
-            if(!spellInfo)
+            if (!spellInfo)
             {
                 sLog.outError("WORLD: unknown Item spellid %i", spellData.SpellId);
                 continue;
             }
 
             // not allow proc extra attack spell at extra attack
-            if( m_extraAttacks && IsSpellHaveEffect(spellInfo, SPELL_EFFECT_ADD_EXTRA_ATTACKS) )
+            if (m_extraAttacks && IsSpellHaveEffect(spellInfo, SPELL_EFFECT_ADD_EXTRA_ATTACKS))
                 return;
 
             float chance = spellInfo->procChance;
 
-            if(spellData.SpellPPMRate)
+            if (spellData.SpellPPMRate)
             {
-                if(spellData.SpellId == 52781) // Persuasive Strike
+                if (spellData.SpellId == 52781) // Persuasive Strike
                 {
-                    switch(target->GetEntry())
+                    switch (target->GetEntry())
                     {
                         default:
                             return;
@@ -7483,7 +7481,7 @@ void Player::CastItemCombatSpell(Unit *target, WeaponAttackType attType, uint32 
                 uint32 WeaponSpeed = GetAttackTime(attType);
                 chance = GetPPMProcChance(WeaponSpeed, spellData.SpellPPMRate, spellInfo);
             }
-            else if(chance > 100.0f)
+            else if (chance > 100.0f)
             {
                 chance = GetWeaponProcChance();
             }
@@ -7555,13 +7553,13 @@ void Player::CastItemUseSpell(Item *item,SpellCastTargets const& targets,uint8 c
 {
     ItemPrototype const* proto = item->GetProto();
     // special learning case
-    if(proto->Spells[0].SpellId==SPELL_ID_GENERIC_LEARN || proto->Spells[0].SpellId==SPELL_ID_GENERIC_LEARN_PET)
+    if (proto->Spells[0].SpellId == SPELL_ID_GENERIC_LEARN || proto->Spells[0].SpellId==SPELL_ID_GENERIC_LEARN_PET)
     {
         uint32 learn_spell_id = proto->Spells[0].SpellId;
         uint32 learning_spell_id = proto->Spells[1].SpellId;
 
         SpellEntry const *spellInfo = sSpellStore.LookupEntry(learn_spell_id);
-        if(!spellInfo)
+        if (!spellInfo)
         {
             sLog.outError("Player::CastItemUseSpell: Item (Entry: %u) in have wrong spell id %u, ignoring ",proto->ItemId, learn_spell_id);
             SendEquipError(EQUIP_ERR_NONE,item,NULL);
@@ -7641,43 +7639,43 @@ void Player::_RemoveAllItemMods()
 {
     sLog.outDebug("_RemoveAllItemMods start.");
 
-    for (uint8 i = 0; i < INVENTORY_SLOT_BAG_END; i++)
+    for (uint8 i = 0; i < INVENTORY_SLOT_BAG_END; ++i)
     {
-        if(m_items[i])
+        if (m_items[i])
         {
             ItemPrototype const *proto = m_items[i]->GetProto();
-            if(!proto)
+            if (!proto)
                 continue;
 
             // item set bonuses not dependent from item broken state
-            if(proto->ItemSet)
+            if (proto->ItemSet)
                 RemoveItemsSetItem(this,proto);
 
-            if(m_items[i]->IsBroken())
+            if (m_items[i]->IsBroken())
                 continue;
 
-            ApplyItemEquipSpell(m_items[i],false);
+            ApplyItemEquipSpell(m_items[i], false);
             ApplyEnchantment(m_items[i], false);
         }
     }
 
-    for (uint8 i = 0; i < INVENTORY_SLOT_BAG_END; i++)
+    for (uint8 i = 0; i < INVENTORY_SLOT_BAG_END; ++i)
     {
-        if(m_items[i])
+        if (m_items[i])
         {
-            if(m_items[i]->IsBroken())
+            if (m_items[i]->IsBroken())
                 continue;
             ItemPrototype const *proto = m_items[i]->GetProto();
-            if(!proto)
+            if (!proto)
                 continue;
 
             uint32 attacktype = Player::GetAttackBySlot(i);
-            if(attacktype < MAX_ATTACK)
+            if (attacktype < MAX_ATTACK)
                 _ApplyWeaponDependentAuraMods(m_items[i],WeaponAttackType(attacktype),false);
 
             _ApplyItemBonuses(proto,i, false);
 
-            if( i == EQUIPMENT_SLOT_RANGED )
+            if (i == EQUIPMENT_SLOT_RANGED)
                 _ApplyAmmoBonuses();
         }
     }
@@ -7689,41 +7687,41 @@ void Player::_ApplyAllItemMods()
 {
     sLog.outDebug("_ApplyAllItemMods start.");
 
-    for (uint8 i = 0; i < INVENTORY_SLOT_BAG_END; i++)
+    for (uint8 i = 0; i < INVENTORY_SLOT_BAG_END; ++i)
     {
-        if(m_items[i])
+        if (m_items[i])
         {
-            if(m_items[i]->IsBroken())
+            if (m_items[i]->IsBroken())
                 continue;
 
             ItemPrototype const *proto = m_items[i]->GetProto();
-            if(!proto)
+            if (!proto)
                 continue;
 
             uint32 attacktype = Player::GetAttackBySlot(i);
-            if(attacktype < MAX_ATTACK)
+            if (attacktype < MAX_ATTACK)
                 _ApplyWeaponDependentAuraMods(m_items[i],WeaponAttackType(attacktype),true);
 
             _ApplyItemBonuses(proto,i, true);
 
-            if( i == EQUIPMENT_SLOT_RANGED )
+            if (i == EQUIPMENT_SLOT_RANGED)
                 _ApplyAmmoBonuses();
         }
     }
 
-    for (uint8 i = 0; i < INVENTORY_SLOT_BAG_END; i++)
+    for (uint8 i = 0; i < INVENTORY_SLOT_BAG_END; ++i)
     {
-        if(m_items[i])
+        if (m_items[i])
         {
             ItemPrototype const *proto = m_items[i]->GetProto();
-            if(!proto)
+            if (!proto)
                 continue;
 
             // item set bonuses not dependent from item broken state
-            if(proto->ItemSet)
+            if (proto->ItemSet)
                 AddItemsSetItem(this,m_items[i]);
 
-            if(m_items[i]->IsBroken())
+            if (m_items[i]->IsBroken())
                 continue;
 
             ApplyItemEquipSpell(m_items[i],true);
@@ -7736,15 +7734,15 @@ void Player::_ApplyAllItemMods()
 
 void Player::_ApplyAllLevelScaleItemMods(bool apply)
 {
-    for (int i = 0; i < INVENTORY_SLOT_BAG_END; ++i)
+    for (uint8 i = 0; i < INVENTORY_SLOT_BAG_END; ++i)
     {
-        if(m_items[i])
+        if (m_items[i])
         {
-            if(m_items[i]->IsBroken())
+            if (m_items[i]->IsBroken())
                 continue;
 
             ItemPrototype const *proto = m_items[i]->GetProto();
-            if(!proto)
+            if (!proto)
                 continue;
 
             _ApplyItemBonuses(proto,i, apply, true);
@@ -7756,50 +7754,50 @@ void Player::_ApplyAmmoBonuses()
 {
     // check ammo
     uint32 ammo_id = GetUInt32Value(PLAYER_AMMO_ID);
-    if(!ammo_id)
+    if (!ammo_id)
         return;
 
     float currentAmmoDPS;
 
     ItemPrototype const *ammo_proto = objmgr.GetItemPrototype( ammo_id );
-    if( !ammo_proto || ammo_proto->Class!=ITEM_CLASS_PROJECTILE || !CheckAmmoCompatibility(ammo_proto))
+    if (!ammo_proto || ammo_proto->Class!=ITEM_CLASS_PROJECTILE || !CheckAmmoCompatibility(ammo_proto))
         currentAmmoDPS = 0.0f;
     else
-        currentAmmoDPS = ( ammo_proto->Damage[0].DamageMin + ammo_proto->Damage[0].DamageMax ) / 2;
+        currentAmmoDPS = (ammo_proto->Damage[0].DamageMin + ammo_proto->Damage[0].DamageMax) / 2;
 
-    if(currentAmmoDPS == GetAmmoDPS())
+    if (currentAmmoDPS == GetAmmoDPS())
         return;
 
     m_ammoDPS = currentAmmoDPS;
 
-    if(CanModifyStats())
+    if (CanModifyStats())
         UpdateDamagePhysical(RANGED_ATTACK);
 }
 
 bool Player::CheckAmmoCompatibility(const ItemPrototype *ammo_proto) const
 {
-    if(!ammo_proto)
+    if (!ammo_proto)
         return false;
 
     // check ranged weapon
     Item *weapon = GetWeaponForAttack( RANGED_ATTACK );
-    if(!weapon  || weapon->IsBroken() )
+    if (!weapon  || weapon->IsBroken())
         return false;
 
     ItemPrototype const* weapon_proto = weapon->GetProto();
-    if(!weapon_proto || weapon_proto->Class!=ITEM_CLASS_WEAPON )
+    if (!weapon_proto || weapon_proto->Class!=ITEM_CLASS_WEAPON )
         return false;
 
     // check ammo ws. weapon compatibility
-    switch(weapon_proto->SubClass)
+    switch (weapon_proto->SubClass)
     {
         case ITEM_SUBCLASS_WEAPON_BOW:
         case ITEM_SUBCLASS_WEAPON_CROSSBOW:
-            if(ammo_proto->SubClass!=ITEM_SUBCLASS_ARROW)
+            if (ammo_proto->SubClass!=ITEM_SUBCLASS_ARROW)
                 return false;
             break;
         case ITEM_SUBCLASS_WEAPON_GUN:
-            if(ammo_proto->SubClass!=ITEM_SUBCLASS_BULLET)
+            if (ammo_proto->SubClass!=ITEM_SUBCLASS_BULLET)
                 return false;
             break;
         default:
@@ -7817,7 +7815,7 @@ void Player::RemovedInsignia(Player* looterPlr)
         return;
 
     // If not released spirit, do it !
-    if(m_deathTimer > 0)
+    if (m_deathTimer > 0)
     {
         m_deathTimer = 0;
         BuildPlayerRepop();
@@ -7856,7 +7854,7 @@ void Player::SendLoot(uint64 guid, LootType loot_type)
     if (uint64 lguid = GetLootGUID())
         m_session->DoLootRelease(lguid);
 
-    Loot    *loot = 0;
+    Loot *loot = 0;
     PermissionTypes permission = ALL_PERMISSION;
 
     sLog.outDebug("Player::SendLoot");
@@ -7904,7 +7902,7 @@ void Player::SendLoot(uint64 guid, LootType loot_type)
     }
     else if (IS_ITEM_GUID(guid))
     {
-        Item *item = GetItemByGuid( guid );
+        Item *item = GetItemByGuid(guid);
 
         if (!item)
         {
@@ -7919,7 +7917,7 @@ void Player::SendLoot(uint64 guid, LootType loot_type)
             item->m_lootGenerated = true;
             loot->clear();
 
-            switch(loot_type)
+            switch (loot_type)
             {
                 case LOOT_DISENCHANTING:
                     loot->FillLoot(item->GetProto()->DisenchantID, LootTemplates_Disenchant, this,true);
@@ -7941,7 +7939,7 @@ void Player::SendLoot(uint64 guid, LootType loot_type)
     {
         Corpse *bones = ObjectAccessor::GetCorpse(*this, guid);
 
-        if (!bones || !((loot_type == LOOT_CORPSE) || (loot_type == LOOT_INSIGNIA)) || (bones->GetType() != CORPSE_BONES) )
+        if (!bones || !(loot_type == LOOT_CORPSE || loot_type == LOOT_INSIGNIA) || bones->GetType() != CORPSE_BONES)
         {
             SendLootRelease(guid);
             return;
@@ -7954,12 +7952,12 @@ void Player::SendLoot(uint64 guid, LootType loot_type)
             bones->lootForBody = true;
             uint32 pLevel = bones->loot.gold;
             bones->loot.clear();
-            if(BattleGround *bg = GetBattleGround())
-                if(bg->GetTypeID() == BATTLEGROUND_AV)
+            if (BattleGround *bg = GetBattleGround())
+                if (bg->GetTypeID() == BATTLEGROUND_AV)
                     loot->FillLoot(1, LootTemplates_Creature, this, true);
             // It may need a better formula
             // Now it works like this: lvl10: ~6copper, lvl70: ~9silver
-            bones->loot.gold = (uint32)( urand(50, 150) * 0.016f * pow( ((float)pLevel)/5.76f, 2.5f) * sWorld.getRate(RATE_DROP_MONEY) );
+            bones->loot.gold = uint32(urand(50, 150) * 0.016f * pow(float(pLevel)/5.76f, 2.5f) * sWorld.getRate(RATE_DROP_MONEY));
         }
 
         if (bones->lootRecipient != this)
@@ -7970,7 +7968,7 @@ void Player::SendLoot(uint64 guid, LootType loot_type)
         Creature *creature = GetMap()->GetCreature(guid);
 
         // must be in range and creature must be alive for pickpocket and must be dead for another loot
-        if (!creature || creature->isAlive()!=(loot_type == LOOT_PICKPOCKETING) || !creature->IsWithinDistInMap(this,INTERACTION_DISTANCE))
+        if (!creature || creature->isAlive() != (loot_type == LOOT_PICKPOCKETING) || !creature->IsWithinDistInMap(this,INTERACTION_DISTANCE))
         {
             SendLootRelease(guid);
             return;
@@ -8087,7 +8085,7 @@ void Player::SendLoot(uint64 guid, LootType loot_type)
     SetLootGUID(guid);
 
     // LOOT_INSIGNIA and LOOT_FISHINGHOLE unsupported by client
-    switch(loot_type)
+    switch (loot_type)
     {
         case LOOT_INSIGNIA:    loot_type = LOOT_SKINNING; break;
         case LOOT_FISHINGHOLE: loot_type = LOOT_FISHING; break;
@@ -8142,10 +8140,10 @@ void Player::SendInitWorldStates(uint32 zoneid, uint32 areaid)
     uint32 mapid = GetMapId();
     OutdoorPvP * pvp = sOutdoorPvPMgr.GetOutdoorPvPToZoneId(zoneid);
 
-    sLog.outDebug("Sending SMSG_INIT_WORLD_STATES to Map:%u, Zone: %u", mapid, zoneid);
+    sLog.outDebug("Sending SMSG_INIT_WORLD_STATES to Map: %u, Zone: %u", mapid, zoneid);
 
     // may be exist better way to do this...
-    switch(zoneid)
+    switch (zoneid)
     {
         case 0:
         case 1:
@@ -8284,7 +8282,7 @@ void Player::SendInitWorldStates(uint32 zoneid, uint32 areaid)
             break;
         case 1377: // Silithus
             {
-                if(pvp && pvp->GetTypeId() == OUTDOOR_PVP_SI)
+                if (pvp && pvp->GetTypeId() == OUTDOOR_PVP_SI)
                     pvp->FillInitialWorldStates(data);
                 else
                 {
@@ -8691,7 +8689,7 @@ void Player::SendTalentWipeConfirm(uint64 guid)
 void Player::SendPetSkillWipeConfirm()
 {
     Pet* pet = GetPet();
-    if(!pet)
+    if (!pet)
         return;
     WorldPacket data(SMSG_PET_UNLEARN_CONFIRM, (8+4));
     data << pet->GetGUID();
@@ -8706,16 +8704,16 @@ void Player::SendPetSkillWipeConfirm()
 void Player::SetVirtualItemSlot( uint8 i, Item* item)
 {
     assert(i < 3);
-    if(i < 2 && item)
+    if (i < 2 && item)
     {
-        if(!item->GetEnchantmentId(TEMP_ENCHANTMENT_SLOT))
+        if (!item->GetEnchantmentId(TEMP_ENCHANTMENT_SLOT))
             return;
         uint32 charges = item->GetEnchantmentCharges(TEMP_ENCHANTMENT_SLOT);
-        if(charges == 0)
+        if (charges == 0)
             return;
-        if(charges > 1)
+        if (charges > 1)
             item->SetEnchantmentCharges(TEMP_ENCHANTMENT_SLOT,charges-1);
-        else if(charges <= 1)
+        else if (charges <= 1)
         {
             ApplyEnchantment(item,TEMP_ENCHANTMENT_SLOT,false);
             item->ClearEnchantment(TEMP_ENCHANTMENT_SLOT);
@@ -8761,7 +8759,7 @@ uint8 Player::FindEquipSlot( ItemPrototype const* proto, uint32 slot, bool swap 
     slots[1] = NULL_SLOT;
     slots[2] = NULL_SLOT;
     slots[3] = NULL_SLOT;
-    switch( proto->InventoryType )
+    switch (proto->InventoryType)
     {
         case INVTYPE_HEAD:
             slots[0] = EQUIPMENT_SLOT_HEAD;
@@ -8813,7 +8811,7 @@ uint8 Player::FindEquipSlot( ItemPrototype const* proto, uint32 slot, bool swap 
 
             // suggest offhand slot only if know dual wielding
             // (this will be replace mainhand weapon at auto equip instead unwonted "you don't known dual wielding" ...
-            if(CanDualWield())
+            if (CanDualWield())
                 slots[1] = EQUIPMENT_SLOT_OFFHAND;
             break;
         };
@@ -8825,7 +8823,14 @@ uint8 Player::FindEquipSlot( ItemPrototype const* proto, uint32 slot, bool swap 
             break;
         case INVTYPE_2HWEAPON:
             slots[0] = EQUIPMENT_SLOT_MAINHAND;
-            if (CanDualWield() && CanTitanGrip() && proto && proto->SubClass != ITEM_SUBCLASS_WEAPON_POLEARM && proto->SubClass != ITEM_SUBCLASS_WEAPON_STAFF)
+            if (Item *mhWeapon = GetItemByPos(INVENTORY_SLOT_BAG_0, EQUIPMENT_SLOT_MAINHAND))
+                if (ItemPrototype const *mhWeaponProto = mhWeapon->GetProto())
+                    if (mhWeaponProto->SubClass == ITEM_SUBCLASS_WEAPON_POLEARM || mhWeaponProto->SubClass == ITEM_SUBCLASS_WEAPON_STAFF)
+                    {
+                        const_cast<Player *>(this)->AutoUnequipOffhandIfNeed(true);
+                        break;
+                    }
+            if (CanDualWield() && CanTitanGrip() && proto->SubClass != ITEM_SUBCLASS_WEAPON_POLEARM && proto->SubClass != ITEM_SUBCLASS_WEAPON_STAFF)
                 slots[1] = EQUIPMENT_SLOT_OFFHAND;
             break;
         case INVTYPE_TABARD:
@@ -8879,40 +8884,30 @@ uint8 Player::FindEquipSlot( ItemPrototype const* proto, uint32 slot, bool swap 
             }
             break;
         }
-        default :
+        default:
             return NULL_SLOT;
     }
 
-    if( slot != NULL_SLOT )
+    if (slot != NULL_SLOT)
     {
-        if( swap || !GetItemByPos( INVENTORY_SLOT_BAG_0, slot ) )
-        {
-            for (uint8 i = 0; i < 4; i++)
-            {
-                if ( slots[i] == slot )
+        if (swap || !GetItemByPos(INVENTORY_SLOT_BAG_0, slot))
+            for (uint8 i = 0; i < 4; ++i)
+                if (slots[i] == slot)
                     return slot;
-            }
-        }
     }
     else
     {
         // search free slot at first
-        for (uint8 i = 0; i < 4; i++)
-        {
-            if ( slots[i] != NULL_SLOT && !GetItemByPos( INVENTORY_SLOT_BAG_0, slots[i] ) )
-            {
+        for (uint8 i = 0; i < 4; ++i)
+            if (slots[i] != NULL_SLOT && !GetItemByPos(INVENTORY_SLOT_BAG_0, slots[i]))
                 // in case 2hand equipped weapon (without titan grip) offhand slot empty but not free
-                if(slots[i]!=EQUIPMENT_SLOT_OFFHAND || !IsTwoHandUsed())
+                if(slots[i] != EQUIPMENT_SLOT_OFFHAND || !IsTwoHandUsed())
                     return slots[i];
-            }
-        }
 
         // if not found free and can swap return first appropriate from used
-        for (uint8 i = 0; i < 4; i++)
-        {
-            if ( slots[i] != NULL_SLOT && swap )
+        for (uint8 i = 0; i < 4; ++i)
+            if (slots[i] != NULL_SLOT && swap)
                 return slots[i];
-        }
     }
 
     // no free position
@@ -9100,19 +9095,18 @@ Item* Player::GetItemByPos( uint16 pos ) const
 
 Item* Player::GetItemByPos( uint8 bag, uint8 slot ) const
 {
-    if( bag == INVENTORY_SLOT_BAG_0 && ( slot < BANK_SLOT_BAG_END || (slot >= KEYRING_SLOT_START && slot < CURRENCYTOKEN_SLOT_END )) )
+    if (bag == INVENTORY_SLOT_BAG_0 && ( slot < BANK_SLOT_BAG_END || (slot >= KEYRING_SLOT_START && slot < CURRENCYTOKEN_SLOT_END) ))
         return m_items[slot];
     else if ((bag >= INVENTORY_SLOT_BAG_START && bag < INVENTORY_SLOT_BAG_END)
-        || (bag >= BANK_SLOT_BAG_START && bag < BANK_SLOT_BAG_END) )
+        || (bag >= BANK_SLOT_BAG_START && bag < BANK_SLOT_BAG_END))
     {
-        Bag *pBag = (Bag*)GetItemByPos( INVENTORY_SLOT_BAG_0, bag );
-        if ( pBag )
+        if (Bag *pBag = (Bag*)GetItemByPos( INVENTORY_SLOT_BAG_0, bag))
             return pBag->GetItemByPos(slot);
     }
     return NULL;
 }
 
-Item* Player::GetWeaponForAttack(WeaponAttackType attackType, bool useable) const
+Item* Player::GetWeaponForAttack(WeaponAttackType attackType, bool useable /*= false*/) const
 {
     uint16 slot;
     switch (attackType)
@@ -9127,10 +9121,10 @@ Item* Player::GetWeaponForAttack(WeaponAttackType attackType, bool useable) cons
     if (!item || item->GetProto()->Class != ITEM_CLASS_WEAPON)
         return NULL;
 
-    if(!useable)
+    if (!useable)
         return item;
 
-    if( item->IsBroken() || IsInFeralForm())
+    if (item->IsBroken() || IsInFeralForm())
         return NULL;
 
     return item;
@@ -9142,10 +9136,10 @@ Item* Player::GetShield(bool useable) const
     if (!item || item->GetProto()->Class != ITEM_CLASS_ARMOR)
         return NULL;
 
-    if(!useable)
+    if (!useable)
         return item;
 
-    if( item->IsBroken())
+    if (item->IsBroken())
         return NULL;
 
     return item;
@@ -20066,14 +20060,14 @@ void Player::AddItemDurations( Item *item )
     }
 }
 
-void Player::AutoUnequipOffhandIfNeed()
+void Player::AutoUnequipOffhandIfNeed(bool force /*= false*/)
 {
-    Item *offItem = GetItemByPos( INVENTORY_SLOT_BAG_0, EQUIPMENT_SLOT_OFFHAND );
+    Item *offItem = GetItemByPos(INVENTORY_SLOT_BAG_0, EQUIPMENT_SLOT_OFFHAND);
     if(!offItem)
         return;
 
     // need unequip offhand for 2h-weapon without TitanGrip (in any from hands)
-    if (CanTitanGrip() || (offItem->GetProto()->InventoryType != INVTYPE_2HWEAPON && !IsTwoHandUsed()))
+    if (!force && (CanTitanGrip() || (offItem->GetProto()->InventoryType != INVTYPE_2HWEAPON && !IsTwoHandUsed())))
         return;
 
     ItemPosCountVec off_dest;

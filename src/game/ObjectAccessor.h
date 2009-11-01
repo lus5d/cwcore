@@ -228,9 +228,8 @@ class CW_DLL_DECL ObjectAccessor : public MaNGOS::Singleton<ObjectAccessor, MaNG
         Corpse* ConvertCorpseForPlayer(uint64 player_guid, bool insignia = false);
 
         static void UpdateObject(Object* obj, Player* exceptPlayer);
-		static void buildUpdateObject(Object* obj, UpdateDataMapType &);
 
-        static void UpdateObjectVisibility(WorldObject* obj);
+        
         //static void UpdateVisibilityForPlayer(Player* player);
     private:
 

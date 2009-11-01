@@ -641,7 +641,7 @@ bool ChatHandler::HandleGameObjectTurnCommand(const char* args)
     obj->Relocate(obj->GetPositionX(), obj->GetPositionY(), obj->GetPositionZ(), o);
     obj->UpdateRotationFields();
     obj->DestroyForNearbyPlayers();
-    ObjectAccessor::UpdateObjectVisibility(obj);
+    //WorldObject::UpdateObjectVisibility(obj);
 
     obj->SaveToDB();
     obj->Refresh();
@@ -685,7 +685,7 @@ bool ChatHandler::HandleGameObjectMoveCommand(const char* args)
         Player *chr = m_session->GetPlayer();
         obj->Relocate(chr->GetPositionX(), chr->GetPositionY(), chr->GetPositionZ(), obj->GetOrientation());
         obj->DestroyForNearbyPlayers();
-        ObjectAccessor::UpdateObjectVisibility(obj);
+        //WorldObject::UpdateObjectVisibility(obj);
     }
     else
     {
@@ -705,7 +705,7 @@ bool ChatHandler::HandleGameObjectMoveCommand(const char* args)
 
         obj->Relocate(x, y, z, obj->GetOrientation());
         obj->DestroyForNearbyPlayers();
-        ObjectAccessor::UpdateObjectVisibility(obj);
+        //WorldObject::UpdateObjectVisibility(obj);
     }
 
     obj->SaveToDB();

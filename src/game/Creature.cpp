@@ -207,8 +207,8 @@ void Creature::RemoveFromWorld()
 void Creature::DisappearAndDie()
 {
     DestroyForNearbyPlayers();
-    //SetVisibility(VISIBILITY_OFF);
-    //ObjectAccessor::UpdateObjectVisibility(this);
+    SetVisibility(VISIBILITY_RESPAWN);
+    WorldObject::UpdateObjectVisibility(this);
     if(isAlive())
         setDeathState(JUST_DIED);
     RemoveCorpse();
@@ -235,7 +235,7 @@ void Creature::RemoveCorpse()
 
     m_deathTimer = 0;
     setDeathState(DEAD);
-    ObjectAccessor::UpdateObjectVisibility(this);
+    WorldObject::UpdateObjectVisibility(this);
     loot.clear();
     uint32 respawnDelay = m_respawnDelay;
     if (AI())

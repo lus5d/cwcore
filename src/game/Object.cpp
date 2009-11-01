@@ -232,12 +232,6 @@ void Object::BuildCreateUpdateBlockForPlayer(UpdateData *data, Player *target) c
     data->AddUpdateBlock(buf);
 }
 
-void Object::BuildUpdate(UpdateDataMapType &update_players)
-{
-    ObjectAccessor::buildUpdateObject(this,update_players);
-    ClearUpdateMask(true);
-}
-
 void Object::SendUpdateToPlayer(Player* player)
 {
     // send update to another players
@@ -1776,7 +1770,7 @@ TempSummon *Map::SummonCreature(uint32 entry, const Position &pos, SummonPropert
     Add((Creature*)summon);
     summon->InitSummon();
 
-    //ObjectAccessor::UpdateObjectVisibility(summon);
+    //WorldObject::UpdateObjectVisibility(summon);
 
     return summon;
 }
@@ -1910,7 +1904,7 @@ Pet* Player::SummonPet(uint32 entry, float x, float y, float z, float ang, PetTy
     if(duration > 0)
         pet->SetDuration(duration);
 
-    //ObjectAccessor::UpdateObjectVisibility(pet);
+    //WorldObject::UpdateObjectVisibility(pet);
 
     return pet;
 }
@@ -2236,7 +2230,7 @@ void WorldObject::SetPhaseMask(uint32 newPhaseMask, bool update)
     m_phaseMask = newPhaseMask;
 
     if(update && IsInWorld())
-        ObjectAccessor::UpdateObjectVisibility(this);
+        WorldObject::UpdateObjectVisibility(this);
 }
 
 struct WorldObjectChangeAccumulator
@@ -2289,6 +2283,14 @@ void WorldObject::PlayDirectSound( uint32 sound_id, Player* target /*= NULL*/ )
         target->SendDirectMessage( &data );
     else
         SendMessageToSet( &data, true );
+}
+
+void WorldObject::UpdateObjectVisibility(WorldObject *obj)
+{
+    CellPair p = CW::ComputeCellPair(GetPositionX(), GetPositionY());
+    Cell cell(p);
+
+	GetMap()->Map::UpdateObjectVisibility(this, cell, p);
 }
 
 void WorldObject::DestroyForNearbyPlayers()

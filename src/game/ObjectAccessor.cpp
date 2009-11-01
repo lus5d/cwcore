@@ -184,7 +184,7 @@ void
 ObjectAccessor::UpdateObject(Object* obj, Player* exceptPlayer)
 {
     UpdateDataMapType update_players;
-    obj->BuildUpdate(update_players);
+    //obj->BuildUpdate(update_players);
 
     WorldPacket packet;
     for(UpdateDataMapType::iterator iter = update_players.begin(); iter != update_players.end(); ++iter)
@@ -361,7 +361,7 @@ ObjectAccessor::Update(uint32 diff)
             i_objects.erase(i_objects.begin());
 			if (!obj)
 				continue;
-            obj->BuildUpdateData(update_players);
+            //obj->BuildUpdateData(update_players);
         }
     }
 

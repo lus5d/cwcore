@@ -580,6 +580,8 @@ class CW_DLL_SPEC WorldObject : public Object, public WorldLocation
         virtual void SaveRespawnTime() {}
         void AddObjectToRemoveList();
 
+		void UpdateObjectVisibility(WorldObject* obj);
+
         // main visibility check function in normal case (ignore grey zone distance check)
         bool isVisibleFor(Player const* u) const { return isVisibleForInState(u,false); }
 

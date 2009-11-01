@@ -19,7 +19,7 @@
 /* Script Data Start
 SDName: Boss Tharon'ja
 SDAuthor: Tartalo
-SD%Complete:
+SD%Complete: 100
 SDComment:
 SDCategory:
 Script Data End */
@@ -73,7 +73,8 @@ enum Yells
 };
 enum Models
 {
-    MODEL_FLESH                                            = 27696
+    MODEL_FLESH                                            = 27696,
+    MODEL_SKELETON                                         = 27511
 };
 enum CombatPhase
 {
@@ -168,8 +169,11 @@ struct CW_DLL_DECL boss_tharon_jaAI : public ScriptedAI
                     for (std::list<HostilReference*>::iterator itr = threatlist.begin(); itr != threatlist.end(); ++itr)
                     {
                         Unit *pTemp = Unit::GetUnit((*m_creature),(*itr)->getUnitGuid());
-                        if (pTemp->GetTypeId() == TYPEID_PLAYER)
-                            DoCast(pTemp, SPELL_GIFT_OF_THARON_JA);
+                        if (pTemp && pTemp->GetTypeId() == TYPEID_PLAYER)
+                        {
+                            m_creature->AddAura(SPELL_GIFT_OF_THARON_JA,pTemp);
+                            pTemp->SetDisplayId(MODEL_SKELETON);
+                        }
                     }
                     uiPhaseTimer = 20000;
                     uiLightningBreathTimer = urand(3000,4000);
@@ -217,6 +221,17 @@ struct CW_DLL_DECL boss_tharon_jaAI : public ScriptedAI
                     uiCurseOfLifeTimer = 1000;
                     uiRainOfFireTimer = urand(14000,18000);
                     uiShadowVolleyTimer = urand(8000,10000);
+                    std::list<HostilReference*>& threatlist = m_creature->getThreatManager().getThreatList();
+                    for (std::list<HostilReference*>::iterator itr = threatlist.begin(); itr != threatlist.end(); ++itr)
+                    {
+                        Unit *pTemp = Unit::GetUnit((*m_creature),(*itr)->getUnitGuid());
+                        if (pTemp && pTemp->GetTypeId() == TYPEID_PLAYER)
+                        {
+                            if (pTemp->HasAura(SPELL_GIFT_OF_THARON_JA))
+                                pTemp->RemoveAura(SPELL_GIFT_OF_THARON_JA);
+                            pTemp->DeMorph();
+                        }
+                    }
                 } else uiPhaseTimer -= diff;
                 break;
         }

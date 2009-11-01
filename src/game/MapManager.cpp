@@ -259,7 +259,7 @@ bool MapManager::CanPlayerEnter(uint32 mapid, Player* player)
                     }
 
                     //Encounters in progress
-                    if (((InstanceMap*)boundedMap)->GetInstanceData() && ((InstanceMap*)boundedMap)->GetInstanceData()->IsEncounterInProgress())
+                    if (entry->map_type == MAP_RAID && ((InstanceMap*)boundedMap)->GetInstanceData() && ((InstanceMap*)boundedMap)->GetInstanceData()->IsEncounterInProgress())
                     {
                         sLog.outDebug("MAP: Player '%s' can't enter instance '%s' while an encounter is in progress.", player->GetName(), mapName);
                         player->SendTransferAborted(mapid, TRANSFER_ABORT_ZONE_IN_COMBAT);
@@ -270,7 +270,7 @@ bool MapManager::CanPlayerEnter(uint32 mapid, Player* player)
                     int8 maxPlayers = (player->GetDungeonDifficulty() == DUNGEON_DIFFICULTY_HEROIC) ? instance->maxPlayersHeroic : instance->maxPlayers;
                     if (maxPlayers != -1) //-1: unlimited access
                     {
-                        if (boundedMap->GetPlayers().getSize() >= maxPlayers)
+                        if (boundedMap->GetPlayersCountExceptGMs() >= maxPlayers)
                         {
                             sLog.outDebug("MAP: Player '%s' can't enter instance '%s' because it's full.", player->GetName(), mapName);
                             player->SendTransferAborted(mapid, TRANSFER_ABORT_MAX_PLAYERS);

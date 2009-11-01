@@ -157,9 +157,10 @@ Map* MapInstanced::CreateInstance(const uint32 mapId, Player * player, uint32 in
         {
             // solo/perm/group
             InstanceId = pSave->GetInstanceId();
-            map = _FindMap(InstanceId);+            // it is possible that the save exists but the map doesn't
+            map = _FindMap(InstanceId);
+			// it is possible that the save exists but the map doesn't
             if(!map)
-                map = CreateInstance(InstanceId, pSave, pSave->GetDungeonDifficulty());
+                map = CreateInstance(InstanceId, pSave, pSave->GetDifficulty());
         }
         else
         {
@@ -211,7 +212,7 @@ InstanceMap* MapInstanced::CreateInstance(uint32 InstanceId, InstanceSave *save,
     return map;
 }
 
-BattleGroundMap* MapInstanced::CreateBattleGround(uint32 InstanceId)
+BattleGroundMap* MapInstanced::CreateBattleGroundMap(uint32 InstanceId, BattleGround* bg)
 {
     // load/create a map
     Guard guard(*this);

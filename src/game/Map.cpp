@@ -829,8 +829,12 @@ void Map::Update(const uint32 &t_diff)
 
 void Map::Remove(Player *player, bool remove)
 {
-    player->RemoveFromWorld();
-    SendRemoveTransports(player);
+    if(remove)
+        player->CleanupsBeforeDelete();
+    else
+        player->RemoveFromWorld();
+	
+	SendRemoveTransports(player);
 
     CellPair p = CW::ComputeCellPair(player->GetPositionX(), player->GetPositionY());
     if (p.x_coord >= TOTAL_NUMBER_OF_CELLS_PER_MAP || p.y_coord >= TOTAL_NUMBER_OF_CELLS_PER_MAP)
@@ -845,7 +849,6 @@ void Map::Remove(Player *player, bool remove)
             DEBUG_LOG("Remove player %s from grid[%u,%u]", player->GetName(), cell.GridX(), cell.GridY());
             NGridType *grid = getNGrid(cell.GridX(), cell.GridY());
             assert(grid != NULL);
-			player->RemoveFromWorld();
 
             RemoveFromGrid(player,grid,cell);
             UpdateObjectVisibility(player,cell,p);

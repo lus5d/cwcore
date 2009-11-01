@@ -152,6 +152,7 @@ class CW_DLL_SPEC Object
         virtual void BuildCreateUpdateBlockForPlayer( UpdateData *data, Player *target ) const;
         void SendUpdateToPlayer(Player* player);
 
+        virtual void BuildUpdateData(UpdateDataMapType& update_players) =0;
         void BuildValuesUpdateBlockForPlayer( UpdateData *data, Player *target ) const;
         void BuildOutOfRangeUpdateBlock( UpdateData *data ) const;
         void BuildMovementUpdateBlock( UpdateData * data, uint32 flags = 0 ) const;
@@ -319,8 +320,9 @@ class CW_DLL_SPEC Object
         virtual void _SetUpdateBits(UpdateMask *updateMask, Player *target) const;
 
         virtual void _SetCreateBits(UpdateMask *updateMask, Player *target) const;
-        void _BuildMovementUpdate(ByteBuffer * data, uint16 flags) const;
-        void _BuildValuesUpdate(uint8 updatetype, ByteBuffer *data, UpdateMask *updateMask, Player *target ) const;
+        void BuildMovementUpdate(ByteBuffer * data, uint16 flags, uint32 flags2 ) const;
+        void BuildValuesUpdate(uint8 updatetype, ByteBuffer *data, UpdateMask *updateMask, Player *target ) const;
+        void BuildUpdateDataForPlayer(Player* pl, UpdateDataMapType& update_players);
 
         uint16 m_objectType;
 
@@ -437,8 +439,11 @@ class WorldLocation : public Position
         uint32 m_mapId;
 };
 
+struct WorldObjectChangeAccumulator;
+
 class CW_DLL_SPEC WorldObject : public Object, public WorldLocation
 {
+	friend struct WorldObjectChangeAccumulator;
     public:
         virtual ~WorldObject();
 
@@ -596,6 +601,7 @@ class CW_DLL_SPEC WorldObject : public Object, public WorldLocation
         ZoneScript * GetZoneScript() const { return m_zoneScript; }
 
         TempSummon* SummonCreature(uint32 id, const Position &pos, TempSummonType spwtype = TEMPSUMMON_MANUAL_DESPAWN, uint32 despwtime = 0, uint32 vehId = 0) const;
+		void BuildUpdateData(UpdateDataMapType &);
         TempSummon* SummonCreature(uint32 id, float x, float y, float z, float ang = 0, TempSummonType spwtype = TEMPSUMMON_MANUAL_DESPAWN, uint32 despwtime = 0)
         {
             if(!x && !y && !z)
@@ -635,7 +641,6 @@ class CW_DLL_SPEC WorldObject : public Object, public WorldLocation
         bool m_isWorldObject;
     protected:
         explicit WorldObject();
-        std::string m_name;
         bool m_isActive;
         ZoneScript *m_zoneScript;
 
@@ -644,6 +649,8 @@ class CW_DLL_SPEC WorldObject : public Object, public WorldLocation
         //mapId/instanceId should be set in SetMap() function!
         void SetLocationMapId(uint32 _mapId) { m_mapId = _mapId; }
         void SetLocationInstanceId(uint32 _instanceId) { m_InstanceId = _instanceId; }
+
+        std::string m_name;
 
     private:
         Map * m_currMap;                                    //current object's Map location

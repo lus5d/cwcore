@@ -317,6 +317,7 @@ class CW_DLL_SPEC Item : public Object
         bool IsArmorVellum() const { return GetProto()->IsArmorVellum(); }
         bool IsConjuredConsumable() const { return GetProto()->IsConjuredConsumable(); }
 
+        void BuildUpdateData(UpdateDataMapType& update_players);
     private:
         uint8 m_slot;
         Bag *m_container;

@@ -198,48 +198,6 @@ ObjectAccessor::UpdateObject(Object* obj, Player* exceptPlayer)
     }
 }
 
-void
-ObjectAccessor::_buildUpdateObject(Object *obj, UpdateDataMapType &update_players)
-{
-    if(obj->isType(TYPEMASK_ITEM))
-    {
-        if(Player *owner = ((Item*)obj)->GetOwner())
-           _buildPacket(owner, obj, update_players);
-    }
-    else
-        _buildChangeObjectForPlayer((WorldObject*)obj, update_players);
-}
-
-void
-ObjectAccessor::_buildPacket(Player *pl, Object *obj, UpdateDataMapType &update_players)
-{
-    UpdateDataMapType::iterator iter = update_players.find(pl);
-
-    if( iter == update_players.end() )
-    {
-        std::pair<UpdateDataMapType::iterator, bool> p = update_players.insert( UpdateDataValueType(pl, UpdateData()) );
-        assert(p.second);
-        iter = p.first;
-    }
-
-    obj->BuildValuesUpdateBlockForPlayer(&iter->second, iter->first);
-}
-
-void
-ObjectAccessor::_buildChangeObjectForPlayer(WorldObject *obj, UpdateDataMapType &update_players)
-{
-    CellPair p = CW::ComputeCellPair(obj->GetPositionX(), obj->GetPositionY());
-    Cell cell(p);
-    cell.data.Part.reserved = ALL_DISTRICT;
-    cell.SetNoCreate();
-    WorldObjectChangeAccumulator notifier(*obj, update_players);
-    TypeContainerVisitor<WorldObjectChangeAccumulator, WorldTypeMapContainer > player_notifier(notifier);
-    CellLock<GridReadGuard> cell_lock(cell, p);
-    Map& map = *obj->GetMap();
-    //we must build packets for all visible players
-    cell_lock->Visit(cell_lock, player_notifier, map, *obj, map.GetVisibilityDistance());
-}
-
 Pet*
 ObjectAccessor::GetPet(uint64 guid)
 {
@@ -401,8 +359,9 @@ ObjectAccessor::Update(uint32 diff)
             Object* obj = *i_objects.begin();
             assert(obj && obj->IsInWorld());
             i_objects.erase(i_objects.begin());
-            _buildUpdateObject(obj, update_players);
-            obj->ClearUpdateMask(false);
+			if (!obj)
+				continue;
+            obj->BuildUpdateData(update_players);
         }
     }
 
@@ -412,21 +371,6 @@ ObjectAccessor::Update(uint32 diff)
         iter->second.BuildPacket(&packet);
         iter->first->GetSession()->SendPacket(&packet);
         packet.clear();                                     // clean the string
-    }
-}
-
-void
-ObjectAccessor::WorldObjectChangeAccumulator::Visit(PlayerMapType &m)
-{
-    for(PlayerMapType::iterator iter = m.begin(); iter != m.end(); ++iter)
-    {
-        BuildPacket(iter->getSource());
-        if (!iter->getSource()->GetSharedVisionList().empty())
-        {
-            SharedVisionList::const_iterator it = iter->getSource()->GetSharedVisionList().begin();
-            for ( ; it != iter->getSource()->GetSharedVisionList().end(); ++it)
-                BuildPacket(*it);
-        }
     }
 }
 
@@ -477,7 +421,7 @@ ObjectAccessor::UpdateObjectVisibility(WorldObject *obj)
     CellPair p = CW::ComputeCellPair(obj->GetPositionX(), obj->GetPositionY());
     Cell cell(p);
 
-    obj->GetMap()->UpdateObjectVisibility(obj, cell, p);
+    GetMap()->UpdateObjectVisibility(this, cell, p);
 }
 
 /*void ObjectAccessor::UpdateVisibilityForPlayer( Player* player )

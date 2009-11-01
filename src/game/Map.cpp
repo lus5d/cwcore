@@ -2545,9 +2545,9 @@ bool InstanceMap::Add(Player *player)
 
     {
         Guard guard(*this);
-        // Check moved to void WorldSession::HandleMoveWorldportAckOpcode()
-        //if (!CanEnter(player))
-            //return false;
+
+        if (!CanEnter(player))
+            return false;
 
         // Dungeon only code
         if (IsDungeon())
@@ -2561,7 +2561,7 @@ bool InstanceMap::Add(Player *player)
             }
 
             // check for existing instance binds
-            InstancePlayerBind *playerBind = player->GetBoundInstance(GetId(), Difficulty(player->GetDungeonDifficulty()));
+            InstancePlayerBind *playerBind = player->GetBoundInstance(GetId(), Difficulty(GetSpawnMode()));
             if (playerBind && playerBind->perm)
             {
                 // cannot enter other instances if bound permanently
@@ -2582,8 +2582,7 @@ bool InstanceMap::Add(Player *player)
                     {
                         sLog.outError("InstanceMap::Add: player %s(%d) is being put in instance %d,%d,%d,%d,%d,%d but he is in group %d and is bound to instance %d,%d,%d,%d,%d,%d!", player->GetName(), player->GetGUIDLow(), mapSave->GetMapId(), mapSave->GetInstanceId(), mapSave->GetDifficulty(), mapSave->GetPlayerCount(), mapSave->GetGroupCount(), mapSave->CanReset(), GUID_LOPART(pGroup->GetLeaderGUID()), playerBind->save->GetMapId(), playerBind->save->GetInstanceId(), playerBind->save->GetDifficulty(), playerBind->save->GetPlayerCount(), playerBind->save->GetGroupCount(), playerBind->save->CanReset());
                         if (groupBind) sLog.outError("InstanceMap::Add: the group is bound to instance %d,%d,%d,%d,%d,%d", groupBind->save->GetMapId(), groupBind->save->GetInstanceId(), groupBind->save->GetDifficulty(), groupBind->save->GetPlayerCount(), groupBind->save->GetGroupCount(), groupBind->save->CanReset());
-                        //assert(false);
-                        return false;
+                        assert(false);
                     }
                     // bind to the group or keep using the group save
                     if (!groupBind)

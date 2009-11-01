@@ -374,56 +374,6 @@ ObjectAccessor::Update(uint32 diff)
     }
 }
 
-void
-ObjectAccessor::WorldObjectChangeAccumulator::Visit(CreatureMapType &m)
-{
-    for(CreatureMapType::iterator iter = m.begin(); iter != m.end(); ++iter)
-    {
-        if (!iter->getSource()->GetSharedVisionList().empty())
-        {
-            SharedVisionList::const_iterator it = iter->getSource()->GetSharedVisionList().begin();
-            for ( ; it != iter->getSource()->GetSharedVisionList().end(); ++it)
-                BuildPacket(*it);
-        }
-    }
-}
-
-void
-ObjectAccessor::WorldObjectChangeAccumulator::Visit(DynamicObjectMapType &m)
-{
-    for(DynamicObjectMapType::iterator iter = m.begin(); iter != m.end(); ++iter)
-    {
-        uint64 guid = iter->getSource()->GetCasterGUID();
-        if(IS_PLAYER_GUID(guid))
-        {
-            //Caster may be NULL if DynObj is in removelist
-            if(Player *caster = FindPlayer(guid))
-                if (caster->GetUInt64Value(PLAYER_FARSIGHT) == iter->getSource()->GetGUID())
-                    BuildPacket(caster);
-        }
-    }
-}
-
-void
-ObjectAccessor::WorldObjectChangeAccumulator::BuildPacket(Player* plr)
-{
-    // Only send update once to a player
-    if (plr_list.find(plr->GetGUID()) == plr_list.end() && plr->HaveAtClient(&i_object))
-    {
-        ObjectAccessor::_buildPacket(plr, &i_object, i_updateDatas);
-        plr_list.insert(plr->GetGUID());
-    }
-}
-
-void
-ObjectAccessor::UpdateObjectVisibility(WorldObject *obj)
-{
-    CellPair p = CW::ComputeCellPair(obj->GetPositionX(), obj->GetPositionY());
-    Cell cell(p);
-
-    GetMap()->UpdateObjectVisibility(this, cell, p);
-}
-
 /*void ObjectAccessor::UpdateVisibilityForPlayer( Player* player )
 {
     WorldObject const* viewPoint = player->GetViewPoint();

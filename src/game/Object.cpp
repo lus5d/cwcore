@@ -228,13 +228,13 @@ void Object::BuildCreateUpdateBlockForPlayer(UpdateData *data, Player *target) c
     UpdateMask updateMask;
     updateMask.SetCount( m_valuesCount );
     _SetCreateBits( &updateMask, target );
-    _BuildValuesUpdate(updatetype, &buf, &updateMask, target);
+    BuildValuesUpdate(updatetype, &buf, &updateMask, target);
     data->AddUpdateBlock(buf);
 }
 
 void Object::BuildUpdate(UpdateDataMapType &update_players)
 {
-    ObjectAccessor::_buildUpdateObject(this,update_players);
+    ObjectAccessor::buildUpdateObject(this,update_players);
     ClearUpdateMask(true);
 }
 
@@ -283,9 +283,9 @@ void Object::DestroyForPlayer( Player *target, bool anim ) const
     target->GetSession()->SendPacket( &data );
 }
 
-void Object::BuildMovementUpdate(ByteBuffer * data, uint16 flags) const
+void Object::BuildMovementUpdate(ByteBuffer * data, uint32 flags) const
 {
-    *data << (uint16)flags;                                  // update flags
+    *data << (uint32)flags;                                  // update flags
 
     // 0x20
     if (flags & UPDATEFLAG_LIVING)

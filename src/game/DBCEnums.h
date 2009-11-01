@@ -232,6 +232,17 @@ enum AreaFlags
     AREA_FLAG_OUTDOOR_PVP2     = 0x08000000                 // Wintergrasp and it's subzones
 };
 
+enum Difficulty
+{
+    DUNGEON_DIFFICULTY_NORMAL    = 0,
+    DUNGEON_DIFFICULTY_HEROIC    = 1,
+
+    RAID_DIFFICULTY_10MAN_NORMAL = 0,
+    RAID_DIFFICULTY_25MAN_NORMAL = 1,
+    RAID_DIFFICULTY_10MAN_HEROIC = 2,
+    RAID_DIFFICULTY_25MAN_HEROIC = 3,
+};
+
 enum SpawnMask
 {
     SPAWNMASK_CONTINENT         = 1,                        // any any maps without spawn modes

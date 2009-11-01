@@ -78,7 +78,7 @@ class HashMapHolder
         static MapType  m_objectMap;
 };
 
-class MANGOS_DLL_DECL ObjectAccessor : public MaNGOS::Singleton<ObjectAccessor, MaNGOS::ClassLevelLockable<ObjectAccessor, ACE_Thread_Mutex> >
+class CW_DLL_DECL ObjectAccessor : public MaNGOS::Singleton<ObjectAccessor, MaNGOS::ClassLevelLockable<ObjectAccessor, ACE_Thread_Mutex> >
 {
 
     friend class CW::OperatorNew<ObjectAccessor>;
@@ -228,6 +228,7 @@ class MANGOS_DLL_DECL ObjectAccessor : public MaNGOS::Singleton<ObjectAccessor, 
         Corpse* ConvertCorpseForPlayer(uint64 player_guid, bool insignia = false);
 
         static void UpdateObject(Object* obj, Player* exceptPlayer);
+		static void buildUpdateObject(Object* obj, UpdateDataMapType &);
 
         static void UpdateObjectVisibility(WorldObject* obj);
         //static void UpdateVisibilityForPlayer(Player* player);

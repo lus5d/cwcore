@@ -71,7 +71,7 @@ CreatureEventAI::CreatureEventAI(Creature *c ) : CreatureAI(c)
             if ((*i).event_flags & EFLAG_DEBUG_ONLY)
                 continue;
             #endif
-            if(((*i).event_flags & (EFLAG_HEROIC | EFLAG_NORMAL)) && m_creature->GetMap()->IsDungeon() )
+            if(((*i).event_flags & (EFLAG_DIFFICULTY_1 | EFLAG_DIFFICULTY_0)) && m_creature->GetMap()->IsDungeon() )
             {
                 if ((1 << (m_creature->GetMap()->GetSpawnMode()+1)) & (*i).event_flags)
                 {

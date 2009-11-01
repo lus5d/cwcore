@@ -914,10 +914,6 @@ void WorldSession::HandleGuildBankDepositMoney( WorldPacket & recv_data )
     if (GuildId == 0)
         return;
 
-    Guild *pGuild = objmgr.GetGuildById(GuildId);
-    if(!pGuild)
-        return;
-
     if (GetPlayer()->GetMoney() < money)
         return;
 
@@ -950,7 +946,7 @@ void WorldSession::HandleGuildBankDepositMoney( WorldPacket & recv_data )
 
     pGuild->DisplayGuildBankTabsInfo(this);
     pGuild->DisplayGuildBankContent(this, 0);
-    pGuild->DisplayGuildBankMoneyUpdate();
+    //pGuild->DisplayGuildBankMoneyUpdate();
 }
 
 void WorldSession::HandleGuildBankWithdrawMoney( WorldPacket & recv_data )

@@ -609,7 +609,7 @@ void ObjectMgr::LoadCreatureTemplates()
 
             if (cInfo->unit_class != difficultyInfo->unit_class)
             {
-                sLog.outErrorDb("Creature (Entry: %u, class %u) has different `unit_class` in difficulty 1 mode (Entry: %u, class %u).",i, cInfo->unit_class, cInfo->DifficultyEntry1, difficultyInfo->unit_class)
+                sLog.outErrorDb("Creature (Entry: %u, class %u) has different `unit_class` in difficulty 1 mode (Entry: %u, class %u).",i, cInfo->unit_class, cInfo->DifficultyEntry1, difficultyInfo->unit_class);
 					continue;
             }
 

@@ -699,11 +699,9 @@ void Map::Update(const uint32 &t_diff)
 {
     /// update players at tick
     for (m_mapRefIter = m_mapRefManager.begin(); m_mapRefIter != m_mapRefManager.end(); ++m_mapRefIter)
-    {
-        Player* plr = m_mapRefIter->getSource();
-        if (plr && plr->IsInWorld())
-            plr->Update(t_diff);
-    }
+    if (Player* plr = m_mapRefIter->getSource())
+		if (plr && plr->IsInWorld())
+			plr->Update(t_diff);
 
     m_notifyTimer.Update(t_diff);
     if (m_notifyTimer.Passed())
@@ -2717,11 +2715,9 @@ bool InstanceMap::Reset(uint8 method)
         else
         {
             if (method == INSTANCE_RESET_GLOBAL)
-            {
                 // set the homebind timer for players inside (1 minute)
                 for (MapRefManager::iterator itr = m_mapRefManager.begin(); itr != m_mapRefManager.end(); ++itr)
                     itr->getSource()->m_InstanceValid = false;
-            }
 
             // the unload timer is not started
             // instead the map will unload immediately after the players have left
@@ -2873,14 +2869,10 @@ void BattleGroundMap::SetUnload()
 void BattleGroundMap::RemoveAllPlayers()
 {
     if (HavePlayers())
-    {
         for (MapRefManager::iterator itr = m_mapRefManager.begin(); itr != m_mapRefManager.end(); ++itr)
-        {
-            Player* plr = itr->getSource();
-            if (!plr->IsBeingTeleportedFar())
-                plr->TeleportTo(plr->GetBattleGroundEntryPoint());
-        }
-    }
+        if (Player* plr = itr->getSource())
+			if (!plr->IsBeingTeleportedFar())
+				plr->TeleportTo(plr->GetBattleGroundEntryPoint());
 }
 
 /// Put scripts in the execution queue

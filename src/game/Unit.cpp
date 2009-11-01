@@ -222,8 +222,11 @@ void Unit::Update( uint32 p_time )
     // WARNING! Order of execution here is important, do not change.
     // Spells must be processed with event system BEFORE they go to _UpdateSpells.
     // Or else we may have some SPELL_STATE_FINISHED spells stalled in pointers, that is bad.
-    m_Events.Update( p_time );
-    _UpdateSpells( p_time );
+    #pragma omp critical(UpdateThreadSafety)
+    {
+        m_Events.Update( p_time );
+        _UpdateSpells( p_time );
+    }
 
     // If this is set during update SetCantProc(false) call is missing somewhere in the code
     // Having this would prevent spells from being proced, so let's crash
@@ -252,11 +255,11 @@ void Unit::Update( uint32 p_time )
     //if(!hasUnitState(UNIT_STAT_CASTING))
     {
         if(uint32 base_att = getAttackTimer(BASE_ATTACK))
-            setAttackTimer(BASE_ATTACK, (p_time >= base_att ? 0 : base_att - p_time) );
+            setAttackTimer(BASE_ATTACK, (p_time >= base_att ? 0 : base_att - p_time));
         if(uint32 ranged_att = getAttackTimer(RANGED_ATTACK))
-            setAttackTimer(RANGED_ATTACK, (p_time >= ranged_att ? 0 : ranged_att - p_time) );
+            setAttackTimer(RANGED_ATTACK, (p_time >= ranged_att ? 0 : ranged_att - p_time));
         if(uint32 off_att = getAttackTimer(OFF_ATTACK))
-            setAttackTimer(OFF_ATTACK, (p_time >= off_att ? 0 : off_att - p_time) );
+            setAttackTimer(OFF_ATTACK, (p_time >= off_att ? 0 : off_att - p_time));
     }
 
     // update abilities available only for fraction of time
@@ -8931,42 +8934,35 @@ Unit* Unit::GetFirstControlled() const
 {
     //Sequence: charmed, pet, other guardians
     Unit *unit = GetCharm();
-    if(!unit)
-    {
-        if(uint64 guid = GetUInt64Value(UNIT_FIELD_SUMMON))
+    if (!unit)
+        if (uint64 guid = GetUInt64Value(UNIT_FIELD_SUMMON))
             unit = ObjectAccessor::GetUnit(*this, guid);
-    }
+
     return unit;
 }
 
 void Unit::RemoveAllControlled()
 {
     //possessed pet and vehicle
-    if(GetTypeId() == TYPEID_PLAYER)
+    if (GetTypeId() == TYPEID_PLAYER)
         ((Player*)this)->StopCastingCharm();
 
-    while(!m_Controlled.empty())
+    while (!m_Controlled.empty())
     {
         Unit *target = *m_Controlled.begin();
         m_Controlled.erase(m_Controlled.begin());
         if(target->GetCharmerGUID() == GetGUID())
-        {
             target->RemoveCharmAuras();
-        }
-        else if(target->GetOwnerGUID() == GetGUID() && target->isSummon())
-        {
+        else if (target->GetOwnerGUID() == GetGUID() && target->isSummon())
             ((TempSummon*)target)->UnSummon();
-        }
         else
-        {
             sLog.outError("Unit %u is trying to release unit %u which is neither charmed nor owned by it", GetEntry(), target->GetEntry());
-        }
     }
-    if(GetPetGUID())
+    if (GetPetGUID())
         sLog.outCrash("Unit %u is not able to release its pet " I64FMT, GetEntry(), GetPetGUID());
-    if(GetMinionGUID())
+    if (GetMinionGUID())
         sLog.outCrash("Unit %u is not able to release its minion " I64FMT, GetEntry(), GetMinionGUID());
-    if(GetCharmGUID())
+    if (GetCharmGUID())
         sLog.outCrash("Unit %u is not able to release its charm " I64FMT, GetEntry(), GetCharmGUID());
 }
 
@@ -8977,7 +8973,7 @@ Unit* Unit::GetNextRandomRaidMemberOrPet(float radius)
         player = (Player*)this;
     // Should we enable this also for charmed units?
     else if (GetTypeId() == TYPEID_UNIT && ((Creature*)this)->isPet())
-        player=(Player*)GetOwner();
+        player = (Player*)GetOwner();
 
     if (!player)
         return NULL;
@@ -10667,7 +10663,7 @@ void Unit::SetInCombatState(bool PvP, Unit* enemy)
         // Set home position at place of engaging combat for escorted creatures
         if(( IsAIEnabled && ((Creature*)this)->AI()->IsEscorted() ) ||
             GetMotionMaster()->GetCurrentMovementGeneratorType() == WAYPOINT_MOTION_TYPE ||
-                ((Creature*)this)->GetMotionMaster()->GetCurrentMovementGeneratorType() == POINT_MOTION_TYPE)
+                GetMotionMaster()->GetCurrentMovementGeneratorType() == POINT_MOTION_TYPE)
         
 		if (enemy)
         {
@@ -11207,14 +11203,14 @@ void Unit::SetHover(bool on)
 
 void Unit::setDeathState(DeathState s)
 {
-    if (s != ALIVE && s!= JUST_ALIVED)
+    if (s != ALIVE && s != JUST_ALIVED)
     {
         CombatStop();
         DeleteThreatList();
         getHostilRefManager().deleteReferences();
         ClearComboPointHolders();                           // any combo points pointed to unit lost at it death
 
-        if(IsNonMeleeSpellCasted(false))
+        if (IsNonMeleeSpellCasted(false))
             InterruptNonMeleeSpells(false);
 
         UnsummonAllTotems();
@@ -11239,10 +11235,8 @@ void Unit::setDeathState(DeathState s)
         //do not why since in IncreaseMaxHealth currenthealth is checked
         SetHealth(0);
     }
-    else if(s == JUST_ALIVED)
-    {
+    else if (s == JUST_ALIVED)
         RemoveFlag (UNIT_FIELD_FLAGS, UNIT_FLAG_SKINNABLE); // clear skinnable for creature and player (at battleground)
-    }
 
     if (m_deathState != ALIVE && s == ALIVE)
     {

@@ -1,8 +1,6 @@
 /*
  * Copyright (C) 2005-2009 MaNGOS <http://getmangos.com/>
  *
- * Copyright (C) 2009 CWCore <http://www.wow-extrem.de/>
- *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
@@ -25,7 +23,6 @@ const char Achievementfmt[]="niixssssssssssssssssxxxxxxxxxxxxxxxxxxiixixxxxxxxxx
 const char AchievementCriteriafmt[]="niiiiiiiixxxxxxxxxxxxxxxxxiixix";
 const char AreaTableEntryfmt[]="iiinixxxxxissssssssssssssssxixxxxxxx";
 const char AreaGroupEntryfmt[]="niiiiiii";
-const char AreaPOIEntryfmt[]="niiiiiiiiiiifffixixxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxix";
 const char AreaTriggerEntryfmt[]="niffffffff";
 const char AuctionHouseEntryfmt[]="niiixxxxxxxxxxxxxxxxx";
 const char BankBagSlotPricesEntryfmt[]="ni";
@@ -49,7 +46,7 @@ const char EmotesEntryfmt[]="nxxiiix";
 const char EmotesTextEntryfmt[]="nxixxxxxxxxxxxxxxxx";
 const char FactionEntryfmt[]="niiiiiiiiiiiiiiiiiixxxxssssssssssssssssxxxxxxxxxxxxxxxxxx";
 const char FactionTemplateEntryfmt[]="niiiiiiiiiiiii";
-const char GameObjectDisplayInfofmt[]="nxxxxxxxxxxxffffffx";
+const char GameObjectDisplayInfofmt[]="nxxxxxxxxxxxxxxxxxx";
 const char GemPropertiesEntryfmt[]="nixxi";
 const char GlyphPropertiesfmt[]="niii";
 const char GlyphSlotfmt[]="nii";
@@ -92,18 +89,18 @@ const char SpellFocusObjectfmt[]="nxxxxxxxxxxxxxxxxx";
 const char SpellItemEnchantmentfmt[]="nxiiiiiixxxiiissssssssssssssssxiiiixxx";
 const char SpellItemEnchantmentConditionfmt[]="nbbbbbxxxxxbbbbbbbbbbiiiiiXXXXX";
 const char SpellRadiusfmt[]="nfxf";
-const char SpellRangefmt[]="nffffixxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx";
+const char SpellRangefmt[]="nffffxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx";
 const char SpellRuneCostfmt[]="niiii";
-const char SpellShapeshiftfmt[]="nxxxxxxxxxxxxxxxxxxiixixxxxiiiiiiii";
+const char SpellShapeshiftfmt[]="nxxxxxxxxxxxxxxxxxxiixixxxxxxxxxxxx";
 const char StableSlotPricesfmt[] = "ni";
-const char SummonPropertiesfmt[] = "niiiii";
+//const char SummonPropertiesfmt[] = "niiiii";
 const char TalentEntryfmt[]="niiiiiiiixxxxixxixxxxxx";
 const char TalentTabEntryfmt[]="nxxxxxxxxxxxxxxxxxxxiiix";
 const char TaxiNodesEntryfmt[]="nifffssssssssssssssssxii";
 const char TaxiPathEntryfmt[]="niii";
 const char TaxiPathNodeEntryfmt[]="diiifffiixx";
 const char TotemCategoryEntryfmt[]="nxxxxxxxxxxxxxxxxxii";
-const char VehicleEntryfmt[]="niffffiiiiiiiifffffffffffffffssssfifiixx";
+const char VehicleEntryfmt[]="niffffiiiiiiiifffffffffffffffssssfifixxx";
 const char VehicleSeatEntryfmt[]="niiffffffffffiiiiiifffffffiiifffiiiiiiiffiiiiixxxxxxxxxxxx";
 const char WorldMapAreaEntryfmt[]="xinxffffixx";
 const char WorldMapOverlayEntryfmt[]="nxiiiixxxxxxxxxxx";

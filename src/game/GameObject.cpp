@@ -732,6 +732,10 @@ bool GameObject::isVisibleForInState(Player const* u, bool inVisibleList) const
     if(!IsInWorld() || !u->IsInWorld())
         return false;
 
+    // invisible at client always
+    if(!GetGOInfo()->displayId)
+        return false;
+
     // Transport always visible at this step implementation
     if(IsTransport() && IsInMap(u))
         return true;

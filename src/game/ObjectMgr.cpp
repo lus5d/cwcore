@@ -1557,6 +1557,14 @@ void ObjectMgr::LoadGameobjects()
         return;
     }
 
+    // build single time for check spawnmask
+    std::map<uint32,uint32> spawnMasks;
+    for(uint32 i = 0; i < sMapStore.GetNumRows(); ++i)
+        if(sMapStore.LookupEntry(i))
+            for(int k = 0; k < MAX_DIFFICULTY; ++k)
+                if (GetMapDifficultyData(i,Difficulty(k)))
+                    spawnMasks[i] |= (1 << k);
+
     barGoLink bar(result->GetRowCount());
 
     do
@@ -1568,6 +1576,12 @@ void ObjectMgr::LoadGameobjects()
         uint32 entry        = fields[ 1].GetUInt32();
 
         GameObjectInfo const* gInfo = GetGameObjectInfo(entry);
+        if (!gInfo)
+        {
+            sLog.outErrorDb("Table `gameobject` has gameobject (GUID: %u) with non existing gameobject entry %u, skipped.", guid, entry);
+            continue;
+        }
+
         if(!gInfo->displayId)
         {
             switch(gInfo->type)
@@ -1581,10 +1595,9 @@ void ObjectMgr::LoadGameobjects()
                     break;
             }
         }
-
         else if (!sGameObjectDisplayInfoStore.LookupEntry(gInfo->displayId))
         {
-            sLog.outErrorDb("Gameobject (GUID: %u Entry %u GoType: %u) have invalid displayId (%u), not loaded.",guid, entry, gInfo->type, gInfo->displayId);
+            sLog.outErrorDb("Gameobject (GUID: %u Entry %u GoType: %u) have invalid displayId (%u), not loaded.", guid, entry, gInfo->type, gInfo->displayId);
             continue;
         }
 
@@ -1602,41 +1615,27 @@ void ObjectMgr::LoadGameobjects()
         data.rotation3      = fields[10].GetFloat();
         data.spawntimesecs  = fields[11].GetInt32();
 
-		MapEntry const* mapEntry = sMapStore.LookupEntry(data.mapid);
+        MapEntry const* mapEntry = sMapStore.LookupEntry(data.mapid);
         if(!mapEntry)
         {
             sLog.outErrorDb("Table `gameobject` have gameobject (GUID: %u Entry: %u) that spawned at not existed map (Id: %u), skip", guid, data.id, data.mapid);
             continue;
         }
 
-        if(mapEntry->IsNonRaidDungeon())
-        {
-            if(data.spawnMask & ~SPAWNMASK_DUNGEON_ALL)
-                sLog.outErrorDb("Table `gameobject` have gameobject (GUID: %u Entry: %u) that have wrong spawn mask %u for non-raid dungeon map (Id: %u), skip", guid, data.id, data.spawnMask, data.mapid);
-        }
-        else if(mapEntry->IsRaid())
-        {
-            if(data.spawnMask & ~SPAWNMASK_RAID_ALL)
-                sLog.outErrorDb("Table `gameobject` have gameobject (GUID: %u Entry: %u) that have wrong spawn mask %u for raid dungeon map (Id: %u), skip", guid, data.id, data.spawnMask, data.mapid);
-        }
-        else
-        {
-            if(data.spawnMask & ~SPAWNMASK_CONTINENT)
-                sLog.outErrorDb("Table `gameobject` have gameobject (GUID: %u Entry: %u) that have wrong spawn mask %u for non-dungeon map (Id: %u), skip", guid, data.id, data.spawnMask, data.mapid);
-        }
+        if (data.spawnMask & ~spawnMasks[data.mapid])
+            sLog.outErrorDb("Table `gameobject` have gameobject (GUID: %u Entry: %u) that have wrong spawn mask %u including not supported difficulty modes for map (Id: %u), skip", guid, data.id, data.spawnMask, data.mapid);
 
-        if (data.spawntimesecs==0 && gInfo->IsDespawnAtAction())
+        if (data.spawntimesecs == 0 && gInfo->IsDespawnAtAction())
         {
-            sLog.outErrorDb("Table `gameobject` have gameobject (GUID: %u Entry: %u) with `spawntimesecs` (0) value, but gameobejct marked as despawnable at action.",guid,data.id);
+            sLog.outErrorDb("Table `gameobject` have gameobject (GUID: %u Entry: %u) with `spawntimesecs` (0) value, but gameobejct marked as despawnable at action.", guid, data.id);
         }
 
         data.animprogress   = fields[12].GetUInt32();
-        data.artKit         = 0;
 
         uint32 go_state     = fields[13].GetUInt32();
         if (go_state >= MAX_GO_STATE)
         {
-            sLog.outErrorDb("Table `gameobject` have gameobject (GUID: %u Entry: %u) with invalid `state` (%u) value, skip",guid,data.id,go_state);
+            sLog.outErrorDb("Table `gameobject` have gameobject (GUID: %u Entry: %u) with invalid `state` (%u) value, skip", guid, data.id, go_state);
             continue;
         }
         data.go_state       = GOState(go_state);
@@ -1648,29 +1647,29 @@ void ObjectMgr::LoadGameobjects()
 
         if (data.rotation2 < -1.0f || data.rotation2 > 1.0f)
         {
-            sLog.outErrorDb("Table `gameobject` have gameobject (GUID: %u Entry: %u) with invalid rotation2 (%f) value, skip",guid,data.id,data.rotation2 );
+            sLog.outErrorDb("Table `gameobject` have gameobject (GUID: %u Entry: %u) with invalid rotation2 (%f) value, skip", guid, data.id, data.rotation2);
             continue;
         }
 
         if (data.rotation3 < -1.0f || data.rotation3 > 1.0f)
         {
-            sLog.outErrorDb("Table `gameobject` have gameobject (GUID: %u Entry: %u) with invalid rotation3 (%f) value, skip",guid,data.id,data.rotation3 );
+            sLog.outErrorDb("Table `gameobject` have gameobject (GUID: %u Entry: %u) with invalid rotation3 (%f) value, skip", guid, data.id, data.rotation3);
             continue;
         }
 
-        if (!MapManager::IsValidMapCoord(data.mapid,data.posX,data.posY,data.posZ,data.orientation))
+        if(!MapManager::IsValidMapCoord(data.mapid, data.posX, data.posY, data.posZ, data.orientation))
         {
-            sLog.outErrorDb("Table `gameobject` have gameobject (GUID: %u Entry: %u) with invalid coordinates, skip",guid,data.id );
+            sLog.outErrorDb("Table `gameobject` have gameobject (GUID: %u Entry: %u) with invalid coordinates, skip", guid, data.id);
             continue;
         }
 
-        if (data.phaseMask==0)
+        if(data.phaseMask == 0)
         {
-            sLog.outErrorDb("Table `gameobject` have gameobject (GUID: %u Entry: %u) with `phaseMask`=0 (not visible for anyone), set to 1.",guid,data.id );
+            sLog.outErrorDb("Table `gameobject` have gameobject (GUID: %u Entry: %u) with `phaseMask`=0 (not visible for anyone), set to 1.", guid, data.id);
             data.phaseMask = 1;
         }
 
-        if (gameEvent==0 && PoolId==0)                      // if not this is to be managed by GameEvent System or Pool system
+        if (gameEvent == 0 && PoolId == 0)                  // if not this is to be managed by GameEvent System or Pool system
             AddGameobjectToGrid(guid, &data);
         ++count;
 
